@@ -55,4 +55,6 @@
 | while              | WHILE          |
 | do                 | DO             |
 | if                 | IF             |
-| else               | ELSE           |                      |
+| else               | ELSE           |                      
+| function           | FUNCTION       |
+
