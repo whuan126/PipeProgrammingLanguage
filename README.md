@@ -1,7 +1,7 @@
 # WHVB-CS152FinalProject
 
 - Language Name: Pipe
-- Language Extension: '''example.pipe'''
+- Language Extension: ''example.pipe''
 - Compiler Name: PipePack
 
 ## Language Features
