@@ -8,7 +8,7 @@
 | Language Feature                  | Code Example                                                                      |
 |-----------------------------------|-----------------------------------------------------------------------------------|
 | Integer Scalar Variables          | - int a, b, c<br>- int sum<br>- int median                                        |
-| One Dimensional Array of Integers | - array\|0 = 1                                                                    |
+| One Dimensional Array of Integers | - int array\|0 \eq 1 <br>- int array [n]                                          |
 | Assignment Statements             | - a \|eq 1                                                                        |
 | Arithmetic Operators              | - total \|eq 4 \|add 8 <br>- minimum \|eq 3 \|mult 5                              |
 | Relational Operators              | - a \|equiv 4<br>- a \|noteq 3                                                    |
@@ -58,4 +58,6 @@
 | function           | FUNCTION       |
 | (                  | LEFT_PREN      |
 | )                  | RIGHT_PREN     |
+| [                  | LEFT_BRACKET   |
+| ]                  | RIGHT_BRACKET  |
 
