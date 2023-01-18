@@ -17,7 +17,6 @@
 | Read write:                       | - \|read<br>- \|write<br>- \|close                                                |
 | comments                          | - //This is a comment                                                             |
 | Functions                         | - function foo(int b)<br>  a \|eq b<br>  end<br>- int c\|eq1<br>foo(c)            |
-| For Loops                         | - for I \|5<br>- for I \|range 100<br>- for I \|[0, 3, 6, 9]                      |
 
 
 #### Valid Identifiers
