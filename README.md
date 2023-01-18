@@ -57,4 +57,6 @@
 | if                 | IF             |
 | else               | ELSE           |                      
 | function           | FUNCTION       |
+| (                  | LEFT_PREN      |
+| )                  | RIGHT_PREN     |
 
