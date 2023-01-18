@@ -14,7 +14,7 @@
 | Relational Operators              | - a \|equiv 4<br>- a \|noteq 3                                                    |
 | While or Do-While loops           | - while a \|equiv true do<br>end<br>- do a \|eq a \|add 1<br>while b \|equiv true |
 | If else                           | if a\|equiv true then<br>b \|eq true<br>else<br>c \|eq true<br>end                |
-| Read write:                       | - \|read<br>- \|write<br>- \|close                                                |
+| Read write:                       | - \|read<br>- \|write<br>                                                |
 | comments                          | - //This is a comment                                                             |
 | Functions                         | - function foo(int b)<br>  a \|eq b<br>  end<br>- int c\|eq1<br>foo(c)            |
 
