@@ -16,13 +16,6 @@ int equal = 0;
 
 %%
 {DIGIT}+	{ num++; printf("NUMBER: %s\n", yytext); }
-"+"		{ op++; printf("PLUS\n"); }
-"-"		{ op++; printf("MINUS\n"); }
-"*"		{ op++; printf("MULT\n"); }
-"/"		{ op++; printf("DIV\n"); }
-"("		{ paren++; printf("L_PAREN\n"); }
-")"		{ paren++; printf("R_PAREN\n"); }
-"="		{ equal++; printf("EQUAL\n"); }
 "int"		{ printf("INTEGER"); }
 "string"	{ printf("STRING"); }
 "|eq"		{ printf("EQUAL"); }
