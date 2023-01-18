@@ -16,7 +16,7 @@
 | If else                           | if a\|equiv true then<br>b \|eq true<br>else<br>c \|eq true<br>end                |
 | Read write:                       | - \|read<br>- \|write<br>                                                         |
 | comments                          | - //This is a comment                                                             |
-| Functions                         | - function foo(int b)<br>  a \|eq b<br>  end<br>- int c\|eq1<br>foo(c)            |
+| Functions                         | - function foo(int b)<br>  a \|eq b<br>  end<br>- int c \|eq 1<br>foo(c)          |
 
 
 #### Valid Identifiers
