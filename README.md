@@ -1,8 +1,8 @@
 # WHVB-CS152FinalProject
 
-- Language Name: C♭
-- Language Extension: '''example.flat'''
-- Compiler Name: FlatPack
+- Language Name: Pipe
+- Language Extension: '''example.pipe'''
+- Compiler Name: PipePack
 
 ## Language Features
 | Language Feature                  | Code Example                                                                      |
