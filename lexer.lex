@@ -23,6 +23,11 @@ int equal = 0;
 "("		{ paren++; printf("L_PAREN\n"); }
 ")"		{ paren++; printf("R_PAREN\n"); }
 "="		{ equal++; printf("EQUAL\n"); }
+"int"		{ printf("INTEGER"); }
+"string"	{ printf("STRING"); }
+"|eq"		{ printf("EQUAL"); }
+"|mult"		{ printf("MULTIPLY"); }
+"|add"		{ printf("ADD"); }
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
 %%
 
