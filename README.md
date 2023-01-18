@@ -4,6 +4,7 @@
 - Language Extension: '''example.flat'''
 - Compiler Name: FlatPack
 
+## Language Features
 | Language Feature                  | Code Example                                                                      |
 |-----------------------------------|-----------------------------------------------------------------------------------|
 | Integer Scalar Variables          | - int a, b, c<br>- int sum<br>- int median                                        |
@@ -34,3 +35,24 @@
 #### White Spaces
 - White spaces will be ignored
 - This is because white spaces, indentations, and formatting should be subjective and not significant in production and compilation.
+
+## Symbols In Language
+
+| Symbol in Language | Token Name     |
+|--------------------|----------------|
+| int                | INTEGER        |
+| string             | STRING         |
+| \|eq               | EQUAL          |
+| \|mult             | MULTIPLY       |
+| \|add              | ADD            |
+| \|sub              | SUBTRACT       |
+| \|div              | DIVISION       |
+| \|leq              | LESSEROREQUAL  |
+| \|geq              | GREATEROREQUAL |
+| \|lt               | LESSTHAN       |
+| \|gt               | GREATERTHAN    |
+| \|equiv            | EQUIVALENT     |
+| while              | WHILE          |
+| do                 | DO             |
+| if                 | IF             |
+| else               | ELSE           |                      |
