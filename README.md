@@ -17,3 +17,20 @@
 | comments                          | - //This is a comment                                                             |
 | Functions                         | - function foo(int b)<br>  a \|eq b<br>  end<br>- int c\|eq1<br>foo(c)            |
 | For Loops                         | - for I \|5<br>- for I \|range 100<br>- for I \|[0, 3, 6, 9]                      |
+
+
+#### Valid Identifiers
+
+- Symbols in our language can not be used as an identifier.
+  - For example, int int would not be a valid integer declaration
+- The first letter of every identifier will be a character or an underscore.
+- A valid identifier can consist of uppercase or lowercase letters, numbers, and underscores.
+- The max length of any identifier is 32 characters.
+
+#### Case Sensitive
+- The language will be case sensitive.
+  - For example, int num and int Num are two different integer identifiers
+
+#### White Spaces
+- White spaces will be ignored
+- This is because white spaces, indentations, and formatting should be subjective and not significant in production and compilation.
