@@ -6,6 +6,12 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
+GREATERTHAN [/\|gt]
+EQUIVALENT [/\|equiv]
+WHILE [/\|while]
+DO [/\|do]
+IF [/\|if]
+
 
 %{
 int num = 0;
@@ -23,6 +29,12 @@ int equal = 0;
 "("		{ paren++; printf("L_PAREN\n"); }
 ")"		{ paren++; printf("R_PAREN\n"); }
 "="		{ equal++; printf("EQUAL\n"); }
+{GREATERTHAN}+ 	{printf("GREATERTHAN: %s\n", yytext); }
+{EQUIVALENT}+ 	{printf("EQUIVALENT: %s\n", yytext); }
+{WHILE}+ 	{printf("WHILE: %s\n", yytext); }
+{DO}+ 	{printf("DO: %s\n", yytext); }
+{IF}+ 	{printf("IF: %s\n", yytext); }
+
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
 %%
 
