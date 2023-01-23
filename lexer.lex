@@ -6,11 +6,11 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
-SUBTRACT[/\|sub]
-DIVISION[/\|div]
-LESSEROREQUAL[/\|leq]
-GREATEROREQUAL[/\|geq]
-LESSTHAN[/\|lt]
+SUBTRACT [/\|sub]
+DIVISION [/\|div]
+LESSEROREQUAL [/\|leq]
+GREATEROREQUAL [/\|geq]
+LESSTHAN [/\|lt]
 
 %{
 int num = 0;
