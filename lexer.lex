@@ -6,6 +6,11 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
+SUBTRACT[/\|sub]
+DIVISION[/\|div]
+LESSEROREQUAL[/\|leq]
+GREATEROREQUAL[/\|geq]
+LESSTHAN[/\|lt]
 
 %{
 int num = 0;
@@ -23,6 +28,7 @@ int equal = 0;
 "("		{ paren++; printf("L_PAREN\n"); }
 ")"		{ paren++; printf("R_PAREN\n"); }
 "="		{ equal++; printf("EQUAL\n"); }
+{SUBTRACT}+	{printf("SUBTRACT: %s\n", yytext); }
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
 %%
 
