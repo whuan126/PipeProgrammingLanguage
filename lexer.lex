@@ -29,6 +29,10 @@ int equal = 0;
 ")"		{ paren++; printf("R_PAREN\n"); }
 "="		{ equal++; printf("EQUAL\n"); }
 {SUBTRACT}+	{printf("SUBTRACT: %s\n", yytext); }
+{DIVISION}+	{printf("DIVISION: %s\n", yytext); }
+{LESSEROREQUAL}+	{printf("LESSEROREQUAL: %s\n", yytext); }
+{GREATEROREQUAL}+	{printf("GREATEROREQUAL: %s\n", yytext); }
+{LESSTHAN}+	{printf("LESSTHAN: %s\n", yytext); }
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
 %%
 
