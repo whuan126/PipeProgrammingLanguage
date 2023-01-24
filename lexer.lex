@@ -18,6 +18,8 @@ DO [do]
 IF [if]
 ELSE [else]
 FUNCTION [function]
+LEFT_PREN [(]
+RIGHT_PREN [)]
 LEFT_BRACKET [[]
 RIGHT_BRACKET []]
 
