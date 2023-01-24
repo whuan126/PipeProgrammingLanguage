@@ -37,11 +37,11 @@ int equal = 0;
 
 %%
 {DIGIT}+	{ num++; printf("NUMBER: %s\n", yytext); }
-"int"		{ printf("INTEGER"); }
-"string"	{ printf("STRING"); }
-"|eq"		{ printf("EQUAL"); }
-"|mult"		{ printf("MULTIPLY"); }
-"|add"		{ printf("ADD"); }
+{INTEGER}+		{ printf("INTEGER"); }
+{STRING}+	{ printf("STRING"); }
+{EQUAL}+		{ printf("EQUAL"); }
+{MULTIPLY}+		{ printf("MULTIPLY"); }
+{ADD}+		{ printf("ADD"); }
 {SUBTRACT}+	{printf("SUBTRACT: %s\n", yytext); }
 {DIVISION}+	{printf("DIVISION: %s\n", yytext); }
 {LESSEROREQUAL}+	{printf("LESSEROREQUAL: %s\n", yytext); }
