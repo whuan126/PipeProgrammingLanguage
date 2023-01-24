@@ -32,11 +32,11 @@ int equal = 0;
 
 %%
 {DIGIT}+	{ num++; printf("NUMBER: %s\n", yytext); }
-"+"		{ op++; printf("PLUS\n"); }
-"-"		{ op++; printf("MINUS\n"); }
-"*"		{ op++; printf("MULT\n"); }
-"/"		{ op++; printf("DIV\n"); }
-"="		{ equal++; printf("EQUAL\n"); }
+"int"		{ printf("INTEGER"); }
+"string"	{ printf("STRING"); }
+"|eq"		{ printf("EQUAL"); }
+"|mult"		{ printf("MULTIPLY"); }
+"|add"		{ printf("ADD"); }
 {SUBTRACT}+	{printf("SUBTRACT: %s\n", yytext); }
 {DIVISION}+	{printf("DIVISION: %s\n", yytext); }
 {LESSEROREQUAL}+	{printf("LESSEROREQUAL: %s\n", yytext); }
@@ -53,6 +53,7 @@ int equal = 0;
 {RIGHT_PREN}+ {printf("RIGHT_PREN: %s\n", yytext); }
 {LEFT_BRACKET}+ {printf("LEFT_BRACKET: %s\n", yytext); }
 {RIGHT_BRACKET}+ {printf("RIGHT_BRACKET: %s\n", yytext); }
+
 
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
 %%
