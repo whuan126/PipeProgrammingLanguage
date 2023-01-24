@@ -6,6 +6,11 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
+SUBTRACT [/\|sub]
+DIVISION [/\|div]
+LESSEROREQUAL [/\|leq]
+GREATEROREQUAL [/\|geq]
+LESSTHAN [/\|lt]
 GREATERTHAN [/\|gt]
 EQUIVALENT [/\|equiv]
 WHILE [while]
@@ -13,8 +18,6 @@ DO [do]
 IF [if]
 ELSE [else]
 FUNCTION [function]
-LEFT_PREN [(]
-RIGHT_PREN [)]
 LEFT_BRACKET [[]
 RIGHT_BRACKET []]
 
@@ -32,6 +35,11 @@ int equal = 0;
 "*"		{ op++; printf("MULT\n"); }
 "/"		{ op++; printf("DIV\n"); }
 "="		{ equal++; printf("EQUAL\n"); }
+{SUBTRACT}+	{printf("SUBTRACT: %s\n", yytext); }
+{DIVISION}+	{printf("DIVISION: %s\n", yytext); }
+{LESSEROREQUAL}+	{printf("LESSEROREQUAL: %s\n", yytext); }
+{GREATEROREQUAL}+	{printf("GREATEROREQUAL: %s\n", yytext); }
+{LESSTHAN}+	{printf("LESSTHAN: %s\n", yytext); }
 {GREATERTHAN}+ 	{printf("GREATERTHAN: %s\n", yytext); }
 {EQUIVALENT}+ 	{printf("EQUIVALENT: %s\n", yytext); }
 {WHILE}+ 	{printf("WHILE: %s\n", yytext); }
