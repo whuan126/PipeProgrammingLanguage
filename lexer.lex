@@ -6,6 +6,11 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
+INTEGER [/\|int]
+STRING [string]
+EQUAL [/\|eq]
+MULTIPLY [/\|mult]
+ADD [/\|add]
 SUBTRACT [/\|sub]
 DIVISION [/\|div]
 LESSEROREQUAL [/\|leq]
