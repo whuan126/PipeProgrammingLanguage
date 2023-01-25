@@ -33,6 +33,8 @@ RETURN \|return
 INDEX \|
 END end
 COMMA \,
+READ \|read
+WRITE \|write
 
 %{
 int num = 0;
@@ -70,6 +72,8 @@ int equal = 0;
 {RETURN}		{ printf("RETURN\n"); }
 {END}			{ printf("END\n"); }
 {COMMA}			{ printf("COMMA\n"); }
+{READ}			{ printf("READ\n"); }
+{WRITE}			{ printf("WRITE\n"); }
 
 {ALPHA}+		{ printf("VARIABLE: %s\n", yytext); }
 [[:space:]]+
