@@ -6,27 +6,28 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
-INTEGER [/\|int]
-STRING [string]
-EQUAL [/\|eq]
-MULTIPLY [/\|mu/lt]
-ADD [/\|add]
-SUBTRACT [/\|sub]
-DIVISION [/\|div]
-LESSEROREQUAL [/\|leq]
-GREATEROREQUAL [/\|geq]
-LESSTHAN [/\|lt]
-GREATERTHAN [/\|gt]
-EQUIVALENT [/\|equiv]
-WHILE [while]
-DO [do]
-IF [if]
-ELSE [else]
-FUNCTION [function]
-LEFT_PREN [(]
-RIGHT_PREN [)]
-LEFT_BRACKET [[]
-RIGHT_BRACKET []]
+INTEGER int
+STRING string
+EQUAL \|eq
+MULTIPLY \|mult
+ADD \|add
+SUBTRACT \|sub
+DIVISION \|div
+LESSEROREQUAL \|leq
+GREATEROREQUAL \|geq
+LESSTHAN \|lt
+GREATERTHAN \|gt
+EQUIVALENT \|equiv
+WHILE while
+DO do
+IF if
+ELSE else
+FUNCTION function
+LEFT_PREN \(
+RIGHT_PREN \)
+LEFT_BRACKET \[
+RIGHT_BRACKET \]
+RETURN \|return
 
 %{
 int num = 0;
@@ -37,29 +38,31 @@ int equal = 0;
 
 %%
 {DIGIT}+		{ num++; printf("NUMBER: %s\n", yytext); }
-{INTEGER}		{ printf("INTEGER: %s\n", yytext); }
-{STRING}		{ printf("STRING: %s\n", yytext); }
-{EQUAL}			{ printf("EQUAL: %s\n", yytext); }
-{MULTIPLY}		{ printf("MULTIPLY %s\n", yytext); }
-{ADD}			{ printf("ADD %s\n", yytext); }
-{SUBTRACT}		{ printf("SUBTRACT: %s\n", yytext); }
-{DIVISION}		{ printf("DIVISION: %s\n", yytext); }
-{LESSEROREQUAL}		{ printf("LESSEROREQUAL: %s\n", yytext); }
-{GREATEROREQUAL}	{ printf("GREATEROREQUAL: %s\n", yytext); }
-{LESSTHAN}		{ printf("LESSTHAN: %s\n", yytext); }
-{GREATERTHAN} 		{ printf("GREATERTHAN: %s\n", yytext); }
-{EQUIVALENT} 		{ printf("EQUIVALENT: %s\n", yytext); }
-{WHILE} 		{ printf("WHILE: %s\n", yytext); }
-{DO} 			{ printf("DO: %s\n", yytext); }
-{IF} 			{ printf("IF: %s\n", yytext); }
-{ELSE} 			{ printf("ELSE: %s\n", yytext); }
-{FUNCTION} 		{ printf("FUNCTION: %s\n", yytext); }
-{LEFT_PREN} 		{ printf("LEFT_PREN: %s\n", yytext); }
-{RIGHT_PREN} 		{ printf("RIGHT_PREN: %s\n", yytext); }
-{LEFT_BRACKET} 		{ printf("LEFT_BRACKET: %s\n", yytext); }
-{RIGHT_BRACKET} 	{ printf("RIGHT_BRACKET: %s\n", yytext); }
+{INTEGER}		{ printf("INTEGER\n"); }
+{STRING}		{ printf("STRING\n"); }
+{EQUAL}			{ printf("EQUAL\n"); }
+{MULTIPLY}		{ printf("MULTIPLY\n"); }
+{ADD}			{ printf("ADD\n"); }
+{SUBTRACT}		{ printf("SUBTRACT\n"); }
+{DIVISION}		{ printf("DIVISION\n"); }
+{LESSEROREQUAL}		{ printf("LESSEROREQUAL\n"); }
+{GREATEROREQUAL}	{ printf("GREATEROREQUAL\n"); }
+{LESSTHAN}		{ printf("LESSTHAN\n"); }
+{GREATERTHAN} 		{ printf("GREATERTHAN\n"); }
+{EQUIVALENT} 		{ printf("EQUIVALENT\n"); }
+{WHILE} 		{ printf("WHILE\n"); }
+{DO} 			{ printf("DO\n"); }
+{IF} 			{ printf("IF\n"); }
+{ELSE} 			{ printf("ELSE\n"); }
+{FUNCTION} 		{ printf("FUNCTION\n"); }
+{LEFT_PREN} 		{ printf("LEFT_PREN\n"); }
+{RIGHT_PREN} 		{ printf("RIGHT_PREN\n"); }
+{LEFT_BRACKET} 		{ printf("LEFT_BRACKET\n"); }
+{RIGHT_BRACKET} 	{ printf("RIGHT_BRACKET\n"); }
+{RETURN}		{ printf("RETURN\n"); }
 
-
+{ALPHA}+		{ printf("VARIABLE: %s\n", yytext); }
+[[:space:]]+
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
 %%
 
