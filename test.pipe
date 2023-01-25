@@ -1,6 +1,6 @@
 function test()
 
-    |write Hello World
+    |write "Hello World"
 
     int a
     int b
