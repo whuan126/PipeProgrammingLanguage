@@ -27,9 +27,12 @@ LEFT_PREN \(
 RIGHT_PREN \)
 LEFT_BRACKET \[
 RIGHT_BRACKET \]
+LEFT_CURR_BRACKET \{
+RIGHT_CURR_BRACKET \}
 RETURN \|return
 INDEX \|
 END end
+COMMA \,
 
 %{
 int num = 0;
@@ -62,8 +65,11 @@ int equal = 0;
 {RIGHT_PREN} 		{ paren++; printf("RIGHT_PREN\n"); }
 {LEFT_BRACKET} 		{ printf("LEFT_BRACKET\n"); }
 {RIGHT_BRACKET} 	{ printf("RIGHT_BRACKET\n"); }
+{LEFT_CURR_BRACKET}	{ printf("LEFT_CURR_BRACKET"); }
+{RIGHT_CURR_BRACKET}    { printf("RIGHT_CURR_BRACKET"); }
 {RETURN}		{ printf("RETURN\n"); }
 {END}			{ printf("END\n"); }
+{COMMA}			{ printf("COMMA\n"); }
 
 {ALPHA}+		{ printf("VARIABLE: %s\n", yytext); }
 [[:space:]]+
