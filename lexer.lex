@@ -28,6 +28,8 @@ RIGHT_PREN \)
 LEFT_BRACKET \[
 RIGHT_BRACKET \]
 RETURN \|return
+INDEX \|
+END end
 
 %{
 int num = 0;
@@ -39,12 +41,13 @@ int equal = 0;
 %%
 {DIGIT}+		{ num++; printf("NUMBER: %s\n", yytext); }
 {INTEGER}		{ printf("INTEGER\n"); }
+{INDEX}			{ printf("INDEX\n"); }
 {STRING}		{ printf("STRING\n"); }
-{EQUAL}			{ printf("EQUAL\n"); }
-{MULTIPLY}		{ printf("MULTIPLY\n"); }
-{ADD}			{ printf("ADD\n"); }
-{SUBTRACT}		{ printf("SUBTRACT\n"); }
-{DIVISION}		{ printf("DIVISION\n"); }
+{EQUAL}			{ equal++; printf("EQUAL\n"); }
+{MULTIPLY}		{ op++; printf("MULTIPLY\n"); }
+{ADD}			{ op++; printf("ADD\n"); }
+{SUBTRACT}		{ op++; printf("SUBTRACT\n"); }
+{DIVISION}		{ op++; printf("DIVISION\n"); }
 {LESSEROREQUAL}		{ printf("LESSEROREQUAL\n"); }
 {GREATEROREQUAL}	{ printf("GREATEROREQUAL\n"); }
 {LESSTHAN}		{ printf("LESSTHAN\n"); }
@@ -55,11 +58,12 @@ int equal = 0;
 {IF} 			{ printf("IF\n"); }
 {ELSE} 			{ printf("ELSE\n"); }
 {FUNCTION} 		{ printf("FUNCTION\n"); }
-{LEFT_PREN} 		{ printf("LEFT_PREN\n"); }
-{RIGHT_PREN} 		{ printf("RIGHT_PREN\n"); }
+{LEFT_PREN} 		{ paren++; printf("LEFT_PREN\n"); }
+{RIGHT_PREN} 		{ paren++; printf("RIGHT_PREN\n"); }
 {LEFT_BRACKET} 		{ printf("LEFT_BRACKET\n"); }
 {RIGHT_BRACKET} 	{ printf("RIGHT_BRACKET\n"); }
 {RETURN}		{ printf("RETURN\n"); }
+{END}			{ printf("END\n"); }
 
 {ALPHA}+		{ printf("VARIABLE: %s\n", yytext); }
 [[:space:]]+
