@@ -23,7 +23,7 @@
 
 - Symbols in our language can not be used as an identifier.
   - For example, int int would not be a valid integer declaration
-- The first letter of every identifier will be a character or an underscore.
+- The first letter of every identifier will be a character.
 - A valid identifier can consist of uppercase or lowercase letters, numbers, and underscores.
 - The max length of any identifier is 32 characters.
 
