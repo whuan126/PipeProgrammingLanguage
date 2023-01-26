@@ -1,3 +1,5 @@
+%option yylineno
+
 %{
 
 #include <stdio.h>
@@ -6,6 +8,7 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
+INVALIDVARIABLE [0-9][a-zA-Z0-9_]*
 VARIABLE [a-zA-Z][a-zA-Z0-9_]*
 INTEGER int
 STRING string
@@ -44,6 +47,7 @@ int num = 0;
 int op = 0;
 int paren = 0;
 int equal = 0;
+int line = 0;
 %}
 
 %%
@@ -77,11 +81,13 @@ int equal = 0;
 {COMMA}			{ printf("COMMA\n"); }
 {READ}			{ printf("READ\n"); }
 {WRITE}			{ printf("WRITE\n"); }
-{COMMENT}		{ printf("COMMENT: %s\n", yytext); }
+{COMMENT}		{}
 {STRINGLITERAL}		{ printf("STRINGLITERAL: %s\n", yytext); }	
+{INVALIDVARIABLE}	{ printf("ERROR: VARIABLE MUST START WITH LETTER: %s - LINE: %d\n", yytext,yylineno); exit(1); }
 {VARIABLE}		{ printf("VARIABLE: %s\n", yytext); }
 [[:space:]]+
-.		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
+			
+.		{printf("ERROR: NO SYMBOLS OR LETTERS: %s - LINE: %d\n", yytext,yylineno); exit(1); }
 %%
 
 main (void) {
