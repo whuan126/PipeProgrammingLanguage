@@ -6,6 +6,7 @@
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
+VARIABLE [a-zA-Z][a-zA-Z0-9_]*
 INTEGER int
 STRING string
 EQUAL \|eq
@@ -78,9 +79,7 @@ int equal = 0;
 {WRITE}			{ printf("WRITE\n"); }
 {COMMENT}		{ printf("COMMENT: %s\n", yytext); }
 {STRINGLITERAL}		{ printf("STRINGLITERAL: %s\n", yytext); }	
-
-
-[a-zA-Z0-9][a-zA-Z0-9_]*	{ printf("VARIABLE: %s\n", yytext); }
+{VARIABLE}		{ printf("VARIABLE: %s\n", yytext); }
 [[:space:]]+
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s\n", yytext); exit(1); }
 %%

@@ -3,6 +3,7 @@ function
     int num2 |eq 10
     //Hi
     string word |eq "Hello"
+    string H20_
 
     int num3 |eq num1 |mult num2
     int num4 |eq num1 |add num2
