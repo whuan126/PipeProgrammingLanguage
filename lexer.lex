@@ -35,7 +35,8 @@ END end
 COMMA \,
 READ \|read
 WRITE \|write
-QUOTATION \"
+COMMENT \/\/.*$
+STRINGLITERAL  \"(\\.|[^"\\])*\"
 
 %{
 int num = 0;
@@ -49,7 +50,6 @@ int equal = 0;
 {INTEGER}		{ printf("INTEGER\n"); }
 {INDEX}			{ printf("INDEX\n"); }
 {STRING}		{ printf("STRING\n"); }
-{QUOTATION}		{ printf("QUOTATION\n"); }
 {EQUAL}			{ equal++; printf("EQUAL\n"); }
 {MULTIPLY}		{ op++; printf("MULTIPLY\n"); }
 {ADD}			{ op++; printf("ADD\n"); }
@@ -76,7 +76,9 @@ int equal = 0;
 {COMMA}			{ printf("COMMA\n"); }
 {READ}			{ printf("READ\n"); }
 {WRITE}			{ printf("WRITE\n"); }
-"\/\/"			{ printf("COMMENT\n"); }
+{COMMENT}		{ printf("COMMENT: %s\n", yytext); }
+{STRINGLITERAL}		{ printf("STRINGLITERAL: %s\n", yytext); }	
+
 
 [a-zA-Z0-9][a-zA-Z0-9_]*	{ printf("VARIABLE: %s\n", yytext); }
 [[:space:]]+

@@ -1,6 +1,7 @@
 function
     int num1 |eq 5
     int num2 |eq 10
+    //Hi
     string word |eq "Hello"
 
     int num3 |eq num1 |mult num2
@@ -28,4 +29,7 @@ function
     while (num1 equiv num2) 
         int array|4 |eq {0,1,2,3}
     end
+
+    //commented out string
+
 end
