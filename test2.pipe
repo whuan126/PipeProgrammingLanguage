@@ -25,7 +25,7 @@ function
     end
     do
     end
-    while (num1 equiv num2) {
+    while (num1 equiv num2) 
         int array|4 |eq {0,1,2,3}
-    }
+    end
 end
