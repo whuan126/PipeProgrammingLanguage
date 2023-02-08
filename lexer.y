@@ -13,7 +13,20 @@ char* var_ident;
 
 %%
 start: /*epsilon*/ {printf("prog start\n");}
-        | exp EQUAL {printf("start -> exp EQUAL\n");}
+        | function {printf("start -> exp EQUAL\n");}
+
+function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements RETURN END {printf("function (with return)");}
+	| FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END {printf("function (no return)\n");}
+
+statements: IF args THEN statements ELSE statements END
+	| IF args THEN statements END
+	| WHILE args DO statements END
+	| INT VARIABLE EQUAL exp
+	| INT VARIABLE EQUAL VARIABLE
+	| STRING VARIaBLE EQUAL STRINGLITERAL
+
+args: args COMMA VARIABLE {printf("args -> args var\n");}
+	| VARIABLE {printf("args -> var\n");}
 
 exp: exp addop term {printf("prog_start -> exp addop term\n");}
         | term {printf("prog_start -> term\n");}
@@ -52,4 +65,4 @@ void main (int argc, char** argv){
                 yyin = stdin;
         }
         yyparse();
-}
+
