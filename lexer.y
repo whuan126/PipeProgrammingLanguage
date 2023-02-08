@@ -2,6 +2,10 @@
 #include <stdio.h>
 extern FILE* yyin;
 char* var_ident;
+extern int yylineno;
+extern int column;
+extern char *lineptr;
+char* var_ident;
 %}
 
 %start start
@@ -28,6 +32,16 @@ factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
 
 %%
 
+int yyerror(const char *str){
+        fprintf(stderr, "error: %s in line %d, column %d\n", str, yylineno, column);
+        fprintf(stderr, "%s", lineptr);
+        int i = 0;
+        for(i=0; i < column - 1; i++){
+                fprintf(stderr, "-");
+        }
+        fprintf(stderr, "^\n");
+}
+
 
 void main (int argc, char** argv){
         if (argc >= 2){
@@ -39,4 +53,3 @@ void main (int argc, char** argv){
         }
         yyparse();
 }
-int yyerror(){}
