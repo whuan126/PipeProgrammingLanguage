@@ -23,7 +23,7 @@ statements: IF args THEN statements ELSE statements END
 	| WHILE args DO statements END
 	| INT VARIABLE EQUAL exp
 	| INT VARIABLE EQUAL VARIABLE
-	| STRING VARIaBLE EQUAL STRINGLITERAL
+	| STRING VARIABLE EQUAL STRINGLITERAL
 
 args: args COMMA VARIABLE {printf("args -> args var\n");}
 	| VARIABLE {printf("args -> var\n");}
