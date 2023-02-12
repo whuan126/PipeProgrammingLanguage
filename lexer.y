@@ -9,7 +9,7 @@ char* var_ident;
 %}
 
 %start start
-%token DIGIT INT INDEX STRING EQUAL MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE STRINGLITERAL INVALIDVAR VARIABLE
+%token DIGIT INT INDEX NOTEQUAL STRING EQUAL TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE STRINGLITERAL INVALIDVAR VARIABLE
 
 %%
 start: /*epsilon*/ {printf("prog start\n");}
@@ -33,16 +33,16 @@ statements: IF conditional statements END
         | RETURN TRUE // add this 
         | RETURN FALSE // add this
 
-conditional: VARIABLE condtion VARIABLE
+conditional: VARIABLE condition VARIABLE
         | STRINGLITERAL condition STRINGLITERAL
         | exp condition exp
 
 condition: LESSEROREQUAL 
-        | GREATERORREQUAL
+        | GREATEROREQUAL
         | LESSTHAN 
         | GREATERTHAN 
         | EQUIVALENT 
-        | NOTEQ  //addthis later
+        | NOTEQUAL  //addthis later
 
 //  IF args THEN statements ELSE statements END
 // 	| IF args THEN statements END
@@ -92,4 +92,5 @@ void main (int argc, char** argv){
                 yyin = stdin;
         }
         yyparse();
+}
 

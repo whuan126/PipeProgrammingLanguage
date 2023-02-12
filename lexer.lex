@@ -48,6 +48,7 @@ STRING string
 EQUAL \|eq
 MULTIPLY \|mult
 ADD \|add
+NOTEQUAL \|neq
 SUBTRACT \|sub
 DIVISION \|div
 LESSEROREQUAL \|leq
@@ -71,6 +72,8 @@ INDEX \|
 END end
 COMMA \,
 READ \|read
+TRUE True
+FALSE False
 WRITE \|write
 COMMENT \/\/.*$
 STRINGLITERAL  \"(\\.|[^"\\])*\"

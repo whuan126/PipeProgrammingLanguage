@@ -1,4 +1,13 @@
-State 16 conflicts: 4 reduce/reduce
+Terminals unused in grammar
+
+   INDEX
+   LEFT_BRACKET
+   RIGHT_BRACKET
+   LEFT_CURR_BRACKET
+   RIGHT_CURR_BRACKET
+   READ
+   WRITE
+   INVALIDVAR
 
 
 Grammar
@@ -6,271 +15,854 @@ Grammar
     0 $accept: start $end
 
     1 start: %empty
-    2      | exp EQUAL
+    2      | function
 
-    3 exp: exp addop term
-    4    | term
-    5    | L_PAREN exp R_PAREN
+    3 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements RETURN END
+    4         | FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END
 
-    6 addop: PLUS
-    7      | MINUS
+    5 statements: IF conditional statements END
+    6           | IF conditional statements ELSE statements END
+    7           | WHILE conditional DO statements END
+    8           | INT VARIABLE
+    9           | VARIABLE EQUAL exp
+   10           | VARIABLE EQUAL STRINGLITERAL
+   11           | INT VARIABLE EQUAL exp
+   12           | INT VARIABLE EQUAL VARIABLE
+   13           | STRING VARIABLE EQUAL STRINGLITERAL
+   14           | RETURN VARIABLE
+   15           | RETURN conditional
+   16           | RETURN exp
+   17           | RETURN TRUE
+   18           | RETURN FALSE
 
-    8 term: term mulop factor
-    9     | factor
+   19 conditional: VARIABLE condition VARIABLE
+   20            | STRINGLITERAL condition STRINGLITERAL
+   21            | exp condition exp
 
-   10 mulop: MULT
-   11      | DIV
+   22 condition: LESSEROREQUAL
+   23          | GREATEROREQUAL
+   24          | LESSTHAN
+   25          | GREATERTHAN
+   26          | EQUIVALENT
+   27          | NOTEQUAL
 
-   12 factor: L_PAREN exp R_PAREN
-   13       | IDENT
+   28 args: args COMMA VARIABLE
+   29     | VARIABLE
+
+   30 exp: exp addop term
+   31    | term
+
+   32 addop: ADD
+   33      | SUBTRACT
+
+   34 term: term mulop factor
+   35     | factor
+
+   36 mulop: MULTIPLY
+   37      | DIVISION
+
+   38 factor: LEFT_PREN exp RIGHT_PREN
+   39       | DIGIT
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
 error (256)
-IDENT (258) 13
-PLUS (259) 6
-MINUS (260) 7
-MULT (261) 10
-DIV (262) 11
-L_PAREN (263) 5 12
-R_PAREN (264) 5 12
-EQUAL (265) 2
+DIGIT (258) 39
+INT (259) 8 11 12
+INDEX (260)
+NOTEQUAL (261) 27
+STRING (262) 13
+EQUAL (263) 9 10 11 12 13
+TRUE (264) 17
+FALSE (265) 18
+MULTIPLY (266) 36
+ADD (267) 32
+SUBTRACT (268) 33
+DIVISION (269) 37
+LESSEROREQUAL (270) 22
+EQUIVALENT (271) 26
+GREATEROREQUAL (272) 23
+LESSTHAN (273) 24
+GREATERTHAN (274) 25
+WHILE (275) 7
+DO (276) 7
+IF (277) 5 6
+ELSE (278) 6
+FUNCTION (279) 3 4
+LEFT_PREN (280) 3 4 38
+RIGHT_PREN (281) 3 4 38
+LEFT_BRACKET (282)
+RIGHT_BRACKET (283)
+LEFT_CURR_BRACKET (284)
+RIGHT_CURR_BRACKET (285)
+RETURN (286) 3 14 15 16 17 18
+END (287) 3 4 5 6 7
+COMMA (288) 28
+READ (289)
+WRITE (290)
+STRINGLITERAL (291) 10 13 20
+INVALIDVAR (292)
+VARIABLE (293) 3 4 8 9 10 11 12 13 14 19 28 29
 
 
 Nonterminals, with rules where they appear
 
-$accept (11)
+$accept (39)
     on left: 0
-start (12)
+start (40)
     on left: 1 2, on right: 0
-exp (13)
-    on left: 3 4 5, on right: 2 3 5 12
-addop (14)
-    on left: 6 7, on right: 3
-term (15)
-    on left: 8 9, on right: 3 4 8
-mulop (16)
-    on left: 10 11, on right: 8
-factor (17)
-    on left: 12 13, on right: 8 9
+function (41)
+    on left: 3 4, on right: 2
+statements (42)
+    on left: 5 6 7 8 9 10 11 12 13 14 15 16 17 18, on right: 3 4 5
+    6 7
+conditional (43)
+    on left: 19 20 21, on right: 5 6 7 15
+condition (44)
+    on left: 22 23 24 25 26 27, on right: 19 20 21
+args (45)
+    on left: 28 29, on right: 3 4 28
+exp (46)
+    on left: 30 31, on right: 9 11 16 21 30 38
+addop (47)
+    on left: 32 33, on right: 30
+term (48)
+    on left: 34 35, on right: 30 31 34
+mulop (49)
+    on left: 36 37, on right: 34
+factor (50)
+    on left: 38 39, on right: 34 35
 
 
 State 0
 
     0 $accept: . start $end
 
-    IDENT    shift, and go to state 1
-    L_PAREN  shift, and go to state 2
+    FUNCTION  shift, and go to state 1
 
     $default  reduce using rule 1 (start)
 
-    start   go to state 3
-    exp     go to state 4
-    term    go to state 5
-    factor  go to state 6
+    start     go to state 2
+    function  go to state 3
 
 
 State 1
 
-   13 factor: IDENT .
+    3 function: FUNCTION . VARIABLE LEFT_PREN args RIGHT_PREN statements RETURN END
+    4         | FUNCTION . VARIABLE LEFT_PREN args RIGHT_PREN statements END
 
-    $default  reduce using rule 13 (factor)
+    VARIABLE  shift, and go to state 4
 
 
 State 2
 
-    5 exp: L_PAREN . exp R_PAREN
-   12 factor: L_PAREN . exp R_PAREN
+    0 $accept: start . $end
 
-    IDENT    shift, and go to state 1
-    L_PAREN  shift, and go to state 2
-
-    exp     go to state 7
-    term    go to state 5
-    factor  go to state 6
+    $end  shift, and go to state 5
 
 
 State 3
 
-    0 $accept: start . $end
+    2 start: function .
 
-    $end  shift, and go to state 8
+    $default  reduce using rule 2 (start)
 
 
 State 4
 
-    2 start: exp . EQUAL
-    3 exp: exp . addop term
+    3 function: FUNCTION VARIABLE . LEFT_PREN args RIGHT_PREN statements RETURN END
+    4         | FUNCTION VARIABLE . LEFT_PREN args RIGHT_PREN statements END
 
-    PLUS   shift, and go to state 9
-    MINUS  shift, and go to state 10
-    EQUAL  shift, and go to state 11
-
-    addop  go to state 12
+    LEFT_PREN  shift, and go to state 6
 
 
 State 5
-
-    4 exp: term .
-    8 term: term . mulop factor
-
-    MULT  shift, and go to state 13
-    DIV   shift, and go to state 14
-
-    $default  reduce using rule 4 (exp)
-
-    mulop  go to state 15
-
-
-State 6
-
-    9 term: factor .
-
-    $default  reduce using rule 9 (term)
-
-
-State 7
-
-    3 exp: exp . addop term
-    5    | L_PAREN exp . R_PAREN
-   12 factor: L_PAREN exp . R_PAREN
-
-    PLUS     shift, and go to state 9
-    MINUS    shift, and go to state 10
-    R_PAREN  shift, and go to state 16
-
-    addop  go to state 12
-
-
-State 8
 
     0 $accept: start $end .
 
     $default  accept
 
 
+State 6
+
+    3 function: FUNCTION VARIABLE LEFT_PREN . args RIGHT_PREN statements RETURN END
+    4         | FUNCTION VARIABLE LEFT_PREN . args RIGHT_PREN statements END
+
+    VARIABLE  shift, and go to state 7
+
+    args  go to state 8
+
+
+State 7
+
+   29 args: VARIABLE .
+
+    $default  reduce using rule 29 (args)
+
+
+State 8
+
+    3 function: FUNCTION VARIABLE LEFT_PREN args . RIGHT_PREN statements RETURN END
+    4         | FUNCTION VARIABLE LEFT_PREN args . RIGHT_PREN statements END
+   28 args: args . COMMA VARIABLE
+
+    RIGHT_PREN  shift, and go to state 9
+    COMMA       shift, and go to state 10
+
+
 State 9
 
-    6 addop: PLUS .
+    3 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN . statements RETURN END
+    4         | FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN . statements END
 
-    $default  reduce using rule 6 (addop)
+    INT       shift, and go to state 11
+    STRING    shift, and go to state 12
+    WHILE     shift, and go to state 13
+    IF        shift, and go to state 14
+    RETURN    shift, and go to state 15
+    VARIABLE  shift, and go to state 16
+
+    statements  go to state 17
 
 
 State 10
 
-    7 addop: MINUS .
+   28 args: args COMMA . VARIABLE
 
-    $default  reduce using rule 7 (addop)
+    VARIABLE  shift, and go to state 18
 
 
 State 11
 
-    2 start: exp EQUAL .
+    8 statements: INT . VARIABLE
+   11           | INT . VARIABLE EQUAL exp
+   12           | INT . VARIABLE EQUAL VARIABLE
 
-    $default  reduce using rule 2 (start)
+    VARIABLE  shift, and go to state 19
 
 
 State 12
 
-    3 exp: exp addop . term
+   13 statements: STRING . VARIABLE EQUAL STRINGLITERAL
 
-    IDENT    shift, and go to state 1
-    L_PAREN  shift, and go to state 17
-
-    term    go to state 18
-    factor  go to state 6
+    VARIABLE  shift, and go to state 20
 
 
 State 13
 
-   10 mulop: MULT .
+    7 statements: WHILE . conditional DO statements END
 
-    $default  reduce using rule 10 (mulop)
+    DIGIT          shift, and go to state 21
+    LEFT_PREN      shift, and go to state 22
+    STRINGLITERAL  shift, and go to state 23
+    VARIABLE       shift, and go to state 24
+
+    conditional  go to state 25
+    exp          go to state 26
+    term         go to state 27
+    factor       go to state 28
 
 
 State 14
 
-   11 mulop: DIV .
+    5 statements: IF . conditional statements END
+    6           | IF . conditional statements ELSE statements END
 
-    $default  reduce using rule 11 (mulop)
+    DIGIT          shift, and go to state 21
+    LEFT_PREN      shift, and go to state 22
+    STRINGLITERAL  shift, and go to state 23
+    VARIABLE       shift, and go to state 24
+
+    conditional  go to state 29
+    exp          go to state 26
+    term         go to state 27
+    factor       go to state 28
 
 
 State 15
 
-    8 term: term mulop . factor
+   14 statements: RETURN . VARIABLE
+   15           | RETURN . conditional
+   16           | RETURN . exp
+   17           | RETURN . TRUE
+   18           | RETURN . FALSE
 
-    IDENT    shift, and go to state 1
-    L_PAREN  shift, and go to state 17
+    DIGIT          shift, and go to state 21
+    TRUE           shift, and go to state 30
+    FALSE          shift, and go to state 31
+    LEFT_PREN      shift, and go to state 22
+    STRINGLITERAL  shift, and go to state 23
+    VARIABLE       shift, and go to state 32
 
-    factor  go to state 19
+    conditional  go to state 33
+    exp          go to state 34
+    term         go to state 27
+    factor       go to state 28
 
 
 State 16
 
-    5 exp: L_PAREN exp R_PAREN .
-   12 factor: L_PAREN exp R_PAREN .
+    9 statements: VARIABLE . EQUAL exp
+   10           | VARIABLE . EQUAL STRINGLITERAL
 
-    PLUS      reduce using rule 5 (exp)
-    PLUS      [reduce using rule 12 (factor)]
-    MINUS     reduce using rule 5 (exp)
-    MINUS     [reduce using rule 12 (factor)]
-    MULT      reduce using rule 12 (factor)
-    DIV       reduce using rule 12 (factor)
-    R_PAREN   reduce using rule 5 (exp)
-    R_PAREN   [reduce using rule 12 (factor)]
-    EQUAL     reduce using rule 5 (exp)
-    EQUAL     [reduce using rule 12 (factor)]
-    $default  reduce using rule 5 (exp)
+    EQUAL  shift, and go to state 35
 
 
 State 17
 
-   12 factor: L_PAREN . exp R_PAREN
+    3 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements . RETURN END
+    4         | FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements . END
 
-    IDENT    shift, and go to state 1
-    L_PAREN  shift, and go to state 2
-
-    exp     go to state 20
-    term    go to state 5
-    factor  go to state 6
+    RETURN  shift, and go to state 36
+    END     shift, and go to state 37
 
 
 State 18
 
-    3 exp: exp addop term .
-    8 term: term . mulop factor
+   28 args: args COMMA VARIABLE .
 
-    MULT  shift, and go to state 13
-    DIV   shift, and go to state 14
-
-    $default  reduce using rule 3 (exp)
-
-    mulop  go to state 15
+    $default  reduce using rule 28 (args)
 
 
 State 19
 
-    8 term: term mulop factor .
+    8 statements: INT VARIABLE .
+   11           | INT VARIABLE . EQUAL exp
+   12           | INT VARIABLE . EQUAL VARIABLE
 
-    $default  reduce using rule 8 (term)
+    EQUAL  shift, and go to state 38
+
+    $default  reduce using rule 8 (statements)
 
 
 State 20
 
-    3 exp: exp . addop term
-   12 factor: L_PAREN exp . R_PAREN
+   13 statements: STRING VARIABLE . EQUAL STRINGLITERAL
 
-    PLUS     shift, and go to state 9
-    MINUS    shift, and go to state 10
-    R_PAREN  shift, and go to state 21
-
-    addop  go to state 12
+    EQUAL  shift, and go to state 39
 
 
 State 21
 
-   12 factor: L_PAREN exp R_PAREN .
+   39 factor: DIGIT .
 
-    $default  reduce using rule 12 (factor)
+    $default  reduce using rule 39 (factor)
+
+
+State 22
+
+   38 factor: LEFT_PREN . exp RIGHT_PREN
+
+    DIGIT      shift, and go to state 21
+    LEFT_PREN  shift, and go to state 22
+
+    exp     go to state 40
+    term    go to state 27
+    factor  go to state 28
+
+
+State 23
+
+   20 conditional: STRINGLITERAL . condition STRINGLITERAL
+
+    NOTEQUAL        shift, and go to state 41
+    LESSEROREQUAL   shift, and go to state 42
+    EQUIVALENT      shift, and go to state 43
+    GREATEROREQUAL  shift, and go to state 44
+    LESSTHAN        shift, and go to state 45
+    GREATERTHAN     shift, and go to state 46
+
+    condition  go to state 47
+
+
+State 24
+
+   19 conditional: VARIABLE . condition VARIABLE
+
+    NOTEQUAL        shift, and go to state 41
+    LESSEROREQUAL   shift, and go to state 42
+    EQUIVALENT      shift, and go to state 43
+    GREATEROREQUAL  shift, and go to state 44
+    LESSTHAN        shift, and go to state 45
+    GREATERTHAN     shift, and go to state 46
+
+    condition  go to state 48
+
+
+State 25
+
+    7 statements: WHILE conditional . DO statements END
+
+    DO  shift, and go to state 49
+
+
+State 26
+
+   21 conditional: exp . condition exp
+   30 exp: exp . addop term
+
+    NOTEQUAL        shift, and go to state 41
+    ADD             shift, and go to state 50
+    SUBTRACT        shift, and go to state 51
+    LESSEROREQUAL   shift, and go to state 42
+    EQUIVALENT      shift, and go to state 43
+    GREATEROREQUAL  shift, and go to state 44
+    LESSTHAN        shift, and go to state 45
+    GREATERTHAN     shift, and go to state 46
+
+    condition  go to state 52
+    addop      go to state 53
+
+
+State 27
+
+   31 exp: term .
+   34 term: term . mulop factor
+
+    MULTIPLY  shift, and go to state 54
+    DIVISION  shift, and go to state 55
+
+    $default  reduce using rule 31 (exp)
+
+    mulop  go to state 56
+
+
+State 28
+
+   35 term: factor .
+
+    $default  reduce using rule 35 (term)
+
+
+State 29
+
+    5 statements: IF conditional . statements END
+    6           | IF conditional . statements ELSE statements END
+
+    INT       shift, and go to state 11
+    STRING    shift, and go to state 12
+    WHILE     shift, and go to state 13
+    IF        shift, and go to state 14
+    RETURN    shift, and go to state 15
+    VARIABLE  shift, and go to state 16
+
+    statements  go to state 57
+
+
+State 30
+
+   17 statements: RETURN TRUE .
+
+    $default  reduce using rule 17 (statements)
+
+
+State 31
+
+   18 statements: RETURN FALSE .
+
+    $default  reduce using rule 18 (statements)
+
+
+State 32
+
+   14 statements: RETURN VARIABLE .
+   19 conditional: VARIABLE . condition VARIABLE
+
+    NOTEQUAL        shift, and go to state 41
+    LESSEROREQUAL   shift, and go to state 42
+    EQUIVALENT      shift, and go to state 43
+    GREATEROREQUAL  shift, and go to state 44
+    LESSTHAN        shift, and go to state 45
+    GREATERTHAN     shift, and go to state 46
+
+    $default  reduce using rule 14 (statements)
+
+    condition  go to state 48
+
+
+State 33
+
+   15 statements: RETURN conditional .
+
+    $default  reduce using rule 15 (statements)
+
+
+State 34
+
+   16 statements: RETURN exp .
+   21 conditional: exp . condition exp
+   30 exp: exp . addop term
+
+    NOTEQUAL        shift, and go to state 41
+    ADD             shift, and go to state 50
+    SUBTRACT        shift, and go to state 51
+    LESSEROREQUAL   shift, and go to state 42
+    EQUIVALENT      shift, and go to state 43
+    GREATEROREQUAL  shift, and go to state 44
+    LESSTHAN        shift, and go to state 45
+    GREATERTHAN     shift, and go to state 46
+
+    $default  reduce using rule 16 (statements)
+
+    condition  go to state 52
+    addop      go to state 53
+
+
+State 35
+
+    9 statements: VARIABLE EQUAL . exp
+   10           | VARIABLE EQUAL . STRINGLITERAL
+
+    DIGIT          shift, and go to state 21
+    LEFT_PREN      shift, and go to state 22
+    STRINGLITERAL  shift, and go to state 58
+
+    exp     go to state 59
+    term    go to state 27
+    factor  go to state 28
+
+
+State 36
+
+    3 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements RETURN . END
+
+    END  shift, and go to state 60
+
+
+State 37
+
+    4 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END .
+
+    $default  reduce using rule 4 (function)
+
+
+State 38
+
+   11 statements: INT VARIABLE EQUAL . exp
+   12           | INT VARIABLE EQUAL . VARIABLE
+
+    DIGIT      shift, and go to state 21
+    LEFT_PREN  shift, and go to state 22
+    VARIABLE   shift, and go to state 61
+
+    exp     go to state 62
+    term    go to state 27
+    factor  go to state 28
+
+
+State 39
+
+   13 statements: STRING VARIABLE EQUAL . STRINGLITERAL
+
+    STRINGLITERAL  shift, and go to state 63
+
+
+State 40
+
+   30 exp: exp . addop term
+   38 factor: LEFT_PREN exp . RIGHT_PREN
+
+    ADD         shift, and go to state 50
+    SUBTRACT    shift, and go to state 51
+    RIGHT_PREN  shift, and go to state 64
+
+    addop  go to state 53
+
+
+State 41
+
+   27 condition: NOTEQUAL .
+
+    $default  reduce using rule 27 (condition)
+
+
+State 42
+
+   22 condition: LESSEROREQUAL .
+
+    $default  reduce using rule 22 (condition)
+
+
+State 43
+
+   26 condition: EQUIVALENT .
+
+    $default  reduce using rule 26 (condition)
+
+
+State 44
+
+   23 condition: GREATEROREQUAL .
+
+    $default  reduce using rule 23 (condition)
+
+
+State 45
+
+   24 condition: LESSTHAN .
+
+    $default  reduce using rule 24 (condition)
+
+
+State 46
+
+   25 condition: GREATERTHAN .
+
+    $default  reduce using rule 25 (condition)
+
+
+State 47
+
+   20 conditional: STRINGLITERAL condition . STRINGLITERAL
+
+    STRINGLITERAL  shift, and go to state 65
+
+
+State 48
+
+   19 conditional: VARIABLE condition . VARIABLE
+
+    VARIABLE  shift, and go to state 66
+
+
+State 49
+
+    7 statements: WHILE conditional DO . statements END
+
+    INT       shift, and go to state 11
+    STRING    shift, and go to state 12
+    WHILE     shift, and go to state 13
+    IF        shift, and go to state 14
+    RETURN    shift, and go to state 15
+    VARIABLE  shift, and go to state 16
+
+    statements  go to state 67
+
+
+State 50
+
+   32 addop: ADD .
+
+    $default  reduce using rule 32 (addop)
+
+
+State 51
+
+   33 addop: SUBTRACT .
+
+    $default  reduce using rule 33 (addop)
+
+
+State 52
+
+   21 conditional: exp condition . exp
+
+    DIGIT      shift, and go to state 21
+    LEFT_PREN  shift, and go to state 22
+
+    exp     go to state 68
+    term    go to state 27
+    factor  go to state 28
+
+
+State 53
+
+   30 exp: exp addop . term
+
+    DIGIT      shift, and go to state 21
+    LEFT_PREN  shift, and go to state 22
+
+    term    go to state 69
+    factor  go to state 28
+
+
+State 54
+
+   36 mulop: MULTIPLY .
+
+    $default  reduce using rule 36 (mulop)
+
+
+State 55
+
+   37 mulop: DIVISION .
+
+    $default  reduce using rule 37 (mulop)
+
+
+State 56
+
+   34 term: term mulop . factor
+
+    DIGIT      shift, and go to state 21
+    LEFT_PREN  shift, and go to state 22
+
+    factor  go to state 70
+
+
+State 57
+
+    5 statements: IF conditional statements . END
+    6           | IF conditional statements . ELSE statements END
+
+    ELSE  shift, and go to state 71
+    END   shift, and go to state 72
+
+
+State 58
+
+   10 statements: VARIABLE EQUAL STRINGLITERAL .
+
+    $default  reduce using rule 10 (statements)
+
+
+State 59
+
+    9 statements: VARIABLE EQUAL exp .
+   30 exp: exp . addop term
+
+    ADD       shift, and go to state 50
+    SUBTRACT  shift, and go to state 51
+
+    $default  reduce using rule 9 (statements)
+
+    addop  go to state 53
+
+
+State 60
+
+    3 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements RETURN END .
+
+    $default  reduce using rule 3 (function)
+
+
+State 61
+
+   12 statements: INT VARIABLE EQUAL VARIABLE .
+
+    $default  reduce using rule 12 (statements)
+
+
+State 62
+
+   11 statements: INT VARIABLE EQUAL exp .
+   30 exp: exp . addop term
+
+    ADD       shift, and go to state 50
+    SUBTRACT  shift, and go to state 51
+
+    $default  reduce using rule 11 (statements)
+
+    addop  go to state 53
+
+
+State 63
+
+   13 statements: STRING VARIABLE EQUAL STRINGLITERAL .
+
+    $default  reduce using rule 13 (statements)
+
+
+State 64
+
+   38 factor: LEFT_PREN exp RIGHT_PREN .
+
+    $default  reduce using rule 38 (factor)
+
+
+State 65
+
+   20 conditional: STRINGLITERAL condition STRINGLITERAL .
+
+    $default  reduce using rule 20 (conditional)
+
+
+State 66
+
+   19 conditional: VARIABLE condition VARIABLE .
+
+    $default  reduce using rule 19 (conditional)
+
+
+State 67
+
+    7 statements: WHILE conditional DO statements . END
+
+    END  shift, and go to state 73
+
+
+State 68
+
+   21 conditional: exp condition exp .
+   30 exp: exp . addop term
+
+    ADD       shift, and go to state 50
+    SUBTRACT  shift, and go to state 51
+
+    $default  reduce using rule 21 (conditional)
+
+    addop  go to state 53
+
+
+State 69
+
+   30 exp: exp addop term .
+   34 term: term . mulop factor
+
+    MULTIPLY  shift, and go to state 54
+    DIVISION  shift, and go to state 55
+
+    $default  reduce using rule 30 (exp)
+
+    mulop  go to state 56
+
+
+State 70
+
+   34 term: term mulop factor .
+
+    $default  reduce using rule 34 (term)
+
+
+State 71
+
+    6 statements: IF conditional statements ELSE . statements END
+
+    INT       shift, and go to state 11
+    STRING    shift, and go to state 12
+    WHILE     shift, and go to state 13
+    IF        shift, and go to state 14
+    RETURN    shift, and go to state 15
+    VARIABLE  shift, and go to state 16
+
+    statements  go to state 74
+
+
+State 72
+
+    5 statements: IF conditional statements END .
+
+    $default  reduce using rule 5 (statements)
+
+
+State 73
+
+    7 statements: WHILE conditional DO statements END .
+
+    $default  reduce using rule 7 (statements)
+
+
+State 74
+
+    6 statements: IF conditional statements ELSE statements . END
+
+    END  shift, and go to state 75
+
+
+State 75
+
+    6 statements: IF conditional statements ELSE statements END .
+
+    $default  reduce using rule 6 (statements)
