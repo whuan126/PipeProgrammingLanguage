@@ -1,22 +1,27 @@
-%option yylineno
 
 %{
-
-#include <stdio.h>
 #include "y.tab.h"
 extern char * var_ident;
-
 static int next_column = 1;
 int column = 1;
-
 #define HANDLE_COLUMN column = next_column; next_column += strlen(yytext)
-
 char *lineptr = NULL;
 size_t n = 0;
 size_t consumed = 0;
 size_t available = 0;
 
 size_t min(size_t a, size_t b);
+
+size_t min(size_t a, size_t b){
+	if (a < b){
+		return a;
+	}
+	else {
+		return b;
+	}
+}
+
+
 #define YY_INPUT(buf,result,max_size) {\
     if(available <= 0) {\
         consumed = 0;\

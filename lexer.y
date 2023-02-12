@@ -5,7 +5,9 @@ char* var_ident;
 extern int yylineno;
 extern int column;
 extern char *lineptr;
-char* var_ident;
+
+
+
 %}
 
 %start start
@@ -27,13 +29,14 @@ statements: IF conditional statements END
         | INT VARIABLE EQUAL exp 
         | INT VARIABLE EQUAL VARIABLE
         | STRING VARIABLE EQUAL STRINGLITERAL
-        | RETURN VARIABLE
-        | RETURN conditional
-        | RETURN exp
+        | RETURN VARIABLE 
+        | RETURN conditional 
+        | RETURN exp 
         | RETURN TRUE // add this 
         | RETURN FALSE // add this
 
 conditional: VARIABLE condition VARIABLE
+        | VARIABLE condition DIGIT
         | STRINGLITERAL condition STRINGLITERAL
         | exp condition exp
 
