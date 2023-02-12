@@ -126,13 +126,13 @@ int line = 0;
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s - LINE: %d\n", yytext,yylineno); exit(1); }
 %%
 
-main (void) {
-	printf("Ctrl+D to quit. \n");
-	yylex();
-	printf("Total Integers: %d\n", num);
-	printf("Total Operators: %d\n", op);
-	printf("Total Parenthesis: %d\n", paren);
-	printf("Total equal signs: %d\n", equal);
-	printf("Quiting...\n");
-}
+// main (void) {
+// 	printf("Ctrl+D to quit. \n");
+// 	yylex();
+// 	printf("Total Integers: %d\n", num);
+// 	printf("Total Operators: %d\n", op);
+// 	printf("Total Parenthesis: %d\n", paren);
+// 	printf("Total equal signs: %d\n", equal);
+// 	printf("Quiting...\n");
+// }
 
