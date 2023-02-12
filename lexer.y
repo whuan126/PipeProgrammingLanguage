@@ -18,12 +18,39 @@ start: /*epsilon*/ {printf("prog start\n");}
 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements RETURN END {printf("function (with return)");}
 	| FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END {printf("function (no return)\n");}
 
-statements: IF args THEN statements ELSE statements END
-	| IF args THEN statements END
-	| WHILE args DO statements END
-	| INT VARIABLE EQUAL exp
-	| INT VARIABLE EQUAL VARIABLE
-	| STRING VARIABLE EQUAL STRINGLITERAL
+statements: IF conditional statements END
+        | IF conditional statements ELSE statements END
+        | WHILE conditional DO statements END
+        | INT VARIABLE
+        | VARIABLE EQUAL exp
+        | VARIABLE EQUAL STRINGLITERAL
+        | INT VARIABLE EQUAL exp 
+        | INT VARIABLE EQUAL VARIABLE
+        | STRING VARIABLE EQUAL STRINGLITERAL
+        | RETURN VARIABLE
+        | RETURN conditional
+        | RETURN exp
+        | RETURN TRUE // add this 
+        | RETURN FALSE // add this
+
+conditional: VARIABLE condtion VARIABLE
+        | STRINGLITERAL condition STRINGLITERAL
+        | exp condition exp
+
+condition: LESSEROREQUAL 
+        | GREATERORREQUAL
+        | LESSTHAN 
+        | GREATERTHAN 
+        | EQUIVALENT 
+        | NOTEQ  //addthis later
+
+//  IF args THEN statements ELSE statements END
+// 	| IF args THEN statements END
+//      | IF args statements END
+// 	| WHILE args DO statements END
+// 	| INT VARIABLE EQUAL exp
+// 	| INT VARIABLE EQUAL VARIABLE
+// 	| STRING VARIABLE EQUAL STRINGLITERAL
 
 args: args COMMA VARIABLE {printf("args -> args var\n");}
 	| VARIABLE {printf("args -> var\n");}

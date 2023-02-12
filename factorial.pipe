@@ -1,0 +1,6 @@
+function fib (number)
+    if number |leq 1
+        return number
+    end
+    return fib(number - 1) + fib(number - 2)
+end

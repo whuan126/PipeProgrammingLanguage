@@ -43,7 +43,7 @@ DIGIT [0-9]
 ALPHA [a-zA-Z]
 INVALIDVARIABLE [0-9][a-zA-Z0-9_]*
 VARIABLE [a-zA-Z][a-zA-Z0-9_]*
-INTEGER int
+INT int
 STRING string
 EQUAL \|eq
 MULTIPLY \|mult
@@ -85,7 +85,7 @@ int line = 0;
 
 %%
 {DIGIT}+		{ HANDLE_COLUMN; var_ident = yytext; return DIGIT; }
-{INTEGER}		{ HANDLE_COLUMN; return INT; }
+{INT}		{ HANDLE_COLUMN; return INT; }
 {INDEX}			{ HANDLE_COLUMN; return INDEX; }
 {STRING}		{ HANDLE_COLUMN; return STRING; }
 {EQUAL}			{ HANDLE_COLUMN; return EQUAL; }

@@ -1,0 +1,276 @@
+State 16 conflicts: 4 reduce/reduce
+
+
+Grammar
+
+    0 $accept: start $end
+
+    1 start: %empty
+    2      | exp EQUAL
+
+    3 exp: exp addop term
+    4    | term
+    5    | L_PAREN exp R_PAREN
+
+    6 addop: PLUS
+    7      | MINUS
+
+    8 term: term mulop factor
+    9     | factor
+
+   10 mulop: MULT
+   11      | DIV
+
+   12 factor: L_PAREN exp R_PAREN
+   13       | IDENT
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+IDENT (258) 13
+PLUS (259) 6
+MINUS (260) 7
+MULT (261) 10
+DIV (262) 11
+L_PAREN (263) 5 12
+R_PAREN (264) 5 12
+EQUAL (265) 2
+
+
+Nonterminals, with rules where they appear
+
+$accept (11)
+    on left: 0
+start (12)
+    on left: 1 2, on right: 0
+exp (13)
+    on left: 3 4 5, on right: 2 3 5 12
+addop (14)
+    on left: 6 7, on right: 3
+term (15)
+    on left: 8 9, on right: 3 4 8
+mulop (16)
+    on left: 10 11, on right: 8
+factor (17)
+    on left: 12 13, on right: 8 9
+
+
+State 0
+
+    0 $accept: . start $end
+
+    IDENT    shift, and go to state 1
+    L_PAREN  shift, and go to state 2
+
+    $default  reduce using rule 1 (start)
+
+    start   go to state 3
+    exp     go to state 4
+    term    go to state 5
+    factor  go to state 6
+
+
+State 1
+
+   13 factor: IDENT .
+
+    $default  reduce using rule 13 (factor)
+
+
+State 2
+
+    5 exp: L_PAREN . exp R_PAREN
+   12 factor: L_PAREN . exp R_PAREN
+
+    IDENT    shift, and go to state 1
+    L_PAREN  shift, and go to state 2
+
+    exp     go to state 7
+    term    go to state 5
+    factor  go to state 6
+
+
+State 3
+
+    0 $accept: start . $end
+
+    $end  shift, and go to state 8
+
+
+State 4
+
+    2 start: exp . EQUAL
+    3 exp: exp . addop term
+
+    PLUS   shift, and go to state 9
+    MINUS  shift, and go to state 10
+    EQUAL  shift, and go to state 11
+
+    addop  go to state 12
+
+
+State 5
+
+    4 exp: term .
+    8 term: term . mulop factor
+
+    MULT  shift, and go to state 13
+    DIV   shift, and go to state 14
+
+    $default  reduce using rule 4 (exp)
+
+    mulop  go to state 15
+
+
+State 6
+
+    9 term: factor .
+
+    $default  reduce using rule 9 (term)
+
+
+State 7
+
+    3 exp: exp . addop term
+    5    | L_PAREN exp . R_PAREN
+   12 factor: L_PAREN exp . R_PAREN
+
+    PLUS     shift, and go to state 9
+    MINUS    shift, and go to state 10
+    R_PAREN  shift, and go to state 16
+
+    addop  go to state 12
+
+
+State 8
+
+    0 $accept: start $end .
+
+    $default  accept
+
+
+State 9
+
+    6 addop: PLUS .
+
+    $default  reduce using rule 6 (addop)
+
+
+State 10
+
+    7 addop: MINUS .
+
+    $default  reduce using rule 7 (addop)
+
+
+State 11
+
+    2 start: exp EQUAL .
+
+    $default  reduce using rule 2 (start)
+
+
+State 12
+
+    3 exp: exp addop . term
+
+    IDENT    shift, and go to state 1
+    L_PAREN  shift, and go to state 17
+
+    term    go to state 18
+    factor  go to state 6
+
+
+State 13
+
+   10 mulop: MULT .
+
+    $default  reduce using rule 10 (mulop)
+
+
+State 14
+
+   11 mulop: DIV .
+
+    $default  reduce using rule 11 (mulop)
+
+
+State 15
+
+    8 term: term mulop . factor
+
+    IDENT    shift, and go to state 1
+    L_PAREN  shift, and go to state 17
+
+    factor  go to state 19
+
+
+State 16
+
+    5 exp: L_PAREN exp R_PAREN .
+   12 factor: L_PAREN exp R_PAREN .
+
+    PLUS      reduce using rule 5 (exp)
+    PLUS      [reduce using rule 12 (factor)]
+    MINUS     reduce using rule 5 (exp)
+    MINUS     [reduce using rule 12 (factor)]
+    MULT      reduce using rule 12 (factor)
+    DIV       reduce using rule 12 (factor)
+    R_PAREN   reduce using rule 5 (exp)
+    R_PAREN   [reduce using rule 12 (factor)]
+    EQUAL     reduce using rule 5 (exp)
+    EQUAL     [reduce using rule 12 (factor)]
+    $default  reduce using rule 5 (exp)
+
+
+State 17
+
+   12 factor: L_PAREN . exp R_PAREN
+
+    IDENT    shift, and go to state 1
+    L_PAREN  shift, and go to state 2
+
+    exp     go to state 20
+    term    go to state 5
+    factor  go to state 6
+
+
+State 18
+
+    3 exp: exp addop term .
+    8 term: term . mulop factor
+
+    MULT  shift, and go to state 13
+    DIV   shift, and go to state 14
+
+    $default  reduce using rule 3 (exp)
+
+    mulop  go to state 15
+
+
+State 19
+
+    8 term: term mulop factor .
+
+    $default  reduce using rule 8 (term)
+
+
+State 20
+
+    3 exp: exp . addop term
+   12 factor: L_PAREN exp . R_PAREN
+
+    PLUS     shift, and go to state 9
+    MINUS    shift, and go to state 10
+    R_PAREN  shift, and go to state 21
+
+    addop  go to state 12
+
+
+State 21
+
+   12 factor: L_PAREN exp R_PAREN .
+
+    $default  reduce using rule 12 (factor)
