@@ -1,8 +1,14 @@
 function fib (int number)
     if number |leq 1
         return number
+<<<<<<< HEAD
     end
     int i1 |eq fib(number |sub 1)
     int i2 |eq fib(number |sub 2)
     return i1 |add i2
 end
+=======
+    else
+        return fib(number |sub 1) |add fib(number |sub 2)
+    end
+>>>>>>> 2dcf24610b05efbe21b50ec5dc631a101bd1809a

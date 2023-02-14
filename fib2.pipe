@@ -1,0 +1,6 @@
+function fib (int number)
+    if number |leq 1
+        return number
+    end
+    return fib(1)
+end

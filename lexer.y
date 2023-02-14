@@ -1,12 +1,10 @@
 %{
 #include <stdio.h>
 extern FILE* yyin;
-char* var_ident;
-extern int yylineno;
-extern int column;
-extern char *lineptr;
-
-
+extern int currLine;
+extern int currPos;
+extern char* lineptr;
+void yyerror(const char *msg);
 
 %}
 
@@ -48,6 +46,8 @@ statement: INT VARIABLE
         | STRING VARIABLE EQUAL STRINGLITERAL
         | RETURN retval
 	| functioncall
+        | functioncall addop functioncall
+        | functioncall mulop functioncall
 	| VARIABLE EQUAL functioncall
 	| INT VARIABLE EQUAL functioncall {printf("D");}
 
@@ -101,30 +101,24 @@ mulop: MULTIPLY {printf("mulop -> *\n");}
         | DIVISION {printf("mulop -> /\n");}
 
 factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
-        | DIGIT {printf("factor -> number: %s\n",var_ident);}	
+        | DIGIT 	
 	| VARIABLE
-
 %%
 
-int yyerror(const char *str){
-        fprintf(stderr, "error: %s in line %d, column %d\n", str, yylineno, column);
-        fprintf(stderr, "%s", lineptr);
-        int i = 0;
-        for(i=0; i < column - 1; i++){
-                fprintf(stderr, "-");
-        }
-        fprintf(stderr, "^\n");
+int main(int argc, char ** argv) {
+	if (argc >= 2) {
+		yyin = fopen(argv[1], "r");
+		if (yyin == NULL) {
+			yyin = stdin;
+		}
+	}
+	else {
+		yyin = stdin;
+	}
+	yyparse();
+	return 1;
 }
-
-
-void main (int argc, char** argv){
-        if (argc >= 2){
-                yyin = fopen(argv[1],"n");
-                if (yyin == NULL)
-                        yyin = stdin;
-        }else{
-                yyin = stdin;
-        }
-        yyparse();
+void yyerror(const char *msg) {
+    //fprintf(stderr, "%s\n", msg);
+    printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
 }
-
