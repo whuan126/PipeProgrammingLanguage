@@ -2,5 +2,5 @@ function fib (int number)
     if number |leq 1
         return number
     end
-    return fib(number - 1) + fib(number - 2)
+    return fib(number |sub 1) |add fib(number |sub 2)
 end
