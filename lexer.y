@@ -25,7 +25,7 @@ functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN
 
 elses: /*epsilon*/
-	| ELSE statements END
+	| ELSE statements
 
 statements: /*epsilon*/
 	| rule s2
