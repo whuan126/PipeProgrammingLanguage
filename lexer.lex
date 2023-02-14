@@ -65,6 +65,7 @@ EQUIVALENT \|equiv
 WHILE while
 DO do
 IF if
+THEN then
 ELSE else
 FUNCTION function
 LEFT_PREN \(
@@ -78,8 +79,8 @@ INDEX \|
 END end
 COMMA \,
 READ \|read
-TRUE True
-FALSE False
+TRUE true
+FALSE false
 WRITE \|write
 COMMENT \/\/.*$
 STRINGLITERAL  \"(\\.|[^"\\])*\"
@@ -110,6 +111,7 @@ int line = 0;
 {WHILE} 		{ HANDLE_COLUMN; return WHILE; }
 {DO} 			{ HANDLE_COLUMN; return DO; }
 {IF} 			{ HANDLE_COLUMN; return IF; }
+{THEN}			{ HANDLE_COLUMN; return THEN; }
 {ELSE} 			{ HANDLE_COLUMN; return ELSE; }
 {FUNCTION} 		{ HANDLE_COLUMN; return FUNCTION; }
 {LEFT_PREN} 		{ HANDLE_COLUMN; return LEFT_PREN; }

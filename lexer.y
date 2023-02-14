@@ -61,14 +61,18 @@ retval: statement
 	| conditional
 	| boolean
 
-type: INT
+type: /*epsilon*/
+	| INT
 	| STRING
 
+input: VARIABLE
+	| exp
+
 args:  /*epsilon*/
-	| type VARIABLE args2 {printf("args -> args var\n");}
+	| type input args2 {printf("args -> args var\n");}
 
 args2: /*epsilon*/
-	| COMMA type VARIABLE args2
+	| COMMA type input args2
 
 exp: exp addop term {printf("prog_start -> exp addop term\n");}
         | term {printf("prog_start -> term\n");}
@@ -84,6 +88,7 @@ mulop: MULTIPLY {printf("mulop -> *\n");}
 
 factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
         | DIGIT {printf("factor -> number: %s\n",var_ident);}
+	| VARIABLE LEFT_PREN args RIGHT_PREN
 
 %%
 
