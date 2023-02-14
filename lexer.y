@@ -11,11 +11,14 @@ extern char *lineptr;
 %}
 
 %start start
-%token DIGIT INT INDEX STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE STRINGLITERAL INVALIDVAR VARIABLE
+%token DIGIT INT INDEX THEN STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE STRINGLITERAL INVALIDVAR VARIABLE
 
 %%
 start: /*epsilon*/ {printf("prog start\n");}
-        | function {printf("start -> exp EQUAL\n");}
+        | function void {printf("start -> function\n");}
+
+void: /*epsilon*/
+	| function void
 
 function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END
 
@@ -41,7 +44,7 @@ conditional: VARIABLE condition VARIABLE
 	| VARIABLE condition boolean
         | STRINGLITERAL condition STRINGLITERAL
         | exp condition exp
-
+	
 boolean: TRUE
 	| FALSE
 
@@ -52,15 +55,20 @@ condition: LESSEROREQUAL
         | EQUIVALENT 
         | NOTEQUIVALENT 
 
-retval: exp
+retval: statement
+	| exp 
 	| VARIABLE
 	| conditional
 	| boolean
 
-args: VARIABLE args2 {printf("args -> args var\n");}
+type: INT
+	| STRING
+
+args:  /*epsilon*/
+	| type VARIABLE args2 {printf("args -> args var\n");}
 
 args2: /*epsilon*/
-	| COMMA VARIABLE args2
+	| COMMA type VARIABLE args2
 
 exp: exp addop term {printf("prog_start -> exp addop term\n");}
         | term {printf("prog_start -> term\n");}
