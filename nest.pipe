@@ -1,0 +1,11 @@
+function nested (i, j)
+    i |eq 0
+    while i |lt 2
+        j |eq 1
+        while j |leq 3
+            write j;
+            j |eq j |add 1
+        end
+        i |eq i |add 1
+    end
+end
