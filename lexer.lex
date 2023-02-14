@@ -1,27 +1,19 @@
 
 %{
 #include "y.tab.h"
-extern char * var_ident;
-static int next_column = 1;
-int column = 1;
-#define HANDLE_COLUMN column = next_column; next_column += strlen(yytext)
-char *lineptr = NULL;
+int currLine = 1, currPos = 1;
+
+
+char* lineptr = NULL;
 size_t n = 0;
 size_t consumed = 0;
 size_t available = 0;
 
-size_t min(size_t a, size_t b);
-
-size_t min(size_t a, size_t b){
-	if (a < b){
-		return a;
-	}
-	else {
-		return b;
-	}
+size_t min(size_t a, size_t b) {
+    return b < a ? b : a;
 }
 
-
+/// DEFINING MACRO TO KEEP TRACK OF LINES! 
 #define YY_INPUT(buf,result,max_size) {\
     if(available <= 0) {\
         consumed = 0;\
@@ -37,12 +29,8 @@ size_t min(size_t a, size_t b){
     available -= result;\
 }
 
+
 %}
-
-%option noyywrap noinput nounput yylineno
-
-
-
 
 DIGIT [0-9]
 ALPHA [a-zA-Z]
@@ -94,45 +82,46 @@ int line = 0;
 %}
 
 %%
-{DIGIT}+		{ HANDLE_COLUMN; var_ident = yytext; return DIGIT; }
-{INT}		{ HANDLE_COLUMN; return INT; }
-{INDEX}			{ HANDLE_COLUMN; return INDEX; }
-{STRING}		{ HANDLE_COLUMN; return STRING; }
-{EQUAL}			{ HANDLE_COLUMN; return EQUAL; }
-{MULTIPLY}		{ HANDLE_COLUMN; return MULTIPLY; }
-{ADD}			{ HANDLE_COLUMN; return ADD; }
-{SUBTRACT}		{ HANDLE_COLUMN; return SUBTRACT; }
-{DIVISION}		{ HANDLE_COLUMN; return DIVISION; }
-{LESSEROREQUAL}		{ HANDLE_COLUMN; return LESSEROREQUAL; }
-{GREATEROREQUAL}	{ HANDLE_COLUMN; return GREATEROREQUAL; }
-{LESSTHAN}		{ HANDLE_COLUMN; return LESSTHAN; }
-{GREATERTHAN} 		{ HANDLE_COLUMN; return GREATERTHAN; }
-{EQUIVALENT} 		{ HANDLE_COLUMN; return EQUIVALENT; }
-{WHILE} 		{ HANDLE_COLUMN; return WHILE; }
-{DO} 			{ HANDLE_COLUMN; return DO; }
-{IF} 			{ HANDLE_COLUMN; return IF; }
-{THEN}			{ HANDLE_COLUMN; return THEN; }
-{ELSE} 			{ HANDLE_COLUMN; return ELSE; }
-{FUNCTION} 		{ HANDLE_COLUMN; return FUNCTION; }
-{LEFT_PREN} 		{ HANDLE_COLUMN; return LEFT_PREN; }
-{RIGHT_PREN} 		{ HANDLE_COLUMN; return RIGHT_PREN; }
-{LEFT_BRACKET} 		{ HANDLE_COLUMN; return LEFT_BRACKET; }
-{RIGHT_BRACKET} 	{ HANDLE_COLUMN; return RIGHT_BRACKET; }
-{LEFT_CURR_BRACKET}	{ HANDLE_COLUMN; return LEFT_CURR_BRACKET; }
-{RIGHT_CURR_BRACKET}    { HANDLE_COLUMN; return RIGHT_CURR_BRACKET; }
-{RETURN}		{ HANDLE_COLUMN; return RETURN; }
-{END}			{ HANDLE_COLUMN; return END; }
-{COMMA}			{ HANDLE_COLUMN; return COMMA; }
-{READ}			{ HANDLE_COLUMN; return READ; }
-{WRITE}			{ HANDLE_COLUMN; return WRITE; }
+{DIGIT}+		{ currPos += yyleng; return DIGIT; }
+\n              {currPos =1;}
+{INT}		{ currPos += yyleng; return INT; }
+{INDEX}			{ currPos += yyleng; return INDEX; }
+{STRING}		{ currPos += yyleng; return STRING; }
+{EQUAL}			{ currPos += yyleng; return EQUAL; }
+{MULTIPLY}		{ currPos += yyleng; return MULTIPLY; }
+{ADD}			{ currPos += yyleng; return ADD; }
+{SUBTRACT}		{ currPos += yyleng; return SUBTRACT; }
+{DIVISION}		{ currPos += yyleng; return DIVISION; }
+{LESSEROREQUAL}		{ currPos += yyleng; return LESSEROREQUAL; }
+{GREATEROREQUAL}	{ currPos += yyleng; return GREATEROREQUAL; }
+{LESSTHAN}		{ currPos += yyleng; return LESSTHAN; }
+{GREATERTHAN} 		{ currPos += yyleng; return GREATERTHAN; }
+{EQUIVALENT} 		{ currPos += yyleng; return EQUIVALENT; }
+{WHILE} 		{ currPos += yyleng; return WHILE; }
+{DO} 			{ currPos += yyleng; return DO; }
+{IF} 			{ currPos += yyleng; return IF; }
+{THEN}			{ currPos += yyleng; return THEN; }
+{ELSE} 			{ currPos += yyleng; return ELSE; }
+{FUNCTION} 		{ currPos += yyleng; return FUNCTION; }
+{LEFT_PREN} 		{ currPos += yyleng; return LEFT_PREN; }
+{RIGHT_PREN} 		{ currPos += yyleng; return RIGHT_PREN; }
+{LEFT_BRACKET} 		{ currPos += yyleng; return LEFT_BRACKET; }
+{RIGHT_BRACKET} 	{ currPos += yyleng; return RIGHT_BRACKET; }
+{LEFT_CURR_BRACKET}	{ currPos += yyleng; return LEFT_CURR_BRACKET; }
+{RIGHT_CURR_BRACKET}    { currPos += yyleng; return RIGHT_CURR_BRACKET; }
+{RETURN}		{ currPos += yyleng; return RETURN; }
+{END}			{ currPos += yyleng; return END; }
+{COMMA}			{ currPos += yyleng; return COMMA; }
+{READ}			{ currPos += yyleng; return READ; }
+{WRITE}			{ currPos += yyleng; return WRITE; }
 {COMMENT}		{}
-{STRINGLITERAL}		{ HANDLE_COLUMN; var_ident = yytext; return STRINGLITERAL; }	
-{INVALIDVARIABLE}	{ HANDLE_COLUMN; return INVALIDVAR; }
-{VARIABLE}		{ HANDLE_COLUMN; var_ident = yytext; return VARIABLE; }
-{NOTEQUIV}		{ HANDLE_COLUMN; return NOTEQUIVALENT; }
+{STRINGLITERAL}		{ currPos += yyleng; return STRINGLITERAL; }	
+{INVALIDVARIABLE}	{ currPos += yyleng; return INVALIDVAR; }
+{VARIABLE}		{ currPos += yyleng; return VARIABLE; }
+{NOTEQUIV}		{ currPos += yyleng; return NOTEQUIVALENT; }
 [[:space:]]+
-			
-.		{printf("ERROR: NO SYMBOLS OR LETTERS: %s - LINE: %d\n", yytext,yylineno); exit(1); }
+.        {printf("");}
+
 %%
 
 // main (void) {
