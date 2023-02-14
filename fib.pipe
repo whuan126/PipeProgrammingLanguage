@@ -2,5 +2,7 @@ function fib (int number)
     if number |leq 1
         return number
     end
-    return fib(number |sub 1) |add fib(number |sub 2)
+    int i1 |eq fib(number |sub 1)
+    int i2 |eq fib(number |sub 2)
+    return i1 |add i2
 end
