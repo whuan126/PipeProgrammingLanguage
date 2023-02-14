@@ -20,7 +20,11 @@ start: /*epsilon*/ {printf("prog start\n");}
 void: /*epsilon*/
 	| function void
 
-function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END
+function: FUNCTION functiondec statements END
+
+functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN
+
+functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN
 
 elses: /*epsilon*/
 	| ELSE statements END
@@ -38,6 +42,7 @@ statement: INT VARIABLE
         | INT VARIABLE EQUAL VARIABLE
         | STRING VARIABLE EQUAL STRINGLITERAL
         | RETURN retval
+	| functioncall
 
 conditional: VARIABLE condition VARIABLE
         | VARIABLE condition DIGIT
@@ -68,11 +73,17 @@ type: /*epsilon*/
 input: VARIABLE
 	| exp
 
-args:  /*epsilon*/
-	| type input args2 {printf("args -> args var\n");}
+inputargs: /*epsilon*/
+	| input inputargs2
 
-args2: /*epsilon*/
-	| COMMA type input args2
+inputargs2: /*epsilon*/
+	| COMMA input inputargs2
+
+declarationargs:  /*epsilon*/
+	| type VARIABLE declarationargs2 {printf("args -> args var\n");}
+
+declarationargs2: /*epsilon*/
+	| COMMA type VARIABLE declarationargs2
 
 exp: exp addop term {printf("prog_start -> exp addop term\n");}
         | term {printf("prog_start -> term\n");}
@@ -87,8 +98,10 @@ mulop: MULTIPLY {printf("mulop -> *\n");}
         | DIVISION {printf("mulop -> /\n");}
 
 factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
-        | DIGIT {printf("factor -> number: %s\n",var_ident);}
-	| VARIABLE LEFT_PREN args RIGHT_PREN
+        | funcall {printf("factor -> number: %s\n",var_ident);}
+
+funcall: DIGIT
+	| functioncall
 
 %%
 
