@@ -18,11 +18,11 @@ start: /*epsilon*/ {printf("prog start\n");}
 void: /*epsilon*/
 	| function void
 
-function: FUNCTION functiondec statements END
+function: FUNCTION functiondec statements END { printf("function -> FUNCTION functiondec statements END\n"); }
 
-functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN
+functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN { printf("functiondec -> VARIABLE LEFT_PREN declarationargs RIGHT_PREN\n"); }
 
-functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN
+functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN { printf("functiondec -> VARIABLE LEFT_PREN inputargs RIGHT_PREN\n"); }
 
 elses: /*epsilon*/
 	| ELSE statements
@@ -34,7 +34,7 @@ s2: /*epsilon*/
 	| rule s2
 
 rule: IF conditional statements elses END
-        | WHILE conditional DO statements END
+        | WHILE conditional DO statements END { printf("rule -> WHILE conditional DO statements END\n"); }
 	| statement
 
 statement: INT VARIABLE
@@ -58,12 +58,12 @@ conditional: exp condition exp
 boolean: TRUE
 	| FALSE
 
-condition: LESSEROREQUAL 
-        | GREATEROREQUAL
-        | LESSTHAN 
-        | GREATERTHAN 
-        | EQUIVALENT 
-        | NOTEQUIVALENT 
+condition: LESSEROREQUAL{ printf("condition -> LESSEROREQUAL\n"); }
+        | GREATEROREQUAL{ printf("condition -> GREATEROREQUAL\n"); }
+        | LESSTHAN      { printf("condition -> LESSTHAN\n"); }
+        | GREATERTHAN   { printf("condition -> GREATERTHAN\n"); }
+        | EQUIVALENT    { printf("condition -> EQUIVALENT\n"); }
+        | NOTEQUIVALENT { printf("condition -> NOTEQUIVALENT\n"); }
 
 retval: statement
 	| exp 
@@ -88,8 +88,8 @@ declarationargs:  /*epsilon*/
 declarationargs2: /*epsilon*/
 	| COMMA type VARIABLE declarationargs2
 
-exp: exp addop term {printf("prog_start -> exp addop term\n");}
-        | term {printf("prog_start -> term\n");}
+exp: exp addop term {printf("exp -> exp addop term\n");}
+        | term {printf("exp -> term\n");}
 
 addop: ADD {printf("addop -> +\n");}
         | SUBTRACT {printf("addop -> -\n");}

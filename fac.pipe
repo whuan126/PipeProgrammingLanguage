@@ -1,6 +1,6 @@
 function factorial (number)
     if number |leq 1
         return 1
-    else
-        return number |mult factorial (number |sub 1)
     end
+    return number |mult factorial (number |sub 1)
+ end
