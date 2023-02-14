@@ -48,6 +48,8 @@ statement: INT VARIABLE
         | STRING VARIABLE EQUAL STRINGLITERAL
         | RETURN retval
 	| functioncall
+        | functioncall addop functioncall
+        | functioncall mulop functioncall
 	| VARIABLE EQUAL functioncall
 	| INT VARIABLE EQUAL functioncall {printf("D");}
 
