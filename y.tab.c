@@ -72,8 +72,7 @@ extern char* lineptr;
 void yyerror(const char *msg);
 
 
-
-#line 77 "y.tab.c" /* yacc.c:339  */
+#line 76 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -164,7 +163,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 168 "y.tab.c" /* yacc.c:358  */
+#line 167 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -465,13 +464,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    16,    16,    17,    19,    20,    22,    24,    26,    28,
-      29,    31,    32,    34,    35,    37,    38,    39,    41,    42,
-      43,    45,    47,    48,    49,    50,    51,    52,    53,    55,
-      56,    57,    59,    60,    62,    63,    64,    65,    66,    67,
-      69,    70,    71,    72,    74,    75,    76,    78,    80,    81,
-      83,    84,    86,    87,    89,    90,    92,    93,    95,    96,
-      98,    99,   101,   102,   104,   105,   106
+       0,    15,    15,    16,    18,    19,    21,    23,    25,    27,
+      28,    30,    31,    33,    34,    36,    37,    38,    40,    41,
+      42,    44,    46,    47,    48,    49,    50,    51,    52,    54,
+      55,    56,    58,    59,    61,    62,    63,    64,    65,    66,
+      68,    69,    70,    71,    73,    74,    75,    77,    79,    80,
+      82,    83,    85,    86,    88,    89,    91,    92,    94,    95,
+      97,    98,   100,   101,   103,   104,   105
 };
 #endif
 
@@ -1320,91 +1319,91 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 16 "lexer.y" /* yacc.c:1646  */
+#line 15 "lexer.y" /* yacc.c:1646  */
     {printf("prog start\n");}
-#line 1326 "y.tab.c" /* yacc.c:1646  */
+#line 1325 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 3:
-#line 17 "lexer.y" /* yacc.c:1646  */
+#line 16 "lexer.y" /* yacc.c:1646  */
     {printf("start -> function\n");}
-#line 1332 "y.tab.c" /* yacc.c:1646  */
+#line 1331 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 45 "lexer.y" /* yacc.c:1646  */
+#line 44 "lexer.y" /* yacc.c:1646  */
     {printf("A");}
-#line 1338 "y.tab.c" /* yacc.c:1646  */
+#line 1337 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 28:
-#line 53 "lexer.y" /* yacc.c:1646  */
+#line 52 "lexer.y" /* yacc.c:1646  */
     {printf("D");}
-#line 1344 "y.tab.c" /* yacc.c:1646  */
+#line 1343 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 87 "lexer.y" /* yacc.c:1646  */
+#line 86 "lexer.y" /* yacc.c:1646  */
     {printf("args -> args var\n");}
-#line 1350 "y.tab.c" /* yacc.c:1646  */
+#line 1349 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 92 "lexer.y" /* yacc.c:1646  */
+#line 91 "lexer.y" /* yacc.c:1646  */
     {printf("prog_start -> exp addop term\n");}
-#line 1356 "y.tab.c" /* yacc.c:1646  */
+#line 1355 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 93 "lexer.y" /* yacc.c:1646  */
+#line 92 "lexer.y" /* yacc.c:1646  */
     {printf("prog_start -> term\n");}
-#line 1362 "y.tab.c" /* yacc.c:1646  */
+#line 1361 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 95 "lexer.y" /* yacc.c:1646  */
+#line 94 "lexer.y" /* yacc.c:1646  */
     {printf("addop -> +\n");}
-#line 1368 "y.tab.c" /* yacc.c:1646  */
+#line 1367 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 96 "lexer.y" /* yacc.c:1646  */
+#line 95 "lexer.y" /* yacc.c:1646  */
     {printf("addop -> -\n");}
-#line 1374 "y.tab.c" /* yacc.c:1646  */
+#line 1373 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 98 "lexer.y" /* yacc.c:1646  */
+#line 97 "lexer.y" /* yacc.c:1646  */
     {printf("term -> term mulop factor\n");}
-#line 1380 "y.tab.c" /* yacc.c:1646  */
+#line 1379 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 99 "lexer.y" /* yacc.c:1646  */
+#line 98 "lexer.y" /* yacc.c:1646  */
     {printf("term -> factor\n");}
-#line 1386 "y.tab.c" /* yacc.c:1646  */
+#line 1385 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 101 "lexer.y" /* yacc.c:1646  */
+#line 100 "lexer.y" /* yacc.c:1646  */
     {printf("mulop -> *\n");}
-#line 1392 "y.tab.c" /* yacc.c:1646  */
+#line 1391 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 102 "lexer.y" /* yacc.c:1646  */
+#line 101 "lexer.y" /* yacc.c:1646  */
     {printf("mulop -> /\n");}
-#line 1398 "y.tab.c" /* yacc.c:1646  */
+#line 1397 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 64:
-#line 104 "lexer.y" /* yacc.c:1646  */
+#line 103 "lexer.y" /* yacc.c:1646  */
     {printf("factor -> (exp)\n");}
-#line 1404 "y.tab.c" /* yacc.c:1646  */
+#line 1403 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1408 "y.tab.c" /* yacc.c:1646  */
+#line 1407 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1632,28 +1631,23 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 108 "lexer.y" /* yacc.c:1906  */
+#line 106 "lexer.y" /* yacc.c:1906  */
 
 
 int main(int argc, char ** argv) {
-    if (argc > 1) {
-        yyin = fopen(argv[1], "r");
-        if (yyin == NULL) {
-            printf("syntax: %s filename", argv[0]);
-        }
-    }
-    yyparse(); // more magical stuff
-    return 0;
+	if (argc >= 2) {
+		yyin = fopen(argv[1], "r");
+		if (yyin == NULL) {
+			yyin = stdin;
+		}
+	}
+	else {
+		yyin = stdin;
+	}
+	yyparse();
+	return 1;
 }
-
 void yyerror(const char *msg) {
     //fprintf(stderr, "%s\n", msg);
-    fprintf(stderr,"error: %s in line %d, column %d\n", msg, currLine, currPos);
-    fprintf(stderr, "%s\n", lineptr);
-    int i;   
-    for(i = 0; i < currPos - 1; i++)
-        fprintf(stderr,"_");
-    fprintf(stderr,"^\n");
-
-
+    printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
 }	

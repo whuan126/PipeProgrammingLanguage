@@ -6,7 +6,6 @@ extern int currPos;
 extern char* lineptr;
 void yyerror(const char *msg);
 
-
 %}
 
 %start start
@@ -104,28 +103,22 @@ mulop: MULTIPLY {printf("mulop -> *\n");}
 factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
         | DIGIT 	
 	| VARIABLE
-
 %%
 
 int main(int argc, char ** argv) {
-    if (argc > 1) {
-        yyin = fopen(argv[1], "r");
-        if (yyin == NULL) {
-            printf("syntax: %s filename", argv[0]);
-        }
-    }
-    yyparse(); // more magical stuff
-    return 0;
+	if (argc >= 2) {
+		yyin = fopen(argv[1], "r");
+		if (yyin == NULL) {
+			yyin = stdin;
+		}
+	}
+	else {
+		yyin = stdin;
+	}
+	yyparse();
+	return 1;
 }
-
 void yyerror(const char *msg) {
     //fprintf(stderr, "%s\n", msg);
-    fprintf(stderr,"error: %s in line %d, column %d\n", msg, currLine, currPos);
-    fprintf(stderr, "%s\n", lineptr);
-    int i;   
-    for(i = 0; i < currPos - 1; i++)
-        fprintf(stderr,"_");
-    fprintf(stderr,"^\n");
-
-
+    printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
 }	
