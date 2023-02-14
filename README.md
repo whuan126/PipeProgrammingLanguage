@@ -51,6 +51,7 @@
 | \|lt               | LESSTHAN       |
 | \|gt               | GREATERTHAN    |
 | \|equiv            | EQUIVALENT     |
+| \|noteq            | NOT EQUAL      |
 | while              | WHILE          |
 | do                 | DO             |
 | if                 | IF             |
