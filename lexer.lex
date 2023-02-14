@@ -51,9 +51,10 @@ VARIABLE [a-zA-Z][a-zA-Z0-9_]*
 INT int
 STRING string
 EQUAL \|eq
+NOTEQUAL \|neq
 MULTIPLY \|mult
 ADD \|add
-NOTEQUAL \|neq
+NOTEQUIV \|noteq
 SUBTRACT \|sub
 DIVISION \|div
 LESSEROREQUAL \|leq
@@ -126,6 +127,7 @@ int line = 0;
 {STRINGLITERAL}		{ HANDLE_COLUMN; var_ident = yytext; return STRINGLITERAL; }	
 {INVALIDVARIABLE}	{ HANDLE_COLUMN; return INVALIDVAR; }
 {VARIABLE}		{ HANDLE_COLUMN; var_ident = yytext; return VARIABLE; }
+{NOTEQUIV}		{ HANDLE_COLUMN; return NOTEQUIVALENT; }
 [[:space:]]+
 			
 .		{printf("ERROR: NO SYMBOLS OR LETTERS: %s - LINE: %d\n", yytext,yylineno); exit(1); }

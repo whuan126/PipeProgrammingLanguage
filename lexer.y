@@ -11,52 +11,56 @@ extern char *lineptr;
 %}
 
 %start start
-%token DIGIT INT INDEX NOTEQUAL STRING EQUAL TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE STRINGLITERAL INVALIDVAR VARIABLE
+%token DIGIT INT INDEX STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE STRINGLITERAL INVALIDVAR VARIABLE
 
 %%
 start: /*epsilon*/ {printf("prog start\n");}
         | function {printf("start -> exp EQUAL\n");}
 
-function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements RETURN END {printf("function (with return)");}
-	| FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END {printf("function (no return)\n");}
+function: FUNCTION VARIABLE LEFT_PREN args RIGHT_PREN statements END
 
-statements: IF conditional statements END
-        | IF conditional statements ELSE statements END
+elses: /*epsilon*/
+	| ELSE statements END
+
+statements: /*epsilon*/ 
+	| IF conditional statements elses END
         | WHILE conditional DO statements END
-        | INT VARIABLE
+	| statement statements
+
+statement: INT VARIABLE
         | VARIABLE EQUAL exp
         | VARIABLE EQUAL STRINGLITERAL
-        | INT VARIABLE EQUAL exp 
+        | VARIABLE EQUAL VARIABLE
+	| INT VARIABLE EQUAL exp 
         | INT VARIABLE EQUAL VARIABLE
         | STRING VARIABLE EQUAL STRINGLITERAL
-        | RETURN VARIABLE 
-        | RETURN conditional 
-        | RETURN exp 
-        | RETURN TRUE // add this 
-        | RETURN FALSE // add this
+        | RETURN retval
 
 conditional: VARIABLE condition VARIABLE
         | VARIABLE condition DIGIT
+	| VARIABLE condition boolean
         | STRINGLITERAL condition STRINGLITERAL
         | exp condition exp
+
+boolean: TRUE
+	| FALSE
 
 condition: LESSEROREQUAL 
         | GREATEROREQUAL
         | LESSTHAN 
         | GREATERTHAN 
         | EQUIVALENT 
-        | NOTEQUAL  //addthis later
+        | NOTEQUIVALENT 
 
-//  IF args THEN statements ELSE statements END
-// 	| IF args THEN statements END
-//      | IF args statements END
-// 	| WHILE args DO statements END
-// 	| INT VARIABLE EQUAL exp
-// 	| INT VARIABLE EQUAL VARIABLE
-// 	| STRING VARIABLE EQUAL STRINGLITERAL
+retval: exp
+	| VARIABLE
+	| conditional
+	| boolean
 
-args: args COMMA VARIABLE {printf("args -> args var\n");}
-	| VARIABLE {printf("args -> var\n");}
+args: VARIABLE args2 {printf("args -> args var\n");}
+
+args2: /*epsilon*/
+	| COMMA VARIABLE args2
 
 exp: exp addop term {printf("prog_start -> exp addop term\n");}
         | term {printf("prog_start -> term\n");}
