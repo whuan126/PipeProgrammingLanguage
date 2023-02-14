@@ -1,6 +1,6 @@
 function fib (int number)
     if number |leq 1
         return number
+    else
+        return fib(number |sub 1) |add fib(number |sub 2)
     end
-    return fib(number |sub 1) |add fib(number |sub 2)
-end
