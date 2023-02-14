@@ -1,7 +1,4 @@
-function nested
-    int i
-    int j
-
+function nested (i, j)
     i |eq 0
     while i |lt 2
         j |eq 1
