@@ -4,3 +4,4 @@ function fib (int number)
     else
         return fib(number |sub 1) |add fib(number |sub 2)
     end
+end
