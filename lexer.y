@@ -121,4 +121,4 @@ int main(int argc, char ** argv) {
 void yyerror(const char *msg) {
     //fprintf(stderr, "%s\n", msg);
     printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
-}	
+}
