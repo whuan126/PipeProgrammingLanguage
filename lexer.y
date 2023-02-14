@@ -88,8 +88,8 @@ declarationargs:  /*epsilon*/
 declarationargs2: /*epsilon*/
 	| COMMA type VARIABLE declarationargs2
 
-exp: exp addop term {printf("prog_start -> exp addop term\n");}
-        | term {printf("prog_start -> term\n");}
+exp: exp addop term {printf("exp -> exp addop term\n");}
+        | term {printf("exp -> term\n");}
 
 addop: ADD {printf("addop -> +\n");}
         | SUBTRACT {printf("addop -> -\n");}
