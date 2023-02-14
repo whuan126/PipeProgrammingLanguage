@@ -32,23 +32,23 @@ elses: /*epsilon*/
 statements: /*epsilon*/ 
 	| IF conditional statements elses END
         | WHILE conditional DO statements END
-	| statement statements
+	| statements statement
 
 statement: INT VARIABLE
         | VARIABLE EQUAL exp
         | VARIABLE EQUAL STRINGLITERAL
-        | VARIABLE EQUAL VARIABLE
-	| INT VARIABLE EQUAL exp 
-        | INT VARIABLE EQUAL VARIABLE
+   
+	| INT VARIABLE EQUAL exp {printf("A");}
+        
         | STRING VARIABLE EQUAL STRINGLITERAL
         | RETURN retval
 	| functioncall
+	| VARIABLE EQUAL functioncall
+	| INT VARIABLE EQUAL functioncall {printf("D");}
 
-conditional: VARIABLE condition VARIABLE
-        | VARIABLE condition DIGIT
-	| VARIABLE condition boolean
+conditional: exp condition exp
+	| exp condition boolean
         | STRINGLITERAL condition STRINGLITERAL
-        | exp condition exp
 	
 boolean: TRUE
 	| FALSE
@@ -62,7 +62,6 @@ condition: LESSEROREQUAL
 
 retval: statement
 	| exp 
-	| VARIABLE
 	| conditional
 	| boolean
 
@@ -70,8 +69,7 @@ type: /*epsilon*/
 	| INT
 	| STRING
 
-input: VARIABLE
-	| exp
+input: exp
 
 inputargs: /*epsilon*/
 	| input inputargs2
@@ -98,10 +96,8 @@ mulop: MULTIPLY {printf("mulop -> *\n");}
         | DIVISION {printf("mulop -> /\n");}
 
 factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
-        | funcall {printf("factor -> number: %s\n",var_ident);}
-
-funcall: DIGIT
-	| functioncall
+        | DIGIT {printf("factor -> number: %s\n",var_ident);}	
+	| VARIABLE
 
 %%
 
