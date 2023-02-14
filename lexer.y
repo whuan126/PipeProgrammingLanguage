@@ -29,10 +29,15 @@ functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN
 elses: /*epsilon*/
 	| ELSE statements END
 
-statements: /*epsilon*/ 
-	| IF conditional statements elses END
+statements: /*epsilon*/
+	| rule s2
+
+s2: /*epsilon*/
+	| rule s2
+
+rule: IF conditional statements elses END
         | WHILE conditional DO statements END
-	| statements statement
+	| statement
 
 statement: INT VARIABLE
         | VARIABLE EQUAL exp
