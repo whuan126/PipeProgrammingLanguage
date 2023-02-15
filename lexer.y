@@ -38,8 +38,7 @@ rule: IF conditional statements elses END
 	| statement
 
 statement: INT VARIABLE
-		| VARIABLE EQUAL DIGIT
-        | VARIABLE EQUAL exp
+		| VARIABLE EQUAL factor
         | VARIABLE EQUAL STRINGLITERAL
    
 	| INT VARIABLE EQUAL exp {printf("A");}
@@ -105,7 +104,7 @@ mulop: MULTIPLY {printf("mulop -> *\n");}
 
 factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
         | DIGIT 	
-	| VARIABLE
+		| VARIABLE
 %%
 
 int main(int argc, char ** argv) {
