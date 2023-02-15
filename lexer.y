@@ -38,7 +38,7 @@ rule: IF conditional statements elses END
 	| statement
 
 statement: INT VARIABLE
-		| VARIABLE EQUAL factor
+		| VARIABLE EQUAL exp
         | VARIABLE EQUAL STRINGLITERAL
    
 	| INT VARIABLE EQUAL exp {printf("A");}

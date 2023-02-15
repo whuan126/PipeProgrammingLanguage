@@ -41,7 +41,7 @@ Grammar
    16     | statement
 
    17 statement: INT VARIABLE
-   18          | VARIABLE EQUAL factor
+   18          | VARIABLE EQUAL exp
    19          | VARIABLE EQUAL STRINGLITERAL
    20          | INT VARIABLE EQUAL exp
    21          | WRITE DIGIT
@@ -198,7 +198,7 @@ declarationargs (59)
 declarationargs2 (60)
     on left: 56 57, on right: 55 57
 exp (61)
-    on left: 58 59, on right: 20 31 32 43 49 58 66
+    on left: 58 59, on right: 18 20 31 32 43 49 58 66
 addop (62)
     on left: 60 61, on right: 27 58
 term (63)
@@ -206,7 +206,7 @@ term (63)
 mulop (64)
     on left: 64 65, on right: 28 62
 factor (65)
-    on left: 66 67 68, on right: 18 62 63
+    on left: 66 67 68, on right: 62 63
 
 
 State 0
@@ -401,7 +401,7 @@ State 15
 State 16
 
     7 functioncall: VARIABLE . LEFT_PREN inputargs RIGHT_PREN
-   18 statement: VARIABLE . EQUAL factor
+   18 statement: VARIABLE . EQUAL exp
    19          | VARIABLE . EQUAL STRINGLITERAL
    29          | VARIABLE . EQUAL functioncall
 
@@ -650,7 +650,7 @@ State 38
 State 39
 
     7 functioncall: VARIABLE . LEFT_PREN inputargs RIGHT_PREN
-   18 statement: VARIABLE . EQUAL factor
+   18 statement: VARIABLE . EQUAL exp
    19          | VARIABLE . EQUAL STRINGLITERAL
    29          | VARIABLE . EQUAL functioncall
    68 factor: VARIABLE .
@@ -734,7 +734,7 @@ State 47
 
 State 48
 
-   18 statement: VARIABLE EQUAL . factor
+   18 statement: VARIABLE EQUAL . exp
    19          | VARIABLE EQUAL . STRINGLITERAL
    29          | VARIABLE EQUAL . functioncall
 
@@ -744,7 +744,9 @@ State 48
     VARIABLE       shift, and go to state 77
 
     functioncall  go to state 78
-    factor        go to state 79
+    exp           go to state 79
+    term          go to state 34
+    factor        go to state 35
 
 
 State 49
@@ -1029,9 +1031,15 @@ State 78
 
 State 79
 
-   18 statement: VARIABLE EQUAL factor .
+   18 statement: VARIABLE EQUAL exp .
+   58 exp: exp . addop term
+
+    ADD       shift, and go to state 51
+    SUBTRACT  shift, and go to state 52
 
     $default  reduce using rule 18 (statement)
+
+    addop  go to state 73
 
 
 State 80
