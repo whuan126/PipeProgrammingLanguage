@@ -28,7 +28,7 @@ Grammar
     7 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN
 
     8 elses: %empty
-    9      | ELSE statements END
+    9      | ELSE statements
 
    10 statements: %empty
    11           | rule s2
@@ -140,7 +140,7 @@ RIGHT_BRACKET (284)
 LEFT_CURR_BRACKET (285)
 RIGHT_CURR_BRACKET (286)
 RETURN (287) 22
-END (288) 5 9 14 15
+END (288) 5 14 15
 COMMA (289) 50 54
 READ (290)
 WRITE (291)
@@ -1168,7 +1168,7 @@ State 94
 
 State 95
 
-    9 elses: ELSE . statements END
+    9 elses: ELSE . statements
 
     INT       shift, and go to state 10
     STRING    shift, and go to state 11
@@ -1236,9 +1236,9 @@ State 101
 
 State 102
 
-    9 elses: ELSE statements . END
+    9 elses: ELSE statements .
 
-    END  shift, and go to state 106
+    $default  reduce using rule 9 (elses)
 
 
 State 103
@@ -1256,7 +1256,7 @@ State 104
 
     $default  reduce using rule 49 (inputargs2)
 
-    inputargs2  go to state 107
+    inputargs2  go to state 106
 
 
 State 105
@@ -1267,24 +1267,17 @@ State 105
 
     $default  reduce using rule 53 (declarationargs2)
 
-    declarationargs2  go to state 108
+    declarationargs2  go to state 107
 
 
 State 106
-
-    9 elses: ELSE statements END .
-
-    $default  reduce using rule 9 (elses)
-
-
-State 107
 
    50 inputargs2: COMMA input inputargs2 .
 
     $default  reduce using rule 50 (inputargs2)
 
 
-State 108
+State 107
 
    54 declarationargs2: COMMA type VARIABLE declarationargs2 .
 
