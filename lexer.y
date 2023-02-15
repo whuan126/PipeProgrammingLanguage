@@ -34,15 +34,18 @@ s2: /*epsilon*/
 	| rule s2
 
 rule: IF conditional statements elses END
-        | WHILE conditional DO statements END { printf("rule -> WHILE conditional DO statements END\n"); }
+        | WHILE conditional statements END { printf("rule -> WHILE conditional DO statements END\n"); }
 	| statement
 
 statement: INT VARIABLE
+		| VARIABLE EQUAL DIGIT
         | VARIABLE EQUAL exp
         | VARIABLE EQUAL STRINGLITERAL
    
 	| INT VARIABLE EQUAL exp {printf("A");}
-        
+		| WRITE DIGIT
+        | WRITE VARIABLE
+		| WRITE STRINGLITERAL
         | STRING VARIABLE EQUAL STRINGLITERAL
         | RETURN retval
 	| functioncall
