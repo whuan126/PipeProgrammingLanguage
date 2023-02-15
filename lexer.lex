@@ -93,7 +93,7 @@ int line = 0;
 {NOTEQUIV}		        { currPos += yyleng; return NOTEQUIVALENT; }
 [[:space:]]+
 .                       {printf("Error at line %d. column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
-<<EOF>>                 {printf("ENDOFFILE"); return(0);}
+<<EOF>>                 {return(0);}
 %%
 
 // main (void) {
