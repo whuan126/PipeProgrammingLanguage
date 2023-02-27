@@ -12,98 +12,98 @@ void yyerror(const char *msg);
 %token DIGIT INT INDEX THEN STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE STRINGLITERAL INVALIDVAR VARIABLE
 
 %%
-start: /*epsilon*/ {printf("prog start\n");}
-        | function void {printf("start -> function void\n");}
+start: /*epsilon*/ 
+        | function void 
 
-void: /*epsilon*/ {printf("void -> epsilon\n");}
-	| function void {printf("void -> function void");}
+void: /*epsilon*/ 
+	| function void 
 
-function: FUNCTION functiondec statements END { printf("function -> FUNCTION functiondec statements END\n"); }
+function: FUNCTION functiondec statements END 
 
-functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN { printf("functiondec -> VARIABLE LEFT_PREN declarationargs RIGHT_PREN\n"); }
+functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN 
 
-functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN { printf("functiondec -> VARIABLE LEFT_PREN inputargs RIGHT_PREN\n"); }
+functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
 
-elses: /*epsilon*/ {printf("elses -> epsilon\n");}
-	| ELSE statements {printf("elses -> ELSE statements\n");}
+elses: /*epsilon*/ 
+	| ELSE statements 
 
-statements: /*epsilon*/ {printf("statements -> epsilon\n");}
-	| rule s2 {printf("statements -> rule s2\n");}
+statements: /*epsilon*/ 
+	| rule s2 
 
-s2: /*epsilon*/ {printf("s2 -> epsilon\n");}
-	| rule s2 {printf("s2 -> rule s2\n");}
+s2: /*epsilon*/ 
+	| rule s2 
 
-rule: IF conditional statements elses END {printf("rule -> IF conditional statements elses END\n");}
-        | WHILE conditional statements END { printf("rule -> WHILE conditional statements END\n"); }
-	| statement {printf("rule -> statement\n");}
+rule: IF conditional statements elses END 
+        | WHILE conditional statements END 
+	| statement 
 
-statement: INT VARIABLE  {printf("statement -> INT VARIABLE\n");}
-	| VARIABLE EQUAL exp {printf("statement -> VARIABLE EQUAL exp\n");}
-        | VARIABLE EQUAL STRINGLITERAL {printf("statement -> VARIABLE EQUAL STRINGLITERAL\n");}
-	| INT VARIABLE EQUAL exp  {printf("statement -> INT VARIABLE EQUAL exp\n");}
-	| WRITE DIGIT {printf("statement -> WRITE DIGIT\n");}
-        | WRITE VARIABLE {printf("statement -> WRITE VARIABLE\n");}
-	| WRITE STRINGLITERAL {printf("statement-> WRITE STRINGLITERAL\n");}
-        | STRING VARIABLE EQUAL STRINGLITERAL {printf("statement -> STRING VARIABLE EQUAL STRINGLITERAL\n");}
-        | RETURN retval {printf("statement -> RETURN retval\n");}
-	| functioncall {printf("statement -> functioncall\n");}
-        | functioncall addop functioncall {printf("statement -> functioncall addop functioncall\n");}
-        | functioncall mulop functioncall {printf("statement -> functioncall mulop functioncall\n");}
-	| VARIABLE EQUAL functioncall {printf("statement -> VARIABLE EQUAL functioncall\n");}
-	| INT VARIABLE EQUAL functioncall {printf("statement -> INT VARIABLE EQUAL functioncall\n");}
+statement: INT VARIABLE  
+	| VARIABLE EQUAL exp 
+        | VARIABLE EQUAL STRINGLITERAL 
+	| INT VARIABLE EQUAL exp  
+	| WRITE DIGIT 
+        | WRITE VARIABLE 
+	| WRITE STRINGLITERAL 
+        | STRING VARIABLE EQUAL STRINGLITERAL 
+        | RETURN retval 
+	| functioncall 
+        | functioncall addop functioncall 
+        | functioncall mulop functioncall 
+	| VARIABLE EQUAL functioncall 
+	| INT VARIABLE EQUAL functioncall 
 
-conditional: exp condition exp  {printf("conditional -> exp condition exp\n");}
-	| exp condition boolean {printf("conditional -> exp condition boolean\n");}
-        | STRINGLITERAL condition STRINGLITERAL  {printf("conditional -> STRINGLITERAL condition STRINGLITERAL\n");}
+conditional: exp condition exp  
+	| exp condition boolean 
+        | STRINGLITERAL condition STRINGLITERAL  
 	
-boolean: TRUE {printf("boolean -> TRUE\n");}
-	| FALSE {printf("boolean -> FALSE\n");}
+boolean: TRUE 
+	| FALSE 
 
-condition: LESSEROREQUAL{ printf("condition -> LESSEROREQUAL\n"); }
-        | GREATEROREQUAL{ printf("condition -> GREATEROREQUAL\n"); }
-        | LESSTHAN      { printf("condition -> LESSTHAN\n"); }
-        | GREATERTHAN   { printf("condition -> GREATERTHAN\n"); }
-        | EQUIVALENT    { printf("condition -> EQUIVALENT\n"); }
-        | NOTEQUIVALENT { printf("condition -> NOTEQUIVALENT\n"); }
+condition: LESSEROREQUAL
+        | GREATEROREQUAL
+        | LESSTHAN      
+        | GREATERTHAN   
+        | EQUIVALENT    
+        | NOTEQUIVALENT 
 
-retval: statement {printf("retval -> statement\n");}
-	| exp  {printf("retval -> exp\n");}
-	| conditional {printf("retval -> conditional\n");}
-	| boolean {printf("retval -> boolean\n");}
+retval: statement 
+	| exp  
+	| conditional 
+	| boolean 
 
-type: /*epsilon*/ {printf("type -> epsilon\n");}
-	| INT {printf("type -> INT\n");}
-	| STRING {printf("type -> STRING\n");}
+type: /*epsilon*/ 
+	| INT 
+	| STRING 
 
-input: exp {printf("input -> exp\n");}
+input: exp 
 
-inputargs: /*epsilon*/ {printf("inputargs -> epsilon\n");}
-	| input inputargs2 {printf("inputargs -> input inputargs2\n");}
+inputargs: /*epsilon*/ 
+	| input inputargs2 
 
-inputargs2: /*epsilon*/ {printf("inputargs2 -> epsilon\n");}
-	| COMMA input inputargs2 {printf("inputargs2 -> COMMA input inputargs2\n");}
+inputargs2: /*epsilon*/ 
+	| COMMA input inputargs2 
 
-declarationargs:  /*epsilon*/ {printf("declarationargs -> epsilon\n");}
-	| type VARIABLE declarationargs2 {printf("declarationargs -> type VARIABLE declarationargs2\n");}
+declarationargs:  /*epsilon*/ 
+	| type VARIABLE declarationargs2 
 
-declarationargs2: /*epsilon*/ {printf("declarationargs2 -> epsilon\n");}
-	| COMMA type VARIABLE declarationargs2 {printf("declarationargs2 -> COMMA type VARIABLE declarationargs2\n");}
+declarationargs2: /*epsilon*/ 
+	| COMMA type VARIABLE declarationargs2 
 
-exp: exp addop term {printf("exp -> exp addop term\n");}
-        | term {printf("exp -> term\n");}
+exp: exp addop term 
+        | term 
 
-addop: ADD {printf("addop -> +\n");}
-        | SUBTRACT {printf("addop -> -\n");}
+addop: ADD 
+        | SUBTRACT 
 
-term: term mulop factor {printf("term -> term mulop factor\n");}
-        | factor {printf("term -> factor\n");}
+term: term mulop factor 
+        | factor 
 
-mulop: MULTIPLY {printf("mulop -> *\n");}
-        | DIVISION {printf("mulop -> /\n");}
+mulop: MULTIPLY 
+        | DIVISION 
 
-factor: LEFT_PREN exp RIGHT_PREN {printf("factor -> (exp)\n");}
-        | DIGIT  {printf("factor -> DIGIT\n");}	
-	| VARIABLE {printf("factor -> VARIABLE\n");}
+factor: LEFT_PREN exp RIGHT_PREN 
+        | DIGIT  	
+	| VARIABLE 
 %%
 
 int main(int argc, char ** argv) {
