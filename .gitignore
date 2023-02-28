@@ -1,2 +1,5 @@
 a.out
 lex.yy.c
+y.output
+y.tab.c
+t.tab.h
