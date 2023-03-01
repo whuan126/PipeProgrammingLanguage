@@ -16,7 +16,7 @@ lex.yy.c: lexer.lex bison.tab.h
 
 practice: lex.yy.c lexer.tab.c lexer.tab.h
 	g++ -o practice lexer.tab.c lex.yy.c -lfl
-	./practice add.min
+	./practice add.pipe
 	
 clean: 
 	rm -f lex.yy.c y.tab.c y.tab.h y.output lexer.tab.c lexer.output lexer
