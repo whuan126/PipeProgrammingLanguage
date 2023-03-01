@@ -147,9 +147,9 @@ END (288) 5 14 15
 COMMA (289) 53 57
 READ (290)
 WRITE (291) 21 22 23
-STRINGLITERAL (292) 19 23 24 33
-INVALIDVAR (293)
-VARIABLE (294) 6 7 17 18 19 20 22 24 29 30 55 57 68
+INVALIDVAR (292)
+VARIABLE (293) 6 7 17 18 19 20 22 24 29 30 55 57 68
+STRINGLITERAL (294) 19 23 24 33
 
 
 Nonterminals, with rules where they appear
@@ -338,8 +338,8 @@ State 12
 
     DIGIT          shift, and go to state 28
     LEFT_PREN      shift, and go to state 29
-    STRINGLITERAL  shift, and go to state 30
-    VARIABLE       shift, and go to state 31
+    VARIABLE       shift, and go to state 30
+    STRINGLITERAL  shift, and go to state 31
 
     conditional  go to state 32
     exp          go to state 33
@@ -353,8 +353,8 @@ State 13
 
     DIGIT          shift, and go to state 28
     LEFT_PREN      shift, and go to state 29
-    STRINGLITERAL  shift, and go to state 30
-    VARIABLE       shift, and go to state 31
+    VARIABLE       shift, and go to state 30
+    STRINGLITERAL  shift, and go to state 31
 
     conditional  go to state 36
     exp          go to state 33
@@ -374,8 +374,8 @@ State 14
     LEFT_PREN      shift, and go to state 29
     RETURN         shift, and go to state 14
     WRITE          shift, and go to state 15
-    STRINGLITERAL  shift, and go to state 30
     VARIABLE       shift, and go to state 39
+    STRINGLITERAL  shift, and go to state 31
 
     functioncall  go to state 17
     statement     go to state 40
@@ -394,8 +394,8 @@ State 15
    23          | WRITE . STRINGLITERAL
 
     DIGIT          shift, and go to state 45
-    STRINGLITERAL  shift, and go to state 46
-    VARIABLE       shift, and go to state 47
+    VARIABLE       shift, and go to state 46
+    STRINGLITERAL  shift, and go to state 47
 
 
 State 16
@@ -526,7 +526,7 @@ State 29
 
     DIGIT      shift, and go to state 28
     LEFT_PREN  shift, and go to state 29
-    VARIABLE   shift, and go to state 31
+    VARIABLE   shift, and go to state 30
 
     exp     go to state 63
     term    go to state 34
@@ -534,6 +534,13 @@ State 29
 
 
 State 30
+
+   68 factor: VARIABLE .
+
+    $default  reduce using rule 68 (factor)
+
+
+State 31
 
    33 conditional: STRINGLITERAL . condition STRINGLITERAL
 
@@ -545,13 +552,6 @@ State 30
     GREATERTHAN     shift, and go to state 69
 
     condition  go to state 70
-
-
-State 31
-
-   68 factor: VARIABLE .
-
-    $default  reduce using rule 68 (factor)
 
 
 State 32
@@ -720,16 +720,16 @@ State 45
 
 State 46
 
-   23 statement: WRITE STRINGLITERAL .
+   22 statement: WRITE VARIABLE .
 
-    $default  reduce using rule 23 (statement)
+    $default  reduce using rule 22 (statement)
 
 
 State 47
 
-   22 statement: WRITE VARIABLE .
+   23 statement: WRITE STRINGLITERAL .
 
-    $default  reduce using rule 22 (statement)
+    $default  reduce using rule 23 (statement)
 
 
 State 48
@@ -740,8 +740,8 @@ State 48
 
     DIGIT          shift, and go to state 28
     LEFT_PREN      shift, and go to state 29
-    STRINGLITERAL  shift, and go to state 76
-    VARIABLE       shift, and go to state 77
+    VARIABLE       shift, and go to state 76
+    STRINGLITERAL  shift, and go to state 77
 
     functioncall  go to state 78
     exp           go to state 79
@@ -755,7 +755,7 @@ State 49
 
     DIGIT      shift, and go to state 28
     LEFT_PREN  shift, and go to state 29
-    VARIABLE   shift, and go to state 31
+    VARIABLE   shift, and go to state 30
 
     $default  reduce using rule 50 (inputargs)
 
@@ -871,7 +871,7 @@ State 61
 
     DIGIT      shift, and go to state 28
     LEFT_PREN  shift, and go to state 29
-    VARIABLE   shift, and go to state 77
+    VARIABLE   shift, and go to state 76
 
     functioncall  go to state 89
     exp           go to state 90
@@ -963,7 +963,7 @@ State 72
     TRUE       shift, and go to state 37
     FALSE      shift, and go to state 38
     LEFT_PREN  shift, and go to state 29
-    VARIABLE   shift, and go to state 31
+    VARIABLE   shift, and go to state 30
 
     boolean  go to state 95
     exp      go to state 96
@@ -977,7 +977,7 @@ State 73
 
     DIGIT      shift, and go to state 28
     LEFT_PREN  shift, and go to state 29
-    VARIABLE   shift, and go to state 31
+    VARIABLE   shift, and go to state 30
 
     term    go to state 97
     factor  go to state 35
@@ -989,7 +989,7 @@ State 74
 
     DIGIT      shift, and go to state 28
     LEFT_PREN  shift, and go to state 29
-    VARIABLE   shift, and go to state 31
+    VARIABLE   shift, and go to state 30
 
     factor  go to state 98
 
@@ -1007,19 +1007,19 @@ State 75
 
 State 76
 
-   19 statement: VARIABLE EQUAL STRINGLITERAL .
-
-    $default  reduce using rule 19 (statement)
-
-
-State 77
-
     7 functioncall: VARIABLE . LEFT_PREN inputargs RIGHT_PREN
    68 factor: VARIABLE .
 
     LEFT_PREN  shift, and go to state 49
 
     $default  reduce using rule 68 (factor)
+
+
+State 77
+
+   19 statement: VARIABLE EQUAL STRINGLITERAL .
+
+    $default  reduce using rule 19 (statement)
 
 
 State 78
@@ -1241,7 +1241,7 @@ State 101
 
     DIGIT      shift, and go to state 28
     LEFT_PREN  shift, and go to state 29
-    VARIABLE   shift, and go to state 31
+    VARIABLE   shift, and go to state 30
 
     input   go to state 107
     exp     go to state 82

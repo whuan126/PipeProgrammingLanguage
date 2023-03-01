@@ -79,15 +79,25 @@ extern int yydebug;
     COMMA = 289,
     READ = 290,
     WRITE = 291,
-    STRINGLITERAL = 292,
-    INVALIDVAR = 293,
-    VARIABLE = 294
+    INVALIDVAR = 292,
+    VARIABLE = 293,
+    STRINGLITERAL = 294
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef int YYSTYPE;
+
+union YYSTYPE
+{
+#line 77 "lexer.y" /* yacc.c:1909  */
+ // im not sure why this is necessary
+ char *op_val;
+
+#line 98 "y.tab.h" /* yacc.c:1909  */
+};
+
+typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
