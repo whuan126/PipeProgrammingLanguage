@@ -8,8 +8,9 @@ extern FILE* yyin;
 extern int currLine;
 extern int currPos;
 extern char* lineptr;
-void yyerror(const char *msg);
+
 extern int yylex(void);
+void yyerror(const char *msg);
 
 char *identToken;
 int numberToken;
@@ -83,6 +84,7 @@ void print_symbol_table(void) {
 %token INT INDEX THEN STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
 %token <op_val> VARIABLE 
 %token <op_val> DIGIT
+%token <op_val> NUMBER
 %token <op_val> STRINGLITERAL
 %type <op_val> functiondec
 %%
@@ -98,8 +100,9 @@ functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN
 {
 // midrule!!!!!
 // add function to symbol table
-std::string func_name = $0;
+std::string func_name = $1;
 add_function_to_symbol_table(func_name);
+printf("func %2\n", $1);
 }
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
@@ -211,4 +214,5 @@ int main(int argc, char ** argv) {
 void yyerror(const char *msg) {
     //fprintf(stderr, "%s\n", msg);
     printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
+	exit(1);
 }
