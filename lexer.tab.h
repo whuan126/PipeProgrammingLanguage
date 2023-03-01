@@ -30,11 +30,11 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
-#ifndef YY_YY_Y_TAB_H_INCLUDED
-# define YY_YY_Y_TAB_H_INCLUDED
+#ifndef YY_YY_LEXER_TAB_H_INCLUDED
+# define YY_YY_LEXER_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int yydebug;
@@ -45,43 +45,44 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    DIGIT = 258,
-    INT = 259,
-    INDEX = 260,
-    THEN = 261,
-    STRING = 262,
-    EQUAL = 263,
-    NOTEQUIVALENT = 264,
-    TRUE = 265,
-    FALSE = 266,
-    MULTIPLY = 267,
-    ADD = 268,
-    SUBTRACT = 269,
-    DIVISION = 270,
-    LESSEROREQUAL = 271,
-    EQUIVALENT = 272,
-    GREATEROREQUAL = 273,
-    LESSTHAN = 274,
-    GREATERTHAN = 275,
-    WHILE = 276,
-    DO = 277,
-    IF = 278,
-    ELSE = 279,
-    FUNCTION = 280,
-    LEFT_PREN = 281,
-    RIGHT_PREN = 282,
-    LEFT_BRACKET = 283,
-    RIGHT_BRACKET = 284,
-    LEFT_CURR_BRACKET = 285,
-    RIGHT_CURR_BRACKET = 286,
-    RETURN = 287,
-    END = 288,
-    COMMA = 289,
-    READ = 290,
-    WRITE = 291,
-    INVALIDVAR = 292,
-    VARIABLE = 293,
-    STRINGLITERAL = 294
+    INT = 258,
+    INDEX = 259,
+    THEN = 260,
+    STRING = 261,
+    EQUAL = 262,
+    NOTEQUIVALENT = 263,
+    TRUE = 264,
+    FALSE = 265,
+    MULTIPLY = 266,
+    ADD = 267,
+    SUBTRACT = 268,
+    DIVISION = 269,
+    LESSEROREQUAL = 270,
+    EQUIVALENT = 271,
+    GREATEROREQUAL = 272,
+    LESSTHAN = 273,
+    GREATERTHAN = 274,
+    WHILE = 275,
+    DO = 276,
+    IF = 277,
+    ELSE = 278,
+    FUNCTION = 279,
+    LEFT_PREN = 280,
+    RIGHT_PREN = 281,
+    LEFT_BRACKET = 282,
+    RIGHT_BRACKET = 283,
+    LEFT_CURR_BRACKET = 284,
+    RIGHT_CURR_BRACKET = 285,
+    RETURN = 286,
+    END = 287,
+    COMMA = 288,
+    READ = 289,
+    WRITE = 290,
+    INVALIDVAR = 291,
+    VARIABLE = 292,
+    DIGIT = 293,
+    NUMBER = 294,
+    STRINGLITERAL = 295
   };
 #endif
 
@@ -90,11 +91,11 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 77 "lexer.y" /* yacc.c:1909  */
- // im not sure why this is necessary
+#line 78 "lexer.y" /* yacc.c:1909  */
+
  char *op_val;
 
-#line 98 "y.tab.h" /* yacc.c:1909  */
+#line 99 "lexer.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -107,4 +108,4 @@ extern YYSTYPE yylval;
 
 int yyparse (void);
 
-#endif /* !YY_YY_Y_TAB_H_INCLUDED  */
+#endif /* !YY_YY_LEXER_TAB_H_INCLUDED  */

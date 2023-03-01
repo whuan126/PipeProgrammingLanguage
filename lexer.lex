@@ -1,10 +1,11 @@
-
+%option noyywrap
 %{
-#include "y.tab.h"
+#include<string>
+#include "lexer.tab.h"
 int currLine = 1, currPos = 1;
 %}
 
-DIGIT [0-9]
+DIGIT [0-9]+
 ALPHA [a-zA-Z]
 INVALIDVARIABLE [0-9][a-zA-Z0-9_]*
 VARIABLE [a-zA-Z][a-zA-Z0-9_]*
@@ -54,7 +55,13 @@ int line = 0;
 %}
 
 %%
-{DIGIT}+		        { currPos += yyleng; return DIGIT; }
+{DIGIT}+		        {
+    currPos += yyleng; 
+    char * token = new char[yyleng];
+    strcpy(token, yytext);
+    yylval.op_val = token;
+    return NUMBER;
+}
 \n                      {currPos =1; currLine++;}
 {INT}		            { currPos += yyleng; return INT; }
 {INDEX}			        { currPos += yyleng; return INDEX; }
@@ -89,7 +96,12 @@ int line = 0;
 {COMMENT}		        {}
 {STRINGLITERAL}		    { currPos += yyleng; return STRINGLITERAL; }	
 {INVALIDVARIABLE}	    { currPos += yyleng; return INVALIDVAR; }
-{VARIABLE}		        { currPos += yyleng; return VARIABLE; }
+{VARIABLE}		        {    
+   currPos += yyleng;
+   char * token = new char[yyleng];
+   strcpy(token, yytext);
+   yylval.op_val = token;
+   return VARIABLE; }
 {NOTEQUIV}		        { currPos += yyleng; return NOTEQUIVALENT; }
 [[:space:]]+
 .                       {printf("Error at line %d. column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}
