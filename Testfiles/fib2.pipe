@@ -1,8 +1,0 @@
-function fib (int number)
-    if number |leq 1
-        return number
-    end
-    else
-        return fib(number |sub 1) |add fib(number |sub 1)
-    end
-end
