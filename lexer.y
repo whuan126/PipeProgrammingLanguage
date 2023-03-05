@@ -30,7 +30,6 @@ struct Function {
 
 std::vector <Function> symbol_table;
 
-
 Function *get_function() {
   int last = symbol_table.size()-1;
   return &symbol_table[last];
@@ -94,7 +93,7 @@ start: /*epsilon*/
 void: /*epsilon*/ 
 	| function void 
 
-function: FUNCTION functiondec statements END 
+function: FUNCTION functiondec statements END {printf("endfunc\n");}
 
 functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN 
 {
@@ -102,7 +101,7 @@ functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN
 // add function to symbol table
 std::string func_name = $1;
 add_function_to_symbol_table(func_name);
-printf("func %2\n", $1);
+printf("func %s\n", $1);
 }
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
@@ -140,11 +139,11 @@ node->code = ", " + value + ", " + $3 + ", " + $5 + "\n"
 	| WRITE STRINGLITERAL
         | STRING VARIABLE EQUAL STRINGLITERAL 
         | RETURN retval 
-	| functioncall 
+		| functioncall 
         | functioncall addop functioncall 
         | functioncall mulop functioncall 
-	| VARIABLE EQUAL functioncall 
-	| INT VARIABLE EQUAL functioncall 
+		| VARIABLE EQUAL functioncall 
+		| INT VARIABLE EQUAL functioncall 
 
 conditional: exp condition exp  
 	| exp condition boolean 
