@@ -86,6 +86,8 @@ void print_symbol_table(void) {
 %token <op_val> NUMBER
 %token <op_val> STRINGLITERAL
 %type <op_val> functiondec
+%type <op_val> exp
+%type <op_val> term
 %%
 start: /*epsilon*/ 
         | function void 
@@ -120,27 +122,44 @@ rule: IF conditional statements elses END
 	| statement 
 
 statement: INT VARIABLE
-{// add vars to symbol table (declaration)
-std::string value = "0";//$1; placeholder value since empty declaration
-Type t = Integer;
-add_variable_to_symbol_table(value,t);
-}  
+	{// add vars to symbol table (declaration)
+		//std::string value = "0";//$1; placeholder value since empty declaration
+		//Type t = Integer;
+		//add_variable_to_symbol_table(value,t);
+		char * var  = $2;
+		printf(".%s", var);
+		
+	}  
 	| VARIABLE EQUAL exp 
-{
-// change vars in symbol table? (assignment)
-}
-        | VARIABLE EQUAL STRINGLITERAL 
-		| INT VARIABLE EQUAL exp  
-		| WRITE DIGIT 
-        | WRITE VARIABLE 
-		| WRITE STRINGLITERAL 
-        | STRING VARIABLE EQUAL STRINGLITERAL 
-        | RETURN retval 
-		| functioncall 
-        | functioncall addop functioncall 
-        | functioncall mulop functioncall 
-		| VARIABLE EQUAL functioncall 
-		| INT VARIABLE EQUAL functioncall 
+
+	| VARIABLE EQUAL STRINGLITERAL
+
+	| INT VARIABLE EQUAL exp  
+		{
+		char * variable = $2;
+		char * num = $4;
+		printf(".%s\n", variable);
+		printf(" = %s, %s\n", variable, num);
+		}
+	| WRITE DIGIT {}
+	
+	| WRITE VARIABLE 
+	
+	| WRITE STRINGLITERAL 
+	
+	| STRING VARIABLE EQUAL STRINGLITERAL 
+	
+	| RETURN retval 
+	
+	| functioncall 
+	
+	| functioncall addop functioncall 
+	
+	| functioncall mulop functioncall 
+	
+	| VARIABLE EQUAL functioncall 
+	
+	| INT VARIABLE EQUAL functioncall 
 
 conditional: exp condition exp  
 	| exp condition boolean 
@@ -182,7 +201,7 @@ declarationargs2: /*epsilon*/
 exp: exp addop term 
         | term 
 
-addop: ADD 
+addop: ADD
         | SUBTRACT 
 
 term: term mulop factor 
