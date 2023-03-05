@@ -30,7 +30,6 @@ struct Function {
 
 std::vector <Function> symbol_table;
 
-
 Function *get_function() {
   int last = symbol_table.size()-1;
   return &symbol_table[last];
@@ -102,7 +101,7 @@ functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN
 // add function to symbol table
 std::string func_name = $1;
 add_function_to_symbol_table(func_name);
-printf("func %2\n", $1);
+printf("func %s\n", $1);
 }
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 

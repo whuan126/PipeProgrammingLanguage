@@ -1,0 +1,8 @@
+function factorial (int number)
+    if number |leq 1
+        return 1
+    else
+        int number2 |eq number |sub 1
+        return number2 |mult number
+    end
+end

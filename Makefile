@@ -20,3 +20,9 @@ practice: lex.yy.c lexer.tab.c lexer.tab.h
 	
 clean: 
 	rm -f lex.yy.c y.tab.c y.tab.h y.output lexer.tab.c lexer.output lexer
+
+het:
+	flex lexer.lex
+	bison -v -d --file-prefix=y lexer.y
+	g++ -o lexer y.tab.c lex.yy.c -lfl
+	
