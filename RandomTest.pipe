@@ -1,0 +1,10 @@
+function main ()
+    int a
+    int b
+    int c
+
+    a |eq 5
+    b |eq 6
+    c |eq a |add b
+    
+end

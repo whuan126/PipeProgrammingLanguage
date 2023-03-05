@@ -1,10 +1,14 @@
 %{
 #include <stdio.h>
+#include <string>
+#include <vector>
+
 extern FILE* yyin;
 extern int currLine;
 extern int currPos;
 extern char* lineptr;
 void yyerror(const char *msg);
+extern int yylex(void);
 
 %}
 
