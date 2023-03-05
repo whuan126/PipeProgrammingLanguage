@@ -80,7 +80,8 @@ void print_symbol_table(void) {
 
 %define parse.error verbose
 %start start
-%token INT INDEX THEN STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
+%token INT STRING
+%token <op_val> INDEX THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
 %token <op_val> VARIABLE 
 %token <op_val> DIGIT
 %token <op_val> NUMBER
@@ -88,6 +89,9 @@ void print_symbol_table(void) {
 %type <op_val> functiondec
 %type <op_val> exp
 %type <op_val> term
+%type <op_val> factor
+%type <op_val> var
+%type <op_val> array arrayargs1 arrayarg
 %%
 start: /*epsilon*/ 
         | function void 
@@ -121,8 +125,8 @@ rule: IF conditional statements elses END
         | WHILE conditional statements END 
 	| statement 
 
-statement: INT VARIABLE
-	{// add vars to symbol table (declaration)
+statement: INT var /* declarations + assignments */ 
+	{	// add vars to symbol table (declaration)
 		//std::string value = "0";//$1; placeholder value since empty declaration
 		//Type t = Integer;
 		//add_variable_to_symbol_table(value,t);
@@ -130,36 +134,46 @@ statement: INT VARIABLE
 		printf(".%s", var);
 		
 	}  
-	| VARIABLE EQUAL exp 
-
-	| VARIABLE EQUAL STRINGLITERAL
-
-	| INT VARIABLE EQUAL exp  
-		{
+	| INT var EQUAL exp  
+	{
 		char * variable = $2;
 		char * num = $4;
 		printf(".%s\n", variable);
 		printf(" = %s, %s\n", variable, num);
-		}
-	| WRITE DIGIT {}
-	
+	}
+	| STRING var EQUAL STRINGLITERAL
+	| INT var EQUAL functioncall
+	| INT var EQUAL array
+	| STRING var EQUAL array
+
+	| WRITE DIGIT {} /* io */
 	| WRITE VARIABLE 
-	
 	| WRITE STRINGLITERAL 
 	
-	| STRING VARIABLE EQUAL STRINGLITERAL 
-	
-	| RETURN retval 
-	
+	| RETURN retval  /* function calls */
 	| functioncall 
-	
 	| functioncall addop functioncall 
-	
 	| functioncall mulop functioncall 
+
+	| var EQUAL functioncall /* assignments */
+	| var EQUAL exp
+	| var EQUAL STRINGLITERAL     
+
+array: LEFT_CURR_BRACKET arrayargs1 RIGHT_CURR_BRACKET
+
+arrayargs1: arrayarg arrayargs
+
+arrayargs: /*epsilon*/ 
+	| COMMA arrayarg arrayargs
 	
-	| VARIABLE EQUAL functioncall 
-	
-	| INT VARIABLE EQUAL functioncall 
+arrayarg: var
+	| STRINGLITERAL
+	| DIGIT
+
+var: VARIABLE
+	| VARIABLE arrayindex
+
+arrayindex: INDEX DIGIT
 
 conditional: exp condition exp  
 	| exp condition boolean 
@@ -227,7 +241,7 @@ int main(int argc, char ** argv) {
 	}
 	yyparse();
 	print_symbol_table();
-	return 1;
+	return 0;
 }
 void yyerror(const char *msg) {
     //fprintf(stderr, "%s\n", msg);
