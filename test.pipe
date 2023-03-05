@@ -1,0 +1,24 @@
+function test()
+
+    |write "Hello World"
+
+    int a
+    int b
+    int x 
+
+    a |eq 5
+
+    b |eq 10
+
+    int c |eq a |add b
+
+    |while(a |ge 0)
+        b |eq b |add 1
+        a |eq a |sub 1
+
+        if(a |eq 1)
+            x |eq 1
+        end
+    end
+
+end

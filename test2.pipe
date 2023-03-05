@@ -1,0 +1,36 @@
+function
+    int num1 |eq 5
+    int num2 |eq 10
+    //Hi
+    string word |eq "Hello"
+    string H20_
+
+    int num3 |eq num1 |mult num2
+    int num4 |eq num1 |add num2
+    int num5 |eq num1 |sub num2
+    int num6 |eq num1 |div num2
+
+    if (num1 |lt num2) 
+        num1 |eq num1 |add num1
+    end
+    if (num1 |leq num2) 
+        num1 |eq num1 |add num2
+    end
+    if (num1 |geq num2) 
+        num1 |eq num1 |mult num2
+    end
+    if (num1 |gt num2)
+        num1 |eq num2 |mult num2
+    end
+    else 
+        num1 |eq (num1)
+    end
+    do
+    end
+    while (num1 equiv num2) 
+        int array|4 |eq {0,1,2,3}
+    end
+
+    //commented out string
+
+end
