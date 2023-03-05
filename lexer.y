@@ -128,13 +128,16 @@ add_variable_to_symbol_table(value,t);
 }  
 	| VARIABLE EQUAL exp 
 {
-// change vars in symbol table? (assignment)
+// (assignment)
+std::string value = $1;
+Note *node = new Node();
+node->code = ", " + value + ", " + $3 + ", " + $5 + "\n"
 }
-        | VARIABLE EQUAL STRINGLITERAL 
+        | VARIABLE EQUAL STRINGLITERAL
 	| INT VARIABLE EQUAL exp  
 	| WRITE DIGIT 
         | WRITE VARIABLE 
-	| WRITE STRINGLITERAL 
+	| WRITE STRINGLITERAL
         | STRING VARIABLE EQUAL STRINGLITERAL 
         | RETURN retval 
 	| functioncall 
@@ -181,10 +184,17 @@ declarationargs2: /*epsilon*/
 	| COMMA type VARIABLE declarationargs2 
 
 exp: exp addop term 
-        | term 
+{
+// (assignment)
+std::string value = $1;
+Note *node = new Node();
+node->code = ", " + value + ", " + $1 + ", " + $3 + "\n"
+$$ = node;
+}
+	| term
 
-addop: ADD 
-        | SUBTRACT 
+addop: ADD {$$ = "+";}
+        | SUBTRACT  {$$ = "-";}
 
 term: term mulop factor 
         | factor 
