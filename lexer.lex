@@ -1,6 +1,6 @@
 %option noyywrap
 %{
-#include<string>
+#include <string.h>
 #include "lexer.tab.h"
 int currLine = 1, currPos = 1;
 %}
