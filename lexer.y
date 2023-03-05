@@ -16,87 +16,86 @@ char *identToken;
 int numberToken;
 int count_names = 0;
 
-/////////////////////////////////////////////////////////
+std::string returnName() {
+	static int count = 0;
+	std::string varName("_temp");
+	char stringCounter[2];
+	sprintf(stringCounter,"%d",count);
+	varName += std::string(stringCounter);
+	count++;
+	return varName;
+}
 
-enum Type { Integer, Array };
-struct Symbol {
-  std::string name;
-  Type type;
+struct Node {
+  std::string code;
+  std:: string name;
 };
-struct Function {
-  std::string name;
-  std::vector<Symbol> declarations;
-};
-
-std::vector <Function> symbol_table;
-
-Function *get_function() {
-  int last = symbol_table.size()-1;
-  return &symbol_table[last];
-}
-
-bool find(std::string &value) {
-  Function *f = get_function();
-  for(int i=0; i < f->declarations.size(); i++) {
-    Symbol *s = &f->declarations[i];
-    if (s->name == value) {
-      return true;
-    }
-  }
-  return false;
-}
-
-void add_function_to_symbol_table(std::string &value) {
-  Function f; 
-  f.name = value; 
-  symbol_table.push_back(f);
-}
-
-void add_variable_to_symbol_table(std::string &value, Type t) {
-  Symbol s;
-  s.name = value;
-  s.type = t;
-  Function *f = get_function();
-  f->declarations.push_back(s);
-}
-
-void print_symbol_table(void) {
-  printf("symbol table:\n");
-  printf("--------------------\n");
-  for(int i=0; i<symbol_table.size(); i++) {
-    printf("function: %s\n", symbol_table[i].name.c_str());
-    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
-      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
-    }
-  }
-  printf("--------------------\n");
-}
-
 %}
+
+////////////////////////////////////////////////////////
 
 %union {
  char *op_val;
+ struct Node *node;
 }
 
 %define parse.error verbose
 %start start
-%token INT INDEX THEN STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
-%token <op_val> VARIABLE 
-%token <op_val> DIGIT
-%token <op_val> NUMBER
+%token VARIABLE DIGIT INT INDEX THEN STRING EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
+
 %token <op_val> STRINGLITERAL
-%type <op_val> functiondec
-%type <op_val> exp
-%type <op_val> term
+%type <op_val> VARIABLE
+%type <node> exp
+%type <node> statement
+%type <node> statements
+%type <node> function
+%type <node> functions
+%type <op_val> addop
+%type <node> factor
+%type <node> term
+%type <node> elses
+%type <node> s2
+%type <node> rule
+%type <node> declarationargs
+%type <node> conditional
+
+
 %%
 start: /*epsilon*/ 
-        | function void 
+        | functions  
+		{
+			Node *node = $1;
+			printf("%s\n", node->code.c_str());
+		}
 
-void: /*epsilon*/ 
-	| function void 
+functions: function {
+	Node * node = $1;
+	Node *tnode = new Node;
+	tnode = node;
+	$$ = tnode;
+	}
+	| function functions {
+		Node * node = $1;
+		Node * node2 = $2;
+		Node * _node = new Node;
+		_node -> code = "";
+		_node -> code = node->code + node2->code;
+		$$ = _node;
+	};
 
-function: FUNCTION functiondec statements END {printf("endfunc\n");}
+function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
+	Node *node = new Node;
+	Node *statements = $6;
+	std::string func_name = $2;
+	node-> code = "";
+	node -> code += std::string("func ") + func_name + std::string("\n");
 
+	node -> code += $4 -> code;
+	node -> code += statements -> code;
+	node -> code += std::string("endfunc\n");
+};
+
+/*
 functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN 
 {
 // midrule!!!!!
@@ -105,6 +104,7 @@ std::string func_name = $1;
 add_function_to_symbol_table(func_name);
 printf("func %s\n", $1);
 }
+*/
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
 
@@ -121,7 +121,7 @@ rule: IF conditional statements elses END
         | WHILE conditional statements END 
 	| statement 
 
-statement: INT VARIABLE
+statement:   INT VARIABLE
 	{// add vars to symbol table (declaration)
 		//std::string value = "0";//$1; placeholder value since empty declaration
 		//Type t = Integer;
@@ -131,17 +131,18 @@ statement: INT VARIABLE
 		
 	}  
 	| VARIABLE EQUAL exp 
+		{
+		}
 
 	| VARIABLE EQUAL STRINGLITERAL
 
 	| INT VARIABLE EQUAL exp  
 		{
-		char * variable = $2;
-		char * num = $4;
-		printf(".%s\n", variable);
-		printf(" = %s, %s\n", variable, num);
 		}
-	| WRITE DIGIT {}
+	| WRITE DIGIT 
+	{
+		
+	}
 	
 	| WRITE VARIABLE 
 	
@@ -192,17 +193,42 @@ inputargs: /*epsilon*/
 inputargs2: /*epsilon*/ 
 	| COMMA input inputargs2 
 
-declarationargs:  /*epsilon*/ 
-	| type VARIABLE declarationargs2 
+declarationargs: arg
+	| arg COMMA declarationargs
+	| /*epsilon*/
 
-declarationargs2: /*epsilon*/ 
-	| COMMA type VARIABLE declarationargs2 
+arg: INT VARIABLE| {
+	Node *node = new Node;
+	node -> name = $2;
+	node -> code = std::string(". ") + $2 + std::string("\n");
+	node -> code += std::string("= ") $2 + std::string(", ") + returnArgument() + std::string(":\n");
+	$$ = node;
+}
+	exp {
+		$$ = $1;
+	}
 
 exp: exp addop term 
-        | term 
+	{
+		Node *node = new Node;
+		std::string temp = returnName();
+		node->name = temp;
+		node->code = $1->code + $3->code + std::string(". ") + temp + std::string("\n");
+		node->code += std::string($2) + std::string(" ") + temp + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+		$$ = node;
+	}
+    | term  {
+		Node *node = $1;
+		$$ = node;
+	}
 
-addop: ADD
-        | SUBTRACT 
+	addop: ADD {
+		$$ = "+";
+		}
+
+    | SUBTRACT {
+		$$ = "-";
+	}
 
 term: term mulop factor 
         | factor 
@@ -213,6 +239,7 @@ mulop: MULTIPLY
 factor: LEFT_PREN exp RIGHT_PREN 
         | DIGIT  	
 	| VARIABLE 
+	| function_call 
 %%
 
 int main(int argc, char ** argv) {
@@ -226,7 +253,6 @@ int main(int argc, char ** argv) {
 		yyin = stdin;
 	}
 	yyparse();
-	print_symbol_table();
 	return 1;
 }
 void yyerror(const char *msg) {

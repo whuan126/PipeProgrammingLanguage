@@ -45,44 +45,43 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
-    INDEX = 259,
-    THEN = 260,
-    STRING = 261,
-    EQUAL = 262,
-    NOTEQUIVALENT = 263,
-    TRUE = 264,
-    FALSE = 265,
-    MULTIPLY = 266,
-    ADD = 267,
-    SUBTRACT = 268,
-    DIVISION = 269,
-    LESSEROREQUAL = 270,
-    EQUIVALENT = 271,
-    GREATEROREQUAL = 272,
-    LESSTHAN = 273,
-    GREATERTHAN = 274,
-    WHILE = 275,
-    DO = 276,
-    IF = 277,
-    ELSE = 278,
-    FUNCTION = 279,
-    LEFT_PREN = 280,
-    RIGHT_PREN = 281,
-    LEFT_BRACKET = 282,
-    RIGHT_BRACKET = 283,
-    LEFT_CURR_BRACKET = 284,
-    RIGHT_CURR_BRACKET = 285,
-    RETURN = 286,
-    END = 287,
-    COMMA = 288,
-    READ = 289,
-    WRITE = 290,
-    INVALIDVAR = 291,
-    VARIABLE = 292,
-    DIGIT = 293,
-    NUMBER = 294,
-    STRINGLITERAL = 295
+    VARIABLE = 258,
+    DIGIT = 259,
+    INT = 260,
+    INDEX = 261,
+    THEN = 262,
+    STRING = 263,
+    EQUAL = 264,
+    NOTEQUIVALENT = 265,
+    TRUE = 266,
+    FALSE = 267,
+    MULTIPLY = 268,
+    ADD = 269,
+    SUBTRACT = 270,
+    DIVISION = 271,
+    LESSEROREQUAL = 272,
+    EQUIVALENT = 273,
+    GREATEROREQUAL = 274,
+    LESSTHAN = 275,
+    GREATERTHAN = 276,
+    WHILE = 277,
+    DO = 278,
+    IF = 279,
+    ELSE = 280,
+    FUNCTION = 281,
+    LEFT_PREN = 282,
+    RIGHT_PREN = 283,
+    LEFT_BRACKET = 284,
+    RIGHT_BRACKET = 285,
+    LEFT_CURR_BRACKET = 286,
+    RIGHT_CURR_BRACKET = 287,
+    RETURN = 288,
+    END = 289,
+    COMMA = 290,
+    READ = 291,
+    WRITE = 292,
+    INVALIDVAR = 293,
+    STRINGLITERAL = 294
   };
 #endif
 
@@ -91,9 +90,10 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 77 "lexer.y" /* yacc.c:1909  */
+#line 37 "lexer.y" /* yacc.c:1909  */
 
  char *op_val;
+ struct Node *node;
 
 #line 99 "y.tab.h" /* yacc.c:1909  */
 };
