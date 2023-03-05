@@ -122,18 +122,16 @@ void print_symbol_table(void) {
 %type <node> var
 %type <node> function
 %type <node> declarationargs
-%type <node> s2
-%type <node> rule
 %type <node> conditional
-%type <node> elses
+//%type <node> elses
 %type <node> declarationargs2
 %type <node> type
-%type <op_val> ELSE IF COMMA
+%type <op_val> ELSE IF COMMA mulop addop
 %type <node> functions
 
 %type <op_val> array arrayargs1 arrayarg
 %%
-start: /*epsilon*/ 
+start: %empty /*epsilon*/ 
         | functions 
 			{
 				Node *node = $1;
@@ -173,70 +171,33 @@ function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END
 	}
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
+{
+	
+}
 
-elses: /*epsilon*/ 
-	{
-		Node * node = new Node;
-		node-> code = "";
-		$$ = node;
-	}
-	| ELSE statements 
-	{
-		std::string els = $1;
-		Node *statements = $2;
-		Node * node = new Node;
-		node-> code = els + statements->code;
-	}
+//elses: /*epsilon*/ 
+//	{
 
-statements: /*epsilon*/ 
-	{
-		Node * node = new Node;
-		node->code = "";
-		$$ = node;
-	}
-	| rule s2 
-	{
-		Node *s2 = $2;
-		Node *rule = $1;
-		Node *node = new Node;
-		node-> code = rule->code + s2->code;
-		$$=node;
-	}
 
-s2: /*epsilon*/ 
-	{
-		Node *node = new Node;
-		node->code = "";
-		$$ = node;
-	}
-	| rule s2 
-	{
-		Node *s2 = $2;
-		Node *rule = $1;
-		Node *node = new Node;
-		node-> code = rule->code + s2->code;
-		$$=node;
-	}
+//	}
+//	| ELSE statements 
+//	{
+		
+//	}
 
-rule: IF conditional statements elses END 
+statements: %empty /*epsilon*/
 	{
-		std::string iff = $1;
-		Node * conditional = $2;
-		Node * statements = $3;
-		Node * elses = $4;
-		std::string endd = $5;
-
-		Node * node = new Node; 
-
-		node-> code = "" + iff + conditional->code + statements->code + elses->code + std::string("\n") + endd;
-		$$ = node;
+	Node *node = new Node;
+	node->code = std::string("");
+	$$ = node;
 	}
-    | WHILE conditional statements END 
-	| statement 
+	| statement statements
 	{
 		Node *statement = $1;
+		Node *statements = $2;
+
 		Node *node = new Node;
-		node->code = statement->code;
+		node->code = statement->code + std::string("\n") + statements ->code;
 		$$ = node;
 	}
 
@@ -317,21 +278,18 @@ retval: statement
 	| conditional 
 	| boolean 
 
-type: /*epsilon*/ 
-	| INT 
+type: INT 
 	| STRING 
 
 input: exp 
 
-inputargs: /*epsilon*/ 
+inputargs: %empty /*epsilon*/ 
 	| input inputargs2 
 
 inputargs2: /*epsilon*/ 
 	| COMMA input inputargs2 
 
-declarationargs:  /*epsilon*/ 
-	{
-		argCount = 0;
+declarationargs: %empty /*epsilon*/ {
 		Node * node = new Node;
 		node->code = std::string("");
 		$$ = node;
@@ -346,8 +304,13 @@ declarationargs:  /*epsilon*/
 		node-> code = "" + type->code + variable + decargs2->code;
 		$$ = node;
 	}
+	| %empty /*epsilon*/{
+		Node *node = new Node;
+		node ->code = std::string("");
+		$$ = node;
+	}
 
-declarationargs2: /*epsilon*/ 
+declarationargs2: %empty /*epsilon*/ 
 	| COMMA type VARIABLE declarationargs2
 	{
 		std::string comma = $1;
@@ -363,14 +326,27 @@ declarationargs2: /*epsilon*/
 exp: exp addop term 
 	| term
 
-addop: ADD
-    | SUBTRACT 
+addop: ADD {
+		char op[] = "+";
+		$$ = op;
+	}
+    | SUBTRACT  {
+		char op[] = "-";
+		$$ = op;
+	}
 
 term: term mulop factor 
     | factor 
 
-mulop: MULTIPLY 
-    | DIVISION 
+mulop: MULTIPLY {
+	char op[] = "*";
+	$$ = op;
+}
+    | DIVISION
+	{
+		char op[] = "/";
+		$$ = op;
+	} 
 
 factor: LEFT_PREN exp RIGHT_PREN 
     | DIGIT  	
