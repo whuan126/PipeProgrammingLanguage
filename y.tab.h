@@ -50,39 +50,38 @@ extern int yydebug;
     INDEX = 260,
     THEN = 261,
     EQUAL = 262,
-    NOTEQUIVALENT = 263,
-    TRUE = 264,
-    FALSE = 265,
-    MULTIPLY = 266,
-    ADD = 267,
-    SUBTRACT = 268,
-    DIVISION = 269,
-    LESSEROREQUAL = 270,
-    EQUIVALENT = 271,
-    GREATEROREQUAL = 272,
-    LESSTHAN = 273,
-    GREATERTHAN = 274,
-    WHILE = 275,
-    DO = 276,
-    IF = 277,
-    ELSE = 278,
-    FUNCTION = 279,
-    LEFT_PREN = 280,
-    RIGHT_PREN = 281,
-    LEFT_BRACKET = 282,
-    RIGHT_BRACKET = 283,
-    LEFT_CURR_BRACKET = 284,
-    RIGHT_CURR_BRACKET = 285,
-    RETURN = 286,
-    END = 287,
-    COMMA = 288,
-    READ = 289,
-    WRITE = 290,
-    INVALIDVAR = 291,
-    VARIABLE = 292,
-    DIGIT = 293,
-    NUMBER = 294,
-    STRINGLITERAL = 295
+    STRINGLITERAL = 263,
+    NOTEQUIVALENT = 264,
+    TRUE = 265,
+    FALSE = 266,
+    MULTIPLY = 267,
+    ADD = 268,
+    SUBTRACT = 269,
+    DIVISION = 270,
+    LESSEROREQUAL = 271,
+    EQUIVALENT = 272,
+    GREATEROREQUAL = 273,
+    LESSTHAN = 274,
+    GREATERTHAN = 275,
+    WHILE = 276,
+    DO = 277,
+    IF = 278,
+    ELSE = 279,
+    FUNCTION = 280,
+    LEFT_PREN = 281,
+    RIGHT_PREN = 282,
+    LEFT_BRACKET = 283,
+    RIGHT_BRACKET = 284,
+    LEFT_CURR_BRACKET = 285,
+    RIGHT_CURR_BRACKET = 286,
+    RETURN = 287,
+    END = 288,
+    COMMA = 289,
+    READ = 290,
+    WRITE = 291,
+    INVALIDVAR = 292,
+    VARIABLE = 293,
+    DIGIT = 294
   };
 #endif
 
@@ -91,9 +90,10 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 77 "lexer.y" /* yacc.c:1909  */
+#line 102 "lexer.y" /* yacc.c:1909  */
 
  char *op_val;
+ Node *node;
 
 #line 99 "y.tab.h" /* yacc.c:1909  */
 };

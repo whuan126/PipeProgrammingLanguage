@@ -3,5 +3,4 @@ function main()
     int b |eq 50
     int c |eq a |add b
     write (c)
-
 end
