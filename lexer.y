@@ -122,7 +122,7 @@ s2: /*epsilon*/
 	| rule s2 
 
 rule: IF conditional statements elses END 
-        | WHILE conditional statements END 
+    | WHILE conditional statements END 
 	| statement 
 
 statement: INT var /* declarations + assignments */ 
