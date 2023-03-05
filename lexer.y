@@ -93,7 +93,7 @@ start: /*epsilon*/
 void: /*epsilon*/ 
 	| function void 
 
-function: FUNCTION functiondec statements END 
+function: FUNCTION functiondec statements END {printf("endfunc\n");}
 
 functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN 
 {
@@ -130,17 +130,17 @@ add_variable_to_symbol_table(value,t);
 // change vars in symbol table? (assignment)
 }
         | VARIABLE EQUAL STRINGLITERAL 
-	| INT VARIABLE EQUAL exp  
-	| WRITE DIGIT 
+		| INT VARIABLE EQUAL exp  
+		| WRITE DIGIT 
         | WRITE VARIABLE 
-	| WRITE STRINGLITERAL 
+		| WRITE STRINGLITERAL 
         | STRING VARIABLE EQUAL STRINGLITERAL 
         | RETURN retval 
-	| functioncall 
+		| functioncall 
         | functioncall addop functioncall 
         | functioncall mulop functioncall 
-	| VARIABLE EQUAL functioncall 
-	| INT VARIABLE EQUAL functioncall 
+		| VARIABLE EQUAL functioncall 
+		| INT VARIABLE EQUAL functioncall 
 
 conditional: exp condition exp  
 	| exp condition boolean 
