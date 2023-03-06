@@ -15,7 +15,7 @@ EQUAL \|eq
 NOTEQUAL \|neq
 MULTIPLY \|mult
 ADD \|add
-NOTEQUIV \|noteq
+NOTEQUIV \|noteq 
 SUBTRACT \|sub
 DIVISION \|div
 LESSEROREQUAL \|leq
