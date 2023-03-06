@@ -115,7 +115,6 @@ void print_symbol_table(void) {
 start: %empty/*epsilon*/ {}
         | functions {
 			Node * node = $1;
-			printf("SUHHHHH DOOOD");
 
 			printf("%s\n", node->code.c_str());
 		};
