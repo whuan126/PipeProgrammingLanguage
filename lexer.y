@@ -98,20 +98,19 @@ void print_symbol_table(void) {
 }
 
 %}
-
+%start start
 %union {
  char *op_val;
  Node *node;
 }
 
 %define parse.error verbose
-%start start
-%token INT STRING
-%token INDEX THEN EQUAL STRINGLITERAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
-%token <op_val> VARIABLE 
+
+%token INDEX INT DIGIT STRING THEN EQUAL STRINGLITERAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
+%token VARIABLE 
+%type <op_val> VARIABLE
 %type <op_val>  FUNCTION
 %type <op_val> STRING
-%token <op_val> DIGIT
 %type <op_val> INT
 %type <node> exp
 %type <node> statement
@@ -123,7 +122,6 @@ void print_symbol_table(void) {
 %type <node> function
 %type <node> declarationargs
 %type <node> conditional
-//%type <node> elses
 %type <node> declarationargs2
 %type <node> type
 %type <op_val> ELSE IF COMMA mulop addop
@@ -131,6 +129,7 @@ void print_symbol_table(void) {
 
 %type <op_val> array arrayargs1 arrayarg
 %%
+
 start: %empty /*epsilon*/ 
         | functions 
 			{
