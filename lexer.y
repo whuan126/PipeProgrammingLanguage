@@ -157,7 +157,7 @@ statement: INT var /* declarations + assignments */
 
 	| var EQUAL functioncall /* assignments */
 	| var EQUAL exp
-	| var EQUAL STRINGLITERAL     
+	| var EQUAL STRINGLITERAL   
 
 array: LEFT_CURR_BRACKET arrayargs1 RIGHT_CURR_BRACKET
 
