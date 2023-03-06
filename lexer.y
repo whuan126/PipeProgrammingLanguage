@@ -99,7 +99,7 @@ void print_symbol_table(void) {
 
 %union {
  char *op_val;
- Node *node;
+ struct Node *node;
 }
 
 %define parse.error verbose
