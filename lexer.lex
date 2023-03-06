@@ -1,7 +1,7 @@
 %option noyywrap
 %{
 #include <string.h>
-#include "lexer.tab.h"
+#include "y.tab.h"
 int currLine = 1, currPos = 1;
 %}
 
@@ -26,7 +26,6 @@ EQUIVALENT \|equiv
 WHILE while
 DO do
 IF if
-THEN then
 ELSE else
 FUNCTION function
 LEFT_PREN \(
@@ -79,7 +78,6 @@ int line = 0;
 {WHILE} 		        { currPos += yyleng; return WHILE; }
 {DO} 			        { currPos += yyleng; return DO; }
 {IF} 			        { currPos += yyleng; return IF; }
-{THEN}			        { currPos += yyleng; return THEN; }
 {ELSE} 			        { currPos += yyleng; return ELSE; }
 {FUNCTION} 		        { currPos += yyleng; return FUNCTION; }
 {LEFT_PREN} 		    { currPos += yyleng; return LEFT_PREN; }
@@ -95,7 +93,7 @@ int line = 0;
 {WRITE}			        { currPos += yyleng; return WRITE; }
 {COMMENT}		        {}
 {STRINGLITERAL}		    { currPos += yyleng; return STRINGLITERAL; }	
-{INVALIDVARIABLE}	    { currPos += yyleng; return INVALIDVAR; }
+{INVALIDVARIABLE}	    { currPos += yyleng; return INVALIDVARIABLE; }
 {VARIABLE}		        {    
    currPos += yyleng;
    char * token = new char[yyleng];

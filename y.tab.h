@@ -45,66 +45,56 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
-    STRING = 259,
-    INDEX = 260,
-    THEN = 261,
-    EQUAL = 262,
-    NOTEQUIVALENT = 263,
-    TRUE = 264,
-    FALSE = 265,
+    DIGIT = 258,
+    ALPHA = 259,
+    INVALIDVARIABLE = 260,
+    VARIABLE = 261,
+    INT = 262,
+    STRING = 263,
+    EQUAL = 264,
+    NOTEQUAL = 265,
     MULTIPLY = 266,
     ADD = 267,
-    SUBTRACT = 268,
-    DIVISION = 269,
-    LESSEROREQUAL = 270,
-    EQUIVALENT = 271,
+    NOTEQUIV = 268,
+    SUBTRACT = 269,
+    DIVISION = 270,
+    LESSEROREQUAL = 271,
     GREATEROREQUAL = 272,
     LESSTHAN = 273,
     GREATERTHAN = 274,
-    WHILE = 275,
-    DO = 276,
-    IF = 277,
-    ELSE = 278,
-    FUNCTION = 279,
-    LEFT_PREN = 280,
-    RIGHT_PREN = 281,
-    LEFT_BRACKET = 282,
+    EQUIVALENT = 275,
+    WHILE = 276,
+    DO = 277,
+    IF = 278,
+    ELSE = 279,
+    FUNCTION = 280,
+    LEFT_PREN = 281,
+    RIGHT_PREN = 282,
     RIGHT_BRACKET = 283,
-    LEFT_CURR_BRACKET = 284,
-    RIGHT_CURR_BRACKET = 285,
-    RETURN = 286,
-    END = 287,
-    COMMA = 288,
-    READ = 289,
-    WRITE = 290,
-    INVALIDVAR = 291,
-    VARIABLE = 292,
-    DIGIT = 293,
-    NUMBER = 294,
-    STRINGLITERAL = 295
+    LEFT_BRACKET = 284,
+    LEFT_CURR_BRACKET = 285,
+    RIGHT_CURR_BRACKET = 286,
+    RETURN = 287,
+    INDEX = 288,
+    END = 289,
+    COMMA = 290,
+    READ = 291,
+    TRUE = 292,
+    FALSE = 293,
+    WRITE = 294,
+    COMMENT = 295,
+    STRINGLITERAL = 296
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
-union YYSTYPE
-{
-#line 77 "lexer.y" /* yacc.c:1909  */
-
- char *op_val;
-
-#line 99 "y.tab.h" /* yacc.c:1909  */
-};
-
-typedef union YYSTYPE YYSTYPE;
+typedef int YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
 
-extern YYSTYPE yylval;
 
 int yyparse (void);
 

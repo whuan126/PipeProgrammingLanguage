@@ -1,232 +1,56 @@
+//c code. 
+%define api.pure
 %{
 #include <stdio.h>
 #include<string>
 #include<vector>
 #include<string.h>
 
+using namespace std;
+
 extern FILE* yyin;
 extern int currLine;
 extern int currPos;
 extern char* lineptr;
-
 extern int yylex(void);
 void yyerror(const char *msg);
-
 char *identToken;
 int numberToken;
 int count_names = 0;
 
 /////////////////////////////////////////////////////////
 
-enum Type { Integer, Array };
-struct Symbol {
-  std::string name;
-  Type type;
-};
-struct Function {
-  std::string name;
-  std::vector<Symbol> declarations;
-};
-
-std::vector <Function> symbol_table;
-
-Function *get_function() {
-  int last = symbol_table.size()-1;
-  return &symbol_table[last];
-}
-
-bool find(std::string &value) {
-  Function *f = get_function();
-  for(int i=0; i < f->declarations.size(); i++) {
-    Symbol *s = &f->declarations[i];
-    if (s->name == value) {
-      return true;
-    }
-  }
-  return false;
-}
-
-void add_function_to_symbol_table(std::string &value) {
-  Function f; 
-  f.name = value; 
-  symbol_table.push_back(f);
-}
-
-void add_variable_to_symbol_table(std::string &value, Type t) {
-  Symbol s;
-  s.name = value;
-  s.type = t;
-  Function *f = get_function();
-  f->declarations.push_back(s);
-}
-
-void print_symbol_table(void) {
-  printf("symbol table:\n");
-  printf("--------------------\n");
-  for(int i=0; i<symbol_table.size(); i++) {
-    printf("function: %s\n", symbol_table[i].name.c_str());
-    for(int j=0; j<symbol_table[i].declarations.size(); j++) {
-      printf("  locals: %s\n", symbol_table[i].declarations[j].name.c_str());
-    }
-  }
-  printf("--------------------\n");
-}
 
 %}
 
-%union {
- char *op_val;
-}
 
 %define parse.error verbose
+
+//Start definition
 %start start
-%token INT STRING
-%token <op_val> INDEX THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
-%token <op_val> VARIABLE 
-%token <op_val> DIGIT
-%token <op_val> NUMBER
-%token <op_val> STRINGLITERAL
-%type <op_val> functiondec
-%type <op_val> exp
-%type <op_val> term
-%type <op_val> factor
-%type <op_val> var
-%type <op_val> array arrayargs1 arrayarg
+//Tokens: 
+%token DIGIT ALPHA INVALIDVARIABLE VARIABLE INT STRING EQUAL NOTEQUAL MULTIPLY ADD NOTEQUIV SUBTRACT DIVISION LESSEROREQUAL GREATEROREQUAL LESSTHAN GREATERTHAN EQUIVALENT WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN RIGHT_BRACKET LEFT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN INDEX END COMMA READ TRUE FALSE WRITE COMMENT STRINGLITERAL
+
+
+// production rules. 
 %%
-start: /*epsilon*/ 
-        | function void 
+//start -> functions
+start: functions
 
-void: /*epsilon*/ 
-	| function void 
+//functions -> functions function | function
+functions	: functions function
+		  	| function {printf("functions -> function");}
 
-function: FUNCTION functiondec statements END {printf("endfunc\n");}
+function	: FUNCTION VARIABLE LEFT_PREN functionargs RIGHT_PREN statements END
 
-functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN 
-{
-// midrule!!!!!
-// add function to symbol table
-std::string func_name = $1;
-add_function_to_symbol_table(func_name);
-printf("func %s\n", $1);
-}
+functionargs: %empty {printf("functionargs -> empty");}
+			| INT VARIABLE 
 
-functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
 
-elses: /*epsilon*/ 
-	| ELSE statements 
+statements	: %empty {printf("statements -> empty");}
+			| INT VARIABLE
 
-statements: /*epsilon*/ 
-	| rule s2 
 
-s2: /*epsilon*/ 
-	| rule s2 
-
-rule: IF conditional statements elses END 
-    | WHILE conditional statements END 
-	| statement 
-
-statement: INT var /* declarations + assignments */ 
-	{	// add vars to symbol table (declaration)
-		//std::string value = "0";//$1; placeholder value since empty declaration
-		//Type t = Integer;
-		//add_variable_to_symbol_table(value,t);
-		char * var  = $2;
-		printf(".%s", var);
-		
-	}  
-	| INT var EQUAL exp  
-	{
-		char * variable = $2;
-		char * num = $4;
-		printf(".%s\n", variable);
-		printf(" = %s, %s\n", variable, num);
-	}
-	| STRING var EQUAL STRINGLITERAL
-	| INT var EQUAL functioncall
-	| INT var EQUAL array
-	| STRING var EQUAL array
-
-	| WRITE DIGIT {} /* io */
-	| WRITE VARIABLE 
-	| WRITE STRINGLITERAL 
-	
-	| RETURN retval  /* function calls */
-	| functioncall 
-	| functioncall addop functioncall 
-	| functioncall mulop functioncall 
-
-	| var EQUAL functioncall /* assignments */
-	| var EQUAL exp
-	| var EQUAL STRINGLITERAL     
-
-array: LEFT_CURR_BRACKET arrayargs1 RIGHT_CURR_BRACKET
-
-arrayargs1: arrayarg arrayargs
-
-arrayargs: /*epsilon*/ 
-	| COMMA arrayarg arrayargs
-	
-arrayarg: var
-	| STRINGLITERAL
-	| DIGIT
-
-var: VARIABLE
-	| VARIABLE arrayindex
-
-arrayindex: INDEX DIGIT
-
-conditional: exp condition exp  
-	| exp condition boolean 
-        | STRINGLITERAL condition STRINGLITERAL  
-	
-boolean: TRUE 
-	| FALSE 
-
-condition: LESSEROREQUAL
-        | GREATEROREQUAL
-        | LESSTHAN      
-        | GREATERTHAN   
-        | EQUIVALENT    
-        | NOTEQUIVALENT 
-
-retval: statement 
-	| exp  
-	| conditional 
-	| boolean 
-
-type: /*epsilon*/ 
-	| INT 
-	| STRING 
-
-input: exp 
-
-inputargs: /*epsilon*/ 
-	| input inputargs2 
-
-inputargs2: /*epsilon*/ 
-	| COMMA input inputargs2 
-
-declarationargs:  /*epsilon*/ 
-	| type VARIABLE declarationargs2 
-
-declarationargs2: /*epsilon*/ 
-	| COMMA type VARIABLE declarationargs2 
-
-exp: exp addop term 
-	| term
-
-addop: ADD
-        | SUBTRACT 
-
-term: term mulop factor 
-        | factor 
-
-mulop: MULTIPLY 
-        | DIVISION 
-
-factor: LEFT_PREN exp RIGHT_PREN 
-        | DIGIT  	
-	| VARIABLE 
 %%
 
 int main(int argc, char ** argv) {
@@ -240,7 +64,6 @@ int main(int argc, char ** argv) {
 		yyin = stdin;
 	}
 	yyparse();
-	print_symbol_table();
 	return 0;
 }
 void yyerror(const char *msg) {
