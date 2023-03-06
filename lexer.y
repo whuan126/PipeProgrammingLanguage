@@ -157,8 +157,6 @@ function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
 {
-	
-}
 
 //elses: /*epsilon*/ 
 //	{

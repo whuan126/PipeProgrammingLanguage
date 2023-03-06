@@ -1,0 +1,11 @@
+function main
+int a
+int b
+int c
+|eq a, 100
+|eq b, 50
+int _temp0
+|add _temp0, a, b
+|eq c, _temp0
+return c
+end

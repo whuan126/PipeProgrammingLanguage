@@ -2,6 +2,7 @@
 %{
 #include <string.h>
 #include "lexer.tab.h"
+
 int currLine = 1, currPos = 1;
 %}
 
@@ -117,4 +118,3 @@ int line = 0;
 // 	printf("Total equal signs: %d\n", equal);
 // 	printf("Quiting...\n");
 // }
-
