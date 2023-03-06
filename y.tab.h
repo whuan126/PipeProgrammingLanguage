@@ -94,7 +94,7 @@ union YYSTYPE
 #line 102 "lexer.y" /* yacc.c:1909  */
 
  char *op_val;
- Node *node;
+ struct Node *node;
 
 #line 100 "y.tab.h" /* yacc.c:1909  */
 };
