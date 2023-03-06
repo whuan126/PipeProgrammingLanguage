@@ -1,7 +1,4 @@
 function main()
-    int a |eq 100
-    int b |eq 50
-    int c |eq a |add b
-    write (c)
-
+    int a
+    a |eq 5
 end
