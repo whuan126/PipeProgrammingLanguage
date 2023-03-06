@@ -323,7 +323,13 @@ declarationargs2: %empty /*epsilon*/
 		$$ = node;
 	}
 
-exp: exp addop term 
+exp: exp addop term {
+	Node *node = new Node;
+	std::string tempVar = returnTempName();
+	node->name = tempVar;
+	node->code = $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+	node->code+= std::string($2) + std::string(" ") + tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+}
 	| term
 
 addop: ADD {
