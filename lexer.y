@@ -106,28 +106,14 @@ void print_symbol_table(void) {
 
 %define parse.error verbose
 
-%token INDEX INT DIGIT STRING THEN EQUAL STRINGLITERAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
-%token VARIABLE 
+%token INDEX NUMBER INT DIGIT STRING THEN EQUAL STRINGLITERAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE 
 %type <op_val> VARIABLE
 %type <op_val>  FUNCTION
 %type <op_val> STRING
 %type <op_val> INT
-%type <node> exp
-%type <node> statement
-%type <node> statements
-%type <node> term
-%type <op_val> END
-%type <node> factor
-%type <node> var
-%type <node> function
-%type <node> declarationargs
-%type <node> conditional
-%type <node> declarationargs2
-%type <node> type
+%type <node> exp functions statement statements term factor var function declarationargs conditional declarationargs2 type
 %type <op_val> ELSE IF COMMA mulop addop
-%type <node> functions
 
-%type <op_val> array arrayargs1 arrayarg
 %%
 
 start: %empty /*epsilon*/ 
