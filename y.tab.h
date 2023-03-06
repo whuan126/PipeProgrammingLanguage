@@ -63,26 +63,23 @@ extern int yydebug;
     LESSTHAN = 273,
     GREATERTHAN = 274,
     WHILE = 275,
-    DO = 276,
-    IF = 277,
-    ELSE = 278,
-    FUNCTION = 279,
-    LEFT_PREN = 280,
-    RIGHT_PREN = 281,
-    LEFT_BRACKET = 282,
-    RIGHT_BRACKET = 283,
-    LEFT_CURR_BRACKET = 284,
-    RIGHT_CURR_BRACKET = 285,
-    RETURN = 286,
-    END = 287,
-    COMMA = 288,
-    READ = 289,
-    WRITE = 290,
-    INVALIDVAR = 291,
-    VARIABLE = 292,
-    DIGIT = 293,
-    NUMBER = 294,
-    STRINGLITERAL = 295
+    IF = 276,
+    ELSE = 277,
+    FUNCTION = 278,
+    LEFT_PREN = 279,
+    RIGHT_PREN = 280,
+    LEFT_BRACKET = 281,
+    RIGHT_BRACKET = 282,
+    LEFT_CURR_BRACKET = 283,
+    RIGHT_CURR_BRACKET = 284,
+    RETURN = 285,
+    END = 286,
+    COMMA = 287,
+    WRITE = 288,
+    INVALIDVAR = 289,
+    VARIABLE = 290,
+    DIGIT = 291,
+    STRINGLITERAL = 292
   };
 #endif
 
@@ -95,7 +92,7 @@ union YYSTYPE
 
  char *op_val;
 
-#line 99 "y.tab.h" /* yacc.c:1909  */
+#line 96 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;

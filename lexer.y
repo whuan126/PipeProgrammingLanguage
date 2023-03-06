@@ -80,18 +80,13 @@ void print_symbol_table(void) {
 
 %define parse.error verbose
 %start start
-%token INT STRING
-%token <op_val> INDEX THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
+%token INT STRING INDEX THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA WRITE INVALIDVAR
 %token <op_val> VARIABLE 
 %token <op_val> DIGIT
-%token <op_val> NUMBER
 %token <op_val> STRINGLITERAL
-%type <op_val> functiondec
-%type <op_val> exp
-%type <op_val> term
-%type <op_val> factor
 %type <op_val> var
-%type <op_val> array arrayargs1 arrayarg
+%type <op_val> statement
+%type <op_val> exp
 %%
 start: /*epsilon*/ 
         | function void 
@@ -170,10 +165,8 @@ arrayarg: var
 	| STRINGLITERAL
 	| DIGIT
 
-var: VARIABLE
-	| VARIABLE arrayindex
-
-arrayindex: INDEX DIGIT
+var: VARIABLE {printf("no");}
+	| VARIABLE INDEX {printf("yes");}
 
 conditional: exp condition exp  
 	| exp condition boolean 
@@ -244,7 +237,7 @@ int main(int argc, char ** argv) {
 	return 0;
 }
 void yyerror(const char *msg) {
-    //fprintf(stderr, "%s\n", msg);
+    fprintf(stderr, "%s\n", msg);
     printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
 	exit(1);
 }
