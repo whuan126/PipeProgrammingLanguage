@@ -17,6 +17,7 @@ int numberToken;
 int count_names = 0;
 
 /////////////////////////////////////////////////////////
+int argCount = 0;
 
 enum Type { Integer, Array };
 struct Node {
@@ -37,6 +38,24 @@ std::vector <Function> symbol_table;
 Function *get_function() {
   int last = symbol_table.size()-1;
   return &symbol_table[last];
+}
+std::string returnTempVarName(){
+    static int count = 0;
+    std::string varName("_temp");
+    char strCount[2];
+    sprintf(strCount,"%d",count);
+    varName += std::string(strCount);
+    count++;
+    return varName;
+}
+
+std::string returnArgument(){
+    std::string argName("$");
+    char strCount[2];
+    sprintf(strCount,"%d",argCount);
+    argName += std::string(strCount);
+    argCount++;
+    return argName;
 }
 
 bool find(std::string &value) {
@@ -86,21 +105,27 @@ void print_symbol_table(void) {
 %define parse.error verbose
 %start start
 %token INT STRING
-%token INDEX DIGIT THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE NUMBER STRINGLITERAL
-%type <op_val> FUNCTION VARIABLE var NUMBER
-%type <node> exp functions function term factor
+%token INDEX THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE 
+%token <op_val> DIGIT
+%token <op_val> NUMBER
+%token <op_val> STRINGLITERAL
+%type <op_val> FUNCTION VARIABLE var array arrayargs1 arrayarg addop mulop
+%type <node> exp functions function statements statement declarationargs type term factor rule s2
 %%
-start: /*epsilon*/ {}
+start: %empty/*epsilon*/ {}
         | functions {
 			Node * node = $1;
-			printf("%s\n", node->code.c_str());
-		}
+			printf("SUHHHHH DOOOD");
 
-functions: function {
-	Node * codenode = $1;
-	Node *node = new Node;
-	node = codenode;
-	$$ = node;
+			printf("%s\n", node->code.c_str());
+		};
+
+functions: 
+	function {
+		Node * codenode = $1;
+		Node *node = new Node;
+		node = codenode;
+		$$ = node;
 }
 	| function functions {
 		Node * codeNode1 = $1;
@@ -112,20 +137,47 @@ functions: function {
 	}
 
 function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
-
-	
+	Node * node = new Node;
+	Node *statements = $6;
+	std::string func_name = $1;
+	node->code = "";
+	node-> code+= std::string("func ") + func_name + std::string("\n");
+	node->code += $4->code;
+	node->code += statements->code;
+	node->code += std::string("endfunc\n\n");
+	$$=node;
 	}
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
 
-elses: /*epsilon*/ 
+elses: %empty/*epsilon*/ 
 	| ELSE statements 
 
-statements: /*epsilon*/ 
-	| rule s2 
+statements: %empty /*epsilon*/ {
+	Node * node = new Node;
+	node->code = std::string("");
+	$$ = node;
+}
+	| rule s2 {
+		Node *rule = $1;
+		Node *s2 = $2;
+		Node *node = new Node;
+		node->code += rule->code + s2->code;
+		$$ = node;
+	}
 
-s2: /*epsilon*/ 
-	| rule s2 
+s2: %empty/*epsilon*/ {
+	Node * node = new Node;
+	node->code = std::string("");
+	$$ = node;
+}
+	| rule s2 {
+		Node * rule = $1;
+		Node *s2 = $2;
+		Node *node = new Node;
+		node->code = rule->code + s2->code;
+		$$=node;
+	}
 
 rule: IF conditional statements elses END 
     | WHILE conditional statements END 
@@ -136,8 +188,10 @@ statement: INT var /* declarations + assignments */
 		//std::string value = "0";//$1; placeholder value since empty declaration
 		//Type t = Integer;
 		//add_variable_to_symbol_table(value,t);
-		char * var  = $2;
-		printf(".%s", var);
+		Node *node = new Node;
+		node->code = std::string(". ") + $2;
+		node->name = $2;
+		$$ = node;
 		
 	}  
 	| INT var EQUAL exp  
@@ -161,14 +215,16 @@ statement: INT var /* declarations + assignments */
 	| functioncall mulop functioncall 
 
 	| var EQUAL functioncall /* assignments */
-	| var EQUAL exp
+	| var EQUAL exp{
+		
+	}
 	| var EQUAL STRINGLITERAL     
 
 array: LEFT_CURR_BRACKET arrayargs1 RIGHT_CURR_BRACKET
 
 arrayargs1: arrayarg arrayargs
 
-arrayargs: /*epsilon*/ 
+arrayargs: %empty/*epsilon*/ 
 	| COMMA arrayarg arrayargs
 	
 arrayarg: var
@@ -199,35 +255,82 @@ retval: statement
 	| conditional 
 	| boolean 
 
-type: /*epsilon*/ 
+type: %empty/*epsilon*/ {
+	Node * node = new Node;
+	node->code = "";
+	$$ = node;
+}
 	| INT 
-	| STRING 
+	{
+		Node *node = new Node;
+		node->code = "int";
+		$$ =  node;
+	}
+	| STRING {
+		Node *node = new Node;
+		node->code = "string";
+		$$ =  node;
+	}
 
 input: exp 
 
-inputargs: /*epsilon*/ 
+inputargs: %empty/*epsilon*/ 
 	| input inputargs2 
 
-inputargs2: /*epsilon*/ 
+inputargs2: %empty/*epsilon*/ 
 	| COMMA input inputargs2 
 
-declarationargs:  /*epsilon*/ 
-	| type VARIABLE declarationargs2 
+declarationargs:  %empty/*epsilon*/ {
+	Node *node = new Node;
+	node->code = std::string("");
+	$$ = node;
+}
+	| type VARIABLE declarationargs2 {}
 
-declarationargs2: /*epsilon*/ 
-	| COMMA type VARIABLE declarationargs2 
+declarationargs2: %empty/*epsilon*/ 
+	| COMMA type VARIABLE declarationargs2 {}
 
-exp: exp addop term 
+exp: exp addop term {
+	Node *node = new Node;
+	std::string tempVar = returnTempVarName();
+    node->name = tempVar;
+    node->code= $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+    node->code+= std::string($2) + std::string(" ") +tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+    $$ = node;
+}
 	| term
 
-addop: ADD
-        | SUBTRACT 
+addop: ADD {
+	char op[] = "+";
+    $$ = op;
+}
+    |SUBTRACT {
+    	char op[] = "-";
+        $$ = op;
 
-term: term mulop factor 
-        | factor 
+	}
 
-mulop: MULTIPLY 
-        | DIVISION 
+term: term mulop factor {
+	Node *node = new Node;
+    std::string tempVar = returnTempVarName();
+    node->name = tempVar;
+    node->code= $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+    node->code+= std::string($2) + std::string(" ") +tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+    $$ = node;
+
+}
+        | factor {
+			Node * node = $1;
+		}
+
+mulop: MULTIPLY {
+	    char op[] = "*";
+        $$ = op;
+}
+        | DIVISION {
+			char op[] = "/";
+        	$$ = op;
+		}
 
 factor: LEFT_PREN exp RIGHT_PREN 
         | DIGIT  	
