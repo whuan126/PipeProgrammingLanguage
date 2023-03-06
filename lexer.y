@@ -132,7 +132,7 @@ functions: function
 	}
 	| functions function 
 	{
-		Node* node1 = $1;
+		Node * node1 = $1;
 		Node * node2 = $2;
 		Node * node = new Node;
 		node -> code = "";
@@ -152,6 +152,39 @@ function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END
 		node->code += statements->code;
 		node->code+= std::string("endfunc\n\n");
 		
+	}
+declarationargs: %empty /*epsilon*/ {
+		Node * node = new Node;
+		node->code = std::string("");
+		$$ = node;
+	}
+	| type VARIABLE declarationargs2
+	{
+		Node * type = $1;
+		std::string variable = $2;
+		Node *decargs2 = $3;
+
+		Node *node = new Node;
+		node-> code = "" + type->code + variable + decargs2->code;
+		$$ = node;
+	}
+	| %empty /*epsilon*/{
+		Node *node = new Node;
+		node ->code = std::string("");
+		$$ = node;
+	}
+
+declarationargs2: %empty /*epsilon*/ 
+	| COMMA type VARIABLE declarationargs2
+	{
+		std::string comma = $1;
+		Node * type = $2;
+		std::string variable = $3;
+		Node *decargs2 = $4;
+
+		Node *node = new Node;
+		node->code = std::string("") + comma + type->code + variable + decargs2->code;
+		$$ = node;
 	}
 
 
@@ -173,6 +206,7 @@ statements: %empty /*epsilon*/
 		Node *statements = $2;
 
 		Node *node = new Node;
+		node -> code = std::string("");
 		node->code = statement->code + std::string("\n") + statements ->code;
 		$$ = node;
 	}
@@ -180,6 +214,7 @@ statements: %empty /*epsilon*/
 statement: INT var /* declarations + assignments */ 
 	{
 		Node *node = new Node;
+		node-> code = std::string("");
 		node-> name = $2->code;
 		node-> code = std::string(". ") + $2->code + std::string("\n");
 		node -> code += std::string("= ") + $2->code + std::string(", ") + returnArg() + std::string("\n");
@@ -188,6 +223,7 @@ statement: INT var /* declarations + assignments */
 	| INT var EQUAL exp  
 	{
 		Node *node = new Node;
+		node->code = std::string("");
 		std::string ident = $1;
 		Node *expression = $4;
 		node-> code = $4->code;
@@ -227,6 +263,7 @@ arrayarg: var
 var: VARIABLE
 	{
 		Node *node = new Node;
+		node -> code = std::string("");
 		std::string variable = $1;
 		node->code = variable;
 		$$ = node;
@@ -268,6 +305,7 @@ inputargs2: /*epsilon*/
 
 exp: exp addop term {
 	Node *node = new Node;
+	node->code = std::string("");
 	std::string tempVar = returnTempName();
 	node->name = tempVar;
 	node->code = $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
