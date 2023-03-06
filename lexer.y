@@ -19,9 +19,13 @@ int count_names = 0;
 /////////////////////////////////////////////////////////
 
 enum Type { Integer, Array };
-struct Symbol {
+struct Node {
+  std::string code;
   std::string name;
-  Type type;
+};
+struct Symbol {
+	std::string name;
+	Type type;
 };
 struct Function {
   std::string name;
@@ -76,39 +80,41 @@ void print_symbol_table(void) {
 
 %union {
  char *op_val;
+ Node *node;
 }
 
 %define parse.error verbose
 %start start
 %token INT STRING
-%token <op_val> INDEX THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR
-%token <op_val> VARIABLE 
-%token <op_val> DIGIT
-%token <op_val> NUMBER
-%token <op_val> STRINGLITERAL
-%type <op_val> functiondec
-%type <op_val> exp
-%type <op_val> term
-%type <op_val> factor
-%type <op_val> var
-%type <op_val> array arrayargs1 arrayarg
+%token INDEX DIGIT THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE NUMBER STRINGLITERAL
+%type <op_val> FUNCTION VARIABLE var NUMBER
+%type <node> exp functions function term factor
 %%
-start: /*epsilon*/ 
-        | function void 
+start: /*epsilon*/ {}
+        | functions {
+			Node * node = $1;
+			printf("%s\n", node->code.c_str());
+		}
 
-void: /*epsilon*/ 
-	| function void 
-
-function: FUNCTION functiondec statements END {printf("endfunc\n");}
-
-functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN 
-{
-// midrule!!!!!
-// add function to symbol table
-std::string func_name = $1;
-add_function_to_symbol_table(func_name);
-printf("func %s\n", $1);
+functions: function {
+	Node * codenode = $1;
+	Node *node = new Node;
+	node = codenode;
+	$$ = node;
 }
+	| function functions {
+		Node * codeNode1 = $1;
+		Node * codeNode2 = $2;
+		Node * node = new Node;
+		node->code = "";
+		node->code = codeNode1->code + codeNode2->code;
+		$$ = node;
+	}
+
+function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
+
+	
+	}
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
 
@@ -136,10 +142,9 @@ statement: INT var /* declarations + assignments */
 	}  
 	| INT var EQUAL exp  
 	{
-		char * variable = $2;
-		char * num = $4;
-		printf(".%s\n", variable);
-		printf(" = %s, %s\n", variable, num);
+		std::string variable = $2;
+		Node * exp = $4;
+		
 	}
 	| STRING var EQUAL STRINGLITERAL
 	| INT var EQUAL functioncall
