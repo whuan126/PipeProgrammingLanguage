@@ -116,8 +116,7 @@ void print_symbol_table(void) {
 
 %%
 
-start: %empty /*epsilon*/ 
-        | functions 
+start: functions 
 			{
 				Node *node = $1;
 				printf("%s\n", node->code.c_str());
@@ -131,7 +130,7 @@ functions: function
 		$$ = tempNode;
 
 	}
-	| function functions 
+	| functions function 
 	{
 		Node* node1 = $1;
 		Node * node2 = $2;
@@ -155,20 +154,12 @@ function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END
 		
 	}
 
+
+
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
 {
 	
 }
-
-//elses: /*epsilon*/ 
-//	{
-
-
-//	}
-//	| ELSE statements 
-//	{
-		
-//	}
 
 statements: %empty /*epsilon*/
 	{
@@ -274,39 +265,6 @@ inputargs: %empty /*epsilon*/
 inputargs2: /*epsilon*/ 
 	| COMMA input inputargs2 
 
-declarationargs: %empty /*epsilon*/ {
-		Node * node = new Node;
-		node->code = std::string("");
-		$$ = node;
-	}
-	| type VARIABLE declarationargs2
-	{
-		Node * type = $1;
-		std::string variable = $2;
-		Node *decargs2 = $3;
-
-		Node *node = new Node;
-		node-> code = "" + type->code + variable + decargs2->code;
-		$$ = node;
-	}
-	| %empty /*epsilon*/{
-		Node *node = new Node;
-		node ->code = std::string("");
-		$$ = node;
-	}
-
-declarationargs2: %empty /*epsilon*/ 
-	| COMMA type VARIABLE declarationargs2
-	{
-		std::string comma = $1;
-		Node * type = $2;
-		std::string variable = $3;
-		Node *decargs2 = $4;
-
-		Node *node = new Node;
-		node->code = std::string("") + comma + type->code + variable + decargs2->code;
-		$$ = node;
-	}
 
 exp: exp addop term {
 	Node *node = new Node;
