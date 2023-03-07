@@ -116,7 +116,7 @@ void print_symbol_table(void) {
 
 %token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
 %type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
-%type <node> factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
+%type <node> inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
 %%
 start: %empty/*epsilon*/{} 
         | functions {
@@ -172,6 +172,36 @@ statements: statements statement
 		$$ = node;
 	}
 
+functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN {
+	Node * node = new Node;
+	Node * inputargs = $3;
+	node->name = $1;
+	node->code = inputargs->code;
+	$$=node;
+}
+
+inputargs: %empty {
+	Node * node = new Node;
+	node->code = std::string("");
+	$$=node;
+}
+	| exp COMMA exp {
+		Node * exp1 = $1;
+		Node *exp2 = $3; 
+		Node *node = new Node;
+		node->code += exp1->code + std::string("\n");
+		node->code += exp2->code + std::string("\n");
+		node->code += std::string("param ") + exp1->name + std::string("\n");
+		node->code += std::string("param ") +exp2->name + std::string("\n");
+		$$=node;
+	}
+	| exp
+	{
+		Node * node = new Node;
+		node->code = std::string("param ") + $1->code;
+		$$=node;
+	}
+
 statement: declaration{
 	Node * node = $1;
 	$$ = node;
@@ -204,6 +234,14 @@ declaration: INT VARIABLE{
 		node->code = std::string(".[] ") + name + std::string(", ") + digit + std::string("\n");
 		$$ = node;
 	}
+	| INT VARIABLE EQUAL functioncall
+		{
+			Node * node = new Node;
+			std::string variable = $2;
+			Node *functioncall = $4;
+			node->code = functioncall->code + std::string("call ") + functioncall->name + std::string(", ") + variable;
+			$$=node;
+		}
 
 assignment: VARIABLE EQUAL exp{
 	printf("READING VAR = EXP\n");
