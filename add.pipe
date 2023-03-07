@@ -1,9 +1,4 @@
-function main() 
-   int a
-   int b
-   int c
-   a |eq 100
-   b |eq 50
-   c |eq a |add b
-   |write c
+function main()
+    int a
+    a |eq 5
 end

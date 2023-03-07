@@ -1,5 +1,4 @@
-function main()
-	int a[5] 
-	a[0] |eq 6
-	|write a[0]
+function array()
+	int dwasd |eq {wasd,lwasd,"homo sapiens",5}
+	dwasd|5 |eq "sup"
 end

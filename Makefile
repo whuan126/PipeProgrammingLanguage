@@ -25,4 +25,5 @@ het:
 	flex lexer.lex
 	bison -v -d --file-prefix=y lexer.y
 	g++ -o lexer y.tab.c lex.yy.c -lfl
+	./lexer add.txt
 	
