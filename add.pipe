@@ -1,4 +1,3 @@
 function main()
     int a
-    a |eq 5
 end
