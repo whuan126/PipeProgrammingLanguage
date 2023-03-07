@@ -107,17 +107,20 @@ void print_symbol_table(void) {
 %define parse.error verbose
 %start start
 
+%left ARRAY EQUAL
+%left LEFT_BRACKET RIGHT_BRACKET
 %left LEFT_PREN R_PREN
 %left LESSTHAN GREATERTHAN LESSEROREQUAL GREATEROREQUAL EQUIVALENT NOTEQUIVALENT
 %left ADD SUBTRACT
 %left MULTIPLY DIVISON
 
-%token INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
-%type <op_val> FUNCTION addop mulop VARIABLE INT
-%type <node> declarationarg exp declaration assignment inputoutput functions function term factor declarationargs statements statement
+%token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
+%type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
+%type <node> inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
 %%
 start: %empty/*epsilon*/{} 
         | functions {
+			//printf("IN FUNCTION\n");
 			Node * node = $1;
 			printf("%s\n", node->code.c_str());
 		}
@@ -131,6 +134,7 @@ functions: functions function{
 	$$ = node;
 }
 	| function {
+		//printf("IN FUNCTION\n");
 		Node * node = $1;
 		Node * node1 = new Node;
 		node1 = node;
@@ -139,6 +143,7 @@ functions: functions function{
 
 
 function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
+	//printf("IN FUNCTION DEF\n");
 	 Node * node = new Node;
 	 Node * statements = $6;
 	 std::string name = $2;
@@ -167,6 +172,36 @@ statements: statements statement
 		$$ = node;
 	}
 
+functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN {
+	Node * node = new Node;
+	Node * inputargs = $3;
+	node->name = $1;
+	node->code = inputargs->code;
+	$$=node;
+}
+
+inputargs: %empty {
+	Node * node = new Node;
+	node->code = std::string("");
+	$$=node;
+}
+	| exp COMMA exp {
+		Node * exp1 = $1;
+		Node *exp2 = $3; 
+		Node *node = new Node;
+		node->code += exp1->code + std::string("\n");
+		node->code += exp2->code + std::string("\n");
+		node->code += std::string("param ") + exp1->name + std::string("\n");
+		node->code += std::string("param ") +exp2->name + std::string("\n");
+		$$=node;
+	}
+	| exp
+	{
+		Node * node = new Node;
+		node->code = std::string("param ") + $1->code;
+		$$=node;
+	}
+
 statement: declaration{
 	Node * node = $1;
 	$$ = node;
@@ -185,32 +220,75 @@ statement: declaration{
 	}
 
 declaration: INT VARIABLE{
+	//printf("READING INT VAR\n");
 	Node *node = new Node;
-	node->code = std::string(". ") + $2;
+	node->code = std::string(". ") + $2 + std::string("\n");
 	node->name = $2;
+	$$ = node;
+} 
+	| INT VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET {
+		//printf("INT ARRAY\n");
+		std::string digit = $4;
+		std::string name = $2;
+		Node * node = new Node; 
+		node->code = std::string(".[] ") + name + std::string(", ") + digit + std::string("\n");
+		$$ = node;
+	}
+	| INT VARIABLE EQUAL functioncall
+		{
+			Node * node = new Node;
+			std::string variable = $2;
+			Node *functioncall = $4;
+			node->code = functioncall->code + std::string("call ") + functioncall->name + std::string(", ") + variable;
+			$$=node;
+		}
+
+assignment: VARIABLE EQUAL exp{
+	//printf("READING VAR = EXP\n");
+	Node *node = new Node;
+	std::string variable = $1;
+	Node * expression = $3;
+	if (expression->code[0] != '='){ // default. exp isnt array
+		node->code = $3 -> code;
+		node->code += std::string("= ") + variable + std::string(", ") + expression->name + std::string("\n");
+	}else{  //exp is an array
+		node->code = std::string("=[] ") + variable + std::string(", ") + expression->name;
+        }
 	$$ = node;
 }
 
-assignment: VARIABLE EQUAL exp{
-	Node *node = new Node;
-	std::string variable = $1; 
-	Node * expression = $3;
-	node->code = $3 -> code;
-	node->code += std::string("= ") + variable + std::string(", ") + expression->name;
-}
+	| VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET EQUAL exp {
+		//printf("VARIABLE ARRAY\n");
+		Node * expression = $6;
+		std::string digit = $3;
+		std::string name = $1;
+		Node * node = new Node;
+		node->code = std::string("[]= ") + name + std::string(", ") + digit + std::string(", ") + expression->name + std::string("\n");
+		$$ = node;
+	}
+
+
 	| declaration EQUAL exp {
 		Node * node = new Node;
 		Node * decl = $1; 
 		Node * expression = $3;
 		node->code = decl->code + std::string("\n") + $3->code;
 		node->code += std::string("= ") + decl-> name + std::string(", ") + expression -> name;
+		$$ = node;
 	}
+
 
 inputoutput: WRITE VARIABLE {
 	Node * node = new Node;
 	node->code = std::string(".> ") + std::string($2);
 	$$ = node;
 }
+	| WRITE VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET
+	{	
+		Node * node = new Node; 
+		node->code = std::string(".[]> ") + $2 + std::string(", ") + $4;
+		$$=node; 
+	}
 
 declarationargs: %empty /*epsi*/{
 	Node * node = new Node;
@@ -232,6 +310,7 @@ declarationargs: %empty /*epsi*/{
 	}
 
 declarationarg: INT VARIABLE {
+	//printf("INT VARIABLE\n");
 	Node * node = new Node;
 	node->name = $2;
 	node->code = std::string(". ") + $2 + std::string("\n");
@@ -240,22 +319,87 @@ declarationarg: INT VARIABLE {
 }
 
 
-exp: exp addop term 
-	| term
+exp: exp addop term {
+	// printf("EXP ADDOP TERM\n");
+	Node * node = new Node;
+	std::string tempVar = returnTempVarName();
+	node->name = tempVar;
+	node->code= $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+	node->code += std::string($2) + std::string(" ") + tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+	$$ = node;
+}
+	| term {
+		//printf("TERM\n");
+		Node *node = $1;
+		$$ = node;
+	}
 
-addop: ADD
-        | SUBTRACT 
+addop: ADD {
+	char addition[] = "+";
+	$$ = addition;
+	//printf("ADD\n");
+}
+        | SUBTRACT {
+			char subtraction[] = "-";
+			$$ = subtraction;
+			//printf("SUB\n");
+		}
 
-term: term mulop factor 
-        | factor 
+term: term mulop factor {
+	//printf("TERM MULOP FACTOR\n");
+	Node *node = new Node;
+	std::string tempVar = returnTempVarName();
+	node->name = tempVar;
+	node->code = $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+	node->code += std::string($2) + std::string(" ") +tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+    $$ = node;
 
-mulop: MULTIPLY 
-        | DIVISION 
+}
+        | factor {
+			//printf("FACTOR\n");
+			Node *node = $1;
+		}
 
-factor: LEFT_PREN exp RIGHT_PREN 
-	|DIGIT  	
-	| VARIABLE 
+mulop: MULTIPLY {
+	//printf("MULTIPLY\n");
+	char multiply[] = "*";
+	$$ = multiply;
+}
+        | DIVISION {
+			//printf("DIVISION\n");
+			char division[] = "/";
+			$$ = division;
+		}
 
+factor: LEFT_PREN exp RIGHT_PREN {
+	//printf("(EXP)\n");
+	Node *node = new Node;
+	Node *exp = $2;
+	node->code = exp->code;
+	$$ = node;
+	
+}
+	| DIGIT  	{
+		//printf("DIGIT\n");
+		Node *node = new Node;
+		node -> name = $1;
+		$$ = node;
+	}
+	| VARIABLE {
+		//printf("VARIABLE\n");
+		Node * node = new Node;
+		node->name = $1;
+		$$ = node;
+	}
+	| VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET {
+                //printf("EXP ARRAY\n");
+                std::string digit = $3;
+                std::string name = $1;
+                Node * node = new Node;
+                node->code = std::string("=[]") + name + std::string(", ") + digit + std::string("\n"); // idk do both i guess
+                node->name = name + std::string(", ") + digit + std::string("\n");
+		$$ = node;
+	}
 %%
 
 int main(int argc, char ** argv) {
@@ -269,7 +413,7 @@ int main(int argc, char ** argv) {
 		yyin = stdin;
 	}
 	yyparse();
-	print_symbol_table();
+	//print_symbol_table();
 	return 0;
 }
 void yyerror(const char *msg) {
