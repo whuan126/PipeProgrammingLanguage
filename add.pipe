@@ -1,3 +1,9 @@
 function main() 
-   int c |eq add(a, b |add d)
+   int a
+   int b
+   int c
+   a |eq 100
+   b |eq 50
+   c |eq a |add b
+   |write c
 end

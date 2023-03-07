@@ -1,6 +1,5 @@
-function array()
-	int dwasd[10] 
-	dwasd[5] |eq 6
-	dwasd |eq combucha[2]
-	bobman |eq 1
+function main()
+	int a[5] 
+	a[0] |eq 6
+	|write a[0]
 end
