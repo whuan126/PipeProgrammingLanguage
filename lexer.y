@@ -116,7 +116,7 @@ void print_symbol_table(void) {
 %type <op_val> FUNCTION addop mulop VARIABLE INT
 %type <node> declarationarg exp declaration assignment inputoutput functions function term factor declarationargs statements statement
 %%
-start: %empty/*epsilon*/ 
+start: %empty/*epsilon*/{} 
         | functions {
 			Node * node = $1;
 			printf("%s\n", node->code.c_str());
@@ -139,15 +139,15 @@ functions: functions function{
 
 
 function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
-	Node * node = new Node;
-	Node * statements = $6;
-	std::string name = $2;
-
-	node->code = std::string("");
-	node->code += std::string("func ") + name + std::string("\n");
-	node->code += $4->code;
-	node->code += statements->code;
-	node->code += std::string("endfunc\n\n");
+	 Node * node = new Node;
+	 Node * statements = $6;
+	 std::string name = $2;
+	 node->code = std::string("");
+	 node->code += std::string("func ") + name + std::string("\n");
+	 node->code += $4->code;
+	 node->code += statements->code;
+	 node->code += std::string("\nendfunc\n\n");
+	 $$ = node;
 	}
 
 statements: statements statement
@@ -189,7 +189,6 @@ declaration: INT VARIABLE{
 	node->code = std::string(". ") + $2;
 	node->name = $2;
 	$$ = node;
-
 }
 
 assignment: VARIABLE EQUAL exp{
