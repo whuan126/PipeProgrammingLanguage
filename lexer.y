@@ -113,11 +113,12 @@ void print_symbol_table(void) {
 %left MULTIPLY DIVISON
 
 %token INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
-%type <op_val> FUNCTION addop mulop VARIABLE INT
+%type <op_val> FUNCTION addop mulop VARIABLE INT DIGIT
 %type <node> declarationarg exp declaration assignment inputoutput functions function term factor declarationargs statements statement
 %%
 start: %empty/*epsilon*/{} 
         | functions {
+			printf("IN FUNCTION\n");
 			Node * node = $1;
 			printf("%s\n", node->code.c_str());
 		}
@@ -131,6 +132,7 @@ functions: functions function{
 	$$ = node;
 }
 	| function {
+		printf("IN FUNCTION\n");
 		Node * node = $1;
 		Node * node1 = new Node;
 		node1 = node;
@@ -139,6 +141,7 @@ functions: functions function{
 
 
 function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
+	printf("IN FUNCTION DEF\n");
 	 Node * node = new Node;
 	 Node * statements = $6;
 	 std::string name = $2;
@@ -185,18 +188,21 @@ statement: declaration{
 	}
 
 declaration: INT VARIABLE{
+	printf("READING INT VAR\n");
 	Node *node = new Node;
 	node->code = std::string(". ") + $2;
 	node->name = $2;
 	$$ = node;
-}
+} 
 
 assignment: VARIABLE EQUAL exp{
+	printf("READING VAR = EXP\n");
 	Node *node = new Node;
-	std::string variable = $1; 
+	std::string variable = $1;
 	Node * expression = $3;
 	node->code = $3 -> code;
 	node->code += std::string("= ") + variable + std::string(", ") + expression->name;
+	$$ = node;
 }
 	| declaration EQUAL exp {
 		Node * node = new Node;
@@ -204,9 +210,11 @@ assignment: VARIABLE EQUAL exp{
 		Node * expression = $3;
 		node->code = decl->code + std::string("\n") + $3->code;
 		node->code += std::string("= ") + decl-> name + std::string(", ") + expression -> name;
+		$$ = node;
 	}
 
 inputoutput: WRITE VARIABLE {
+	printf("WRITING SHIT BROTHER\n");
 	Node * node = new Node;
 	node->code = std::string(".> ") + std::string($2);
 	$$ = node;
@@ -232,6 +240,7 @@ declarationargs: %empty /*epsi*/{
 	}
 
 declarationarg: INT VARIABLE {
+	printf("INT VARIABLE\n");
 	Node * node = new Node;
 	node->name = $2;
 	node->code = std::string(". ") + $2 + std::string("\n");
@@ -240,21 +249,78 @@ declarationarg: INT VARIABLE {
 }
 
 
-exp: exp addop term 
-	| term
+exp: exp addop term {
+	printf("EXP ADDOP TERM\n");
+	Node * node = new Node;
+	std::string tempVar = returnTempVarName();
+	node->name = tempVar;
+	node->code= $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+	node->code += std::string($2) + std::string(" ") + tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+	$$ = node;
+}
+	| term {
+		printf("TERM\n");
+		Node *node = $1;
+		$$ = node;
+	}
 
-addop: ADD
-        | SUBTRACT 
+addop: ADD {
+	char addition[] = "+";
+	$$ = addition;
+	printf("ADD\n");
+}
+        | SUBTRACT {
+			char subtraction[] = "-";
+			$$ = subtraction;
+			printf("SUB\n");
+		}
 
-term: term mulop factor 
-        | factor 
+term: term mulop factor {
+	printf("TERM MULOP FACTOR\n");
+	Node *node = new Node;
+	std::string tempVar = returnTempVarName();
+	node->name = tempVar;
+	node->code = $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+	node->code += std::string($2) + std::string(" ") +tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+    $$ = node;
 
-mulop: MULTIPLY 
-        | DIVISION 
+}
+        | factor {
+			printf("FACTOR\n");
+			Node *node = $1;
+		}
 
-factor: LEFT_PREN exp RIGHT_PREN 
-	|DIGIT  	
-	| VARIABLE 
+mulop: MULTIPLY {
+	printf("MULTIPLY\n");
+	char multiply[] = "*";
+	$$ = multiply;
+}
+        | DIVISION {
+			printf("DIVISION\n");
+			char division[] = "/";
+			$$ = division;
+		}
+
+factor: LEFT_PREN exp RIGHT_PREN {
+	printf("(EXP)\n");
+	Node *node = new Node;
+	Node *exp = $2;
+	node->code = exp->code;
+	$$ = node;
+	
+}
+	| DIGIT  	{
+		printf("DIGIT\n");
+		Node *node = new Node;
+		node -> name = $1;
+		$$ = node;
+	}
+	| VARIABLE {
+		printf("VARIABLE\n");
+		Node * node = new Node;
+		node->name = $1;
+		$$ = node;
+	}
 
 %%
 
