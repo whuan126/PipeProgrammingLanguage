@@ -170,7 +170,7 @@ statements: statements statement
 statement: declaration{
 	Node * node = $1;
 	$$ = node;
-}
+	}
 	| assignment{
 		Node * node = $1;
 		$$ = node;
