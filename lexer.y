@@ -116,7 +116,7 @@ void print_symbol_table(void) {
 
 %token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
 %type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
-%type <node> declarationarg exp declaration assignment inputoutput functions function term factor declarationargs statements statement
+%type <node> factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
 %%
 start: %empty/*epsilon*/{} 
         | functions {
@@ -201,7 +201,7 @@ declaration: INT VARIABLE{
 		std::string digit = $4;
 		std::string name = $2;
 		Node * node = new Node; 
-		node->code = std::string(".[] ") + name + std::string(", ") + digit;
+		node->code = std::string(".[] ") + name + std::string(", ") + digit + std::string("\n");
 		$$ = node;
 	}
 
@@ -210,13 +210,23 @@ assignment: VARIABLE EQUAL exp{
 	Node *node = new Node;
 	std::string variable = $1;
 	Node * expression = $3;
-	node->code = $3 -> code;
-	node->code += std::string("= ") + variable + std::string(", ") + expression->name;
+	if (expression->code[0] != '='){ // default. exp isnt array
+		node->code = $3 -> code;
+		node->code += std::string("= ") + variable + std::string(", ") + expression->name;
+	}else{  //exp is an array
+		node->code = std::string("=[] ") + variable + std::string(", ") + expression->name;
+        }
 	$$ = node;
 }
 
 	| VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET EQUAL exp {
-		printf("YOMAMA");
+		printf("VARIABLE ARRAY\n");
+		Node * expression = $6;
+		std::string digit = $3;
+		std::string name = $1;
+		Node * node = new Node;
+		node->code = std::string("[]= ") + name + std::string(", ") + digit + std::string(", ") + expression->name + std::string("\n");
+		$$ = node;
 	}
 
 
@@ -338,7 +348,15 @@ factor: LEFT_PREN exp RIGHT_PREN {
 		node->name = $1;
 		$$ = node;
 	}
-
+	| VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET {
+                printf("EXP ARRAY\n");
+                std::string digit = $3;
+                std::string name = $1;
+                Node * node = new Node;
+                node->code = std::string("=[]") + name + std::string(", ") + digit + std::string("\n"); // idk do both i guess
+                node->name = name + std::string(", ") + digit + std::string("\n");
+		$$ = node;
+	}
 %%
 
 int main(int argc, char ** argv) {
