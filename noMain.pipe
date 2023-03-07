@@ -1,9 +1,10 @@
 function INDEX()
 int a
-end
-function main()
 int b
+int k
+int j
 end
+
 function STRING()
 int c
 end

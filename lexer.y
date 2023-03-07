@@ -109,8 +109,8 @@ void print_symbol_table(void) {
 }
 
 ///////////Semantic Stuff//////////
-std::map<std::string, int> variableVec;
-std::map<std::string, int> functionVec;
+std::vector<std::string> variableVec;
+std::vector<std::string> functionVec;
 std::vector<std::string> keywordVec = {"INDEX", "INT", "STRING", "THEN", "EQUAL", "NOTEQUIVALENT", 
 										"TRUE", "FALSE", "MULTIPLY", "ADD", "SUBTRACT", "DIVISION", "LESSEROREQUAL", "EQUIVALENT", 
 										"GREATEROREQUAL", "LESSTHAN", "GREATERTHAN", "WHILE", "DO", "IF", "ELSE", "FUNCTION", 
@@ -141,6 +141,7 @@ bool errorOccured = false;
 %%
 start: %empty/*epsilon*/
 	{
+		
 	} 
 	| functions {
 		Node * node = $1;
@@ -162,16 +163,15 @@ functions: functions function{
 		$$ = node1;
 	}
 
-
 function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
 	std::string funcName = $2;
-	functionVec.insert(std::pair<std::string,int>(funcName, 0));
-	if (functionVec.find("main") != functionVec.end()) {
-		yyerror("Function main not declared");
-		errorOccured = true;
-	}
+	functionVec.push_back(funcName);
 	if (std::find(keywordVec.begin(), keywordVec.end(), $2) != keywordVec.end()) {
 		yyerror("Function declaration as reserved keyword");
+		errorOccured = true;
+	}
+	if (std::find(functionVec.begin(), functionVec.end(), "main") == functionVec.end()) {
+		yyerror("Function main not declared");
 		errorOccured = true;
 	}
 	if (!errorOccured) {
@@ -183,7 +183,6 @@ function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END 
 		node->code += $4->code;
 		node->code += statements->code;
 		node->code += std::string("\nendfunc\n\n");\
-		functionVec.insert(std::pair<std::string,int>($2,0));
 		$$ = node;
 	}
 	}
