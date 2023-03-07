@@ -107,12 +107,14 @@ void print_symbol_table(void) {
 %define parse.error verbose
 %start start
 
+%left ARRAY EQUAL
+%left LEFT_BRACKET RIGHT_BRACKET
 %left LEFT_PREN R_PREN
 %left LESSTHAN GREATERTHAN LESSEROREQUAL GREATEROREQUAL EQUIVALENT NOTEQUIVALENT
 %left ADD SUBTRACT
 %left MULTIPLY DIVISON
 
-%token INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
+%token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
 %type <op_val> FUNCTION addop mulop VARIABLE INT DIGIT
 %type <node> declarationarg exp declaration assignment inputoutput functions function term factor declarationargs statements statement
 %%
@@ -194,6 +196,9 @@ declaration: INT VARIABLE{
 	node->name = $2;
 	$$ = node;
 } 
+	| INT ARRAY {
+		printf("INT ARRAY\n");
+	}
 
 assignment: VARIABLE EQUAL exp{
 	printf("READING VAR = EXP\n");
@@ -204,6 +209,11 @@ assignment: VARIABLE EQUAL exp{
 	node->code += std::string("= ") + variable + std::string(", ") + expression->name;
 	$$ = node;
 }
+	| ARRAY EQUAL exp {
+		printf("Array = 5");
+	}
+
+
 	| declaration EQUAL exp {
 		Node * node = new Node;
 		Node * decl = $1; 
@@ -212,6 +222,7 @@ assignment: VARIABLE EQUAL exp{
 		node->code += std::string("= ") + decl-> name + std::string(", ") + expression -> name;
 		$$ = node;
 	}
+
 
 inputoutput: WRITE VARIABLE {
 	printf("WRITING SHIT BROTHER\n");

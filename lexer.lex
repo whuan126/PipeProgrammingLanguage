@@ -9,6 +9,7 @@ DIGIT [0-9]+
 ALPHA [a-zA-Z]
 INVALIDVARIABLE [0-9][a-zA-Z0-9_]*
 VARIABLE [a-zA-Z][a-zA-Z0-9_]*
+ARRAY [a-zA-Z][a-zA-Z0-9_]*[[0-9]+]
 INT int
 STRING string
 EQUAL \|eq
@@ -94,6 +95,7 @@ int line = 0;
 {READ}			        { currPos += yyleng; return READ; }
 {WRITE}			        { currPos += yyleng; return WRITE; }
 {COMMENT}		        {}
+{ARRAY}                 {currPos += yyleng; return ARRAY;}
 {STRINGLITERAL}		    { currPos += yyleng; return STRINGLITERAL; }	
 {INVALIDVARIABLE}	    { currPos += yyleng; return INVALIDVAR; }
 {VARIABLE}		        {    
