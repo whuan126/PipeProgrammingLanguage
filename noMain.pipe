@@ -1,0 +1,9 @@
+function INDEX()
+int a
+end
+function main()
+int b
+end
+function STRING()
+int c
+end
