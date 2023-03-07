@@ -3,5 +3,3 @@ func main
 []= a, 0, 6
 .[]> a, 0
 endfunc
-
-
