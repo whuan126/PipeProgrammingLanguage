@@ -344,7 +344,8 @@ assignment: VARIABLE EQUAL exp{
 		std::string digit = $3;
 		std::string name = $1;
 		Node * node = new Node;
-		node->code = std::string("[]= ") + name + std::string(", ") + digit + std::string(", ") + expression->name + std::string("\n");
+		node->code = std::string(". ") + expression->name + std::string("\n");
+		node->code += std::string("[]= ") + name + std::string(", ") + digit + std::string(", ") + expression->name + std::string("\n");
 		$$ = node;
 	}
 
