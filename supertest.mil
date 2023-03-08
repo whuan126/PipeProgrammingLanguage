@@ -21,6 +21,9 @@ ret c
 endfunc
 
 func main
+.[] z, 2
+[]= z, 0, 10
+.[]> z, 0
 . a
 = a, 5
 . b
@@ -40,8 +43,6 @@ call mult, d
 []= array, 1, b
 []= array, 2, c
 []= array, 3, d
-.[]> array, 1
-.[]> array, 0
 
 endfunc
 

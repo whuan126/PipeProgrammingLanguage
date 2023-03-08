@@ -1,4 +1,8 @@
 function main()
+    int z[2]
+    z[0] |eq 10
+    |write z[0] 
+
     int a
     a |eq 5
     int b
@@ -12,8 +16,8 @@ function main()
     array[2] |eq c 
     array[3] |eq d
     
-    |write array[1]
-    |write array[0]
+
+    
 end
 
 function add(int a, int b)
