@@ -1,5 +1,14 @@
 function main()
    int a
-   a |eq 50 
-   return a
+   a |eq 10
+end
+
+function add()
+    int a
+    a |eq 50
+    int b
+    b |eq 50
+    int c
+    c |eq a |add  b
+    return c 
 end

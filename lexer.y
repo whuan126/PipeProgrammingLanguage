@@ -261,7 +261,7 @@ statement: declaration{
 
 return: RETURN exp
 {	
-	printf("IN RETURN\n");
+	//printf("IN RETURN\n");
 	Node * expression = $2; 
 	Node * node = new Node;
 	node->code = std::string("ret ") + expression->name;
@@ -288,7 +288,7 @@ declaration: INT VARIABLE{
 			Node * node = new Node;
 			std::string variable = $2;
 			Node *functioncall = $4;
-			node->code = functioncall->code + std::string("call ") + functioncall->name + std::string(", ") + variable;
+			node->code = functioncall->code + std::string("call ") + functioncall->name + std::string(", ") + variable + std::string("\n");
 			$$=node;
 		}
 
@@ -329,13 +329,13 @@ assignment: VARIABLE EQUAL exp{
 
 inputoutput: WRITE VARIABLE {
 	Node * node = new Node;
-	node->code = std::string(".> ") + std::string($2);
+	node->code = std::string(".> ") + std::string($2) + std::string("\n");
 	$$ = node;
 }
 	| WRITE VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET
 	{	
 		Node * node = new Node; 
-		node->code = std::string(".[]> ") + $2 + std::string(", ") + $4;
+		node->code = std::string(".[]> ") + $2 + std::string(", ") + $4 + std::string("\n");
 		$$=node; 
 	}
 
