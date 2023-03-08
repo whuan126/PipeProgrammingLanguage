@@ -16,12 +16,9 @@ extern char* lineptr;
 extern int yylex(void);
 void yyerror(const char *msg);
 
-///////////Semantic Stuff//////////
-/*
-void populateKeywords();
-void isKeyword(std::string keyString);
-void isSymbol(std::string symbString);
-*/
+bool isKeyword(std::string keyString);
+bool isVariable(std::string varString);
+bool isFunction(std::string funcString);
 
 char *identToken;
 int numberToken;
@@ -109,14 +106,15 @@ void print_symbol_table(void) {
 }
 
 ///////////Semantic Stuff//////////
-std::vector<std::string> variableVec;
-std::vector<std::string> functionVec;
+
 std::vector<std::string> keywordVec = {"INDEX", "INT", "STRING", "THEN", "EQUAL", "NOTEQUIVALENT", 
 										"TRUE", "FALSE", "MULTIPLY", "ADD", "SUBTRACT", "DIVISION", "LESSEROREQUAL", "EQUIVALENT", 
 										"GREATEROREQUAL", "LESSTHAN", "GREATERTHAN", "WHILE", "DO", "IF", "ELSE", "FUNCTION", 
 										"LEFT_PREN", "RIGHT_PREN", "LEFT_BRACKET", "RIGHT_BRACKET", "LEFT_CURR_BRACKET", 
 										"RIGHT_CURR_BRACKET", "RETURN", "END", "COMMA", "READ", "WRITE", "INVALIDVAR", "VARIABLE", 
 										"DIGIT", "NUMBER", "STRINGLITERAL"};
+std::vector<std::string> variableVec;
+std::vector<std::string> functionVec;
 bool errorOccured = false;
 
 %}
@@ -169,8 +167,8 @@ functions: functions function{
 function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
 	std::string funcName = $2;
 	functionVec.push_back(funcName);
-	if (std::find(keywordVec.begin(), keywordVec.end(), $2) != keywordVec.end()) {
-		yyerror("Function declaration as reserved keyword");
+	if (std::find(keywordVec.begin(), keywordVec.end(), funcName) != keywordVec.end()) {
+		yyerror("Invalid declaration using a reserved keyword");
 		errorOccured = true;
 	}
 	if (std::find(functionVec.begin(), functionVec.end(), "main") == functionVec.end()) {
@@ -208,6 +206,11 @@ statements: statements statement
 	}
 
 functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN {
+	std::string funcName = $1;
+	if (std::find(functionVec.begin(), functionVec.end(), funcName) != functionVec.end()) {
+		std::cerr << "Function" << $1 << "not declared";
+		errorOccured = true;
+	}
 	Node * node = new Node;
 	Node * inputargs = $3;
 	node->name = $1;
@@ -270,6 +273,12 @@ return: RETURN exp
 
 declaration: INT VARIABLE{
 	//printf("READING INT VAR\n");
+	std::string varName = $2;
+	variableVec.push_back(varName);
+	if (std::find(variableVec.begin(), variableVec.end(), varName) == variableVec.end()) {
+		std::cerr << "Variable " << varName << "has not been declared";
+		errorOccured = true;
+	}
 	Node *node = new Node;
 	node->code = std::string(". ") + $2 + std::string("\n");
 	node->name = $2;
@@ -277,14 +286,27 @@ declaration: INT VARIABLE{
 } 
 	| INT VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET {
 		//printf("INT ARRAY\n");
-		std::string digit = $4;
-		std::string name = $2;
-		Node * node = new Node; 
-		node->code = std::string(".[] ") + name + std::string(", ") + digit + std::string("\n");
-		$$ = node;
+		if ($4 <= 0) {
+			yyerror("Declaring an array of size less than or equal to zero");
+			errorOccured = true;
+		}
+		if (!errorOccured) {
+			std::string digit = $4;
+			std::string name = $2;
+			Node * node = new Node; 
+			node->code = std::string(".[] ") + name + std::string(", ") + digit + std::string("\n");
+			$$ = node;
+		}
 	}
 	| INT VARIABLE EQUAL functioncall
 		{
+			std::string varName = $2;
+			if (std::find(keywordVec.begin(), keywordVec.end(), varName) != keywordVec.end()) {
+				yyerror("Invalid declaration using a reserved keyword");
+				errorOccured = true;
+			}
+			variableVec.push_back(varName);
+
 			Node * node = new Node;
 			std::string variable = $2;
 			Node *functioncall = $4;
@@ -294,6 +316,11 @@ declaration: INT VARIABLE{
 
 assignment: VARIABLE EQUAL exp{
 	//printf("READING VAR = EXP\n");
+	std::string varName = $1;
+	if (std::find(variableVec.begin(), variableVec.end(), varName) == variableVec.end()) {
+		std::cerr << "Variable " << varName << " is not declared" << std::endl;
+		errorOccured = true;
+	}
 	Node *node = new Node;
 	std::string variable = $1;
 	Node * expression = $3;
@@ -308,6 +335,11 @@ assignment: VARIABLE EQUAL exp{
 
 	| VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET EQUAL exp {
 		//printf("VARIABLE ARRAY\n");
+		std::string varName = $1;
+		if (std::find(variableVec.begin(), variableVec.end(), varName) != variableVec.end()) {
+		std::cerr<< "Variable " << varName <<  " is not declared" << std::endl;
+		errorOccured = true;
+	}
 		Node * expression = $6;
 		std::string digit = $3;
 		std::string name = $1;
@@ -470,3 +502,25 @@ void yyerror(const char *msg) {
     printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
 	//exit(1);
 }
+/*
+bool isFunction (std::string funcString) {
+	if (std::find(functionVec.begin(), functionVec.end(), funcString) != functionVec.end()) {
+		yyerror("Function" + funcString + "not declared");
+		errorOccured = true;
+	}
+}
+
+bool isKeyword (std::string keyString) {
+	if (std::find(keywordVec.begin(), keywordVec.end(), keyString) != keywordVec.end()) {
+		yyerror("Invalid declaration using a reserved keyword");
+		errorOccured = true;
+	}
+}
+
+bool isVariable (std::string varString) {
+	if (std::find(variableVec.begin(), variableVec.end(), varString) != variableVec.end()) {
+		yyerror("Variable" + varString + "is not declared");
+		errorOccured = true;
+	}
+}
+*/

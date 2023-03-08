@@ -9,15 +9,11 @@ function main()
     b |eq 5
     int c |eq add(a, b)
     int d |eq mult(a, b)
-
     int array[5]
     array[0] |eq a
     array[1] |eq b
     array[2] |eq c 
     array[3] |eq d
-    
-
-    
 end
 
 function add(int a, int b)
