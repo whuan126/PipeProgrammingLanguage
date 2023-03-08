@@ -1,0 +1,5 @@
+function main()
+   int a
+   a |eq 50 
+   return a
+end

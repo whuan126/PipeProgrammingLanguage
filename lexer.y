@@ -139,7 +139,7 @@ bool errorOccured = false;
 
 %token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
 %type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
-%type <node> inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
+%type <node> return inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
 %%
 start: %empty/*epsilon*/
 	{
@@ -253,6 +253,20 @@ statement: declaration{
 		Node * node = $1;
 		$$ = node;
 	}
+
+	| return {
+		Node * node = $1;
+		$$ = node;
+	}
+
+return: RETURN exp
+{	
+	printf("IN RETURN\n");
+	Node * expression = $2; 
+	Node * node = new Node;
+	node->code = std::string("ret ") + expression->name;
+	$$=node;
+}
 
 declaration: INT VARIABLE{
 	//printf("READING INT VAR\n");
