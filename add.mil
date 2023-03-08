@@ -8,6 +8,7 @@ func main
 + _temp0, a, b
 = c, _temp0
 .> c
+
 endfunc
 
 

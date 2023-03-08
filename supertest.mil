@@ -38,7 +38,6 @@ call add, c
 param a
 param b
 call mult, d
-.> d
 .[] array, 5
 []= array, 0, a
 []= array, 1, b
