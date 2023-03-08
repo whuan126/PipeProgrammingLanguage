@@ -1,8 +1,12 @@
 %{
-#include <stdio.h>
+#include<stdio.h>
 #include<string>
 #include<vector>
 #include<string.h>
+
+#include<map>
+#include<iostream>
+#include<algorithm>
 
 extern FILE* yyin;
 extern int currLine;
@@ -12,10 +16,18 @@ extern char* lineptr;
 extern int yylex(void);
 void yyerror(const char *msg);
 
+///////////Semantic Stuff//////////
+/*
+void populateKeywords();
+void isKeyword(std::string keyString);
+void isSymbol(std::string symbString);
+*/
+
 char *identToken;
 int numberToken;
 int count_names = 0;
 int argCount = 0;
+
 /////////////////////////////////////////////////////////
 
 std::string returnArgument(){
@@ -36,7 +48,6 @@ std::string returnTempVarName(){
     count++;
     return varName;
 }
-
 
 enum Type { Integer, Array };
 struct Symbol {
@@ -97,6 +108,17 @@ void print_symbol_table(void) {
   printf("--------------------\n");
 }
 
+///////////Semantic Stuff//////////
+std::vector<std::string> variableVec;
+std::vector<std::string> functionVec;
+std::vector<std::string> keywordVec = {"INDEX", "INT", "STRING", "THEN", "EQUAL", "NOTEQUIVALENT", 
+										"TRUE", "FALSE", "MULTIPLY", "ADD", "SUBTRACT", "DIVISION", "LESSEROREQUAL", "EQUIVALENT", 
+										"GREATEROREQUAL", "LESSTHAN", "GREATERTHAN", "WHILE", "DO", "IF", "ELSE", "FUNCTION", 
+										"LEFT_PREN", "RIGHT_PREN", "LEFT_BRACKET", "RIGHT_BRACKET", "LEFT_CURR_BRACKET", 
+										"RIGHT_CURR_BRACKET", "RETURN", "END", "COMMA", "READ", "WRITE", "INVALIDVAR", "VARIABLE", 
+										"DIGIT", "NUMBER", "STRINGLITERAL"};
+bool errorOccured = false;
+
 %}
 
 %union {
@@ -106,6 +128,7 @@ void print_symbol_table(void) {
 
 %define parse.error verbose
 %start start
+%locations
 
 %left ARRAY EQUAL
 %left LEFT_BRACKET RIGHT_BRACKET
@@ -118,12 +141,14 @@ void print_symbol_table(void) {
 %type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
 %type <node> inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
 %%
-start: %empty/*epsilon*/{} 
-        | functions {
-			//printf("IN FUNCTION\n");
-			Node * node = $1;
-			printf("%s\n", node->code.c_str());
-		}
+start: %empty/*epsilon*/
+	{
+		
+	} 
+	| functions {
+		Node * node = $1;
+		printf("%s\n", node->code.c_str());
+	}
 
 functions: functions function{
 	Node *node1 = $2;
@@ -141,18 +166,28 @@ functions: functions function{
 		$$ = node1;
 	}
 
-
 function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
-	//printf("IN FUNCTION DEF\n");
-	 Node * node = new Node;
-	 Node * statements = $6;
-	 std::string name = $2;
-	 node->code = std::string("");
-	 node->code += std::string("func ") + name + std::string("\n");
-	 node->code += $4->code;
-	 node->code += statements->code;
-	 node->code += std::string("\nendfunc\n\n");
-	 $$ = node;
+	std::string funcName = $2;
+	functionVec.push_back(funcName);
+	if (std::find(keywordVec.begin(), keywordVec.end(), $2) != keywordVec.end()) {
+		yyerror("Function declaration as reserved keyword");
+		errorOccured = true;
+	}
+	if (std::find(functionVec.begin(), functionVec.end(), "main") == functionVec.end()) {
+		yyerror("Function main not declared");
+		errorOccured = true;
+	}
+	if (!errorOccured) {
+		Node * node = new Node;
+		Node * statements = $6;
+		std::string name = $2;
+		node->code = std::string("");
+		node->code += std::string("func ") + name + std::string("\n");
+		node->code += $4->code;
+		node->code += statements->code;
+		node->code += std::string("\nendfunc\n\n");\
+		$$ = node;
+	}
 	}
 
 statements: statements statement
@@ -205,7 +240,7 @@ inputargs: %empty {
 statement: declaration{
 	Node * node = $1;
 	$$ = node;
-}
+	}
 	| assignment{
 		Node * node = $1;
 		$$ = node;
@@ -419,5 +454,5 @@ int main(int argc, char ** argv) {
 void yyerror(const char *msg) {
     //fprintf(stderr, "%s\n", msg);
     printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
-	exit(1);
+	//exit(1);
 }
