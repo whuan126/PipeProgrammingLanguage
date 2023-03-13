@@ -1,0 +1,9 @@
+function main()
+    int i
+    i |eq 0
+
+    while (i < 10)
+        i |eq (i |add 1)
+        |write i
+    end
+end
