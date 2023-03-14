@@ -1,0 +1,29 @@
+function main()
+	int obamna
+	int soda
+	int osama
+
+	obamna |eq 1
+	soda |eq 5
+	osama |eq 13
+	
+
+	if osama |equiv true
+		osama |eq 1
+		if osama |equiv 1
+			osama |eq 2
+			if osama |equiv 3
+				osama |eq 4
+			end
+		end			
+	end
+	
+	while obamna |leq soda 
+		obamna |eq obamna |add 1
+	end
+	if obamna |equiv soda
+		obamna |eq osama
+	else
+		osama |eq obama
+	end
+end

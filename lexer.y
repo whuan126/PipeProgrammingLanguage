@@ -137,7 +137,7 @@ bool errorOccured = false;
 
 %token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
 %type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
-%type <node> return inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
+%type <node> return inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement  
 %%
 start: %empty/*epsilon*/
 	{
@@ -261,41 +261,63 @@ statement: declaration{
 		Node * node = $1;
 		$$ = node;
 	}
+/* ///////////    THE GRAMMAR ZONE    //////////// */
 	| if {
-		Node * node = $1;
-		$$ = node;	
+		printf("statement -> if\n");
 	}
 	| while {
-		Node * node = $1;
-		$$ = node;
+		printf("statement -> while\n");	
 	}
+	/* we do not have 'BREAK' in our language. use empty 'RETURN' instead? */
 
 if: IF conditional statements elses END {
-		printf("if -> IF conditional statements elses END");
+		printf("if -> IF conditional statements elses END\n");
 	}
 
-elses: %empty/*epsilon*/ {
-		printf("elses -> empty");
+elses: %empty {
+		printf("elses -> empty\n");
 	}
 	| ELSE statements {
-		print("elses -> ELSE statements");
+		printf("elses -> ELSE statements\n");
 	}
 
 conditional: VARIABLE comparitor comparison {
-		printf("conditional -> VARIABLE comparitor comparison");
+		printf("conditional -> VARIABLE comparitor comparison\n");
 	}
 
-comparitor: EQUIVALENT
-	| NOTEQUIVALENT
-	| GREATEROREQUAL
-	| LESSTHANOREQUAL
-	| LESSTHAN
-	| GREATERTHAN
+comparitor: EQUIVALENT {
+		printf("comparitor -> EQUIVALENT\n");
+	}
+	| NOTEQUIVALENT {
+		printf("comparitor -> NOTEQUIVALENT\n");
+	}
+	| GREATEROREQUAL {
+		printf("comparitor -> GREATEROREQUAL\n");
+	}
+	| LESSEROREQUAL {
+		printf("comparitor -> LESSEROREQUAL\n");
+	}
+	| LESSTHAN {
+		printf("comparitor -> LESSTHAN\n");
+	}
+	| GREATERTHAN{
+		printf("comparitor -> GREATERTHAN\n");
+	}
 
-comparison: VARIABLE
-	| TRUE
-	| FALSE
+comparison: exp{
+		printf("comparison -> VARIABLE\n");
+	}
+	| TRUE{
+		printf("comparison -> TRUE\n");
+	}
+	| FALSE{
+		printf("comparison -> FALSE\n");
+	}
 
+while: WHILE conditional statements END {
+		printf("while -> WHILE conditional statements END\n");
+	}
+/* ///////////// END OF GRAMMAR ZONE //////////////// */
 return: RETURN exp
 {	
 	//printf("IN RETURN\n");
