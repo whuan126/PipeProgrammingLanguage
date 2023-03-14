@@ -1,0 +1,14 @@
+function main()
+    int a 
+    a |eq 100
+    int b 
+    b |eq 50
+    int c
+    if (a < b)
+        c |eq b
+    else
+        c |eq a
+    end
+    |write c 
+end 
+

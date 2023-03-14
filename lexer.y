@@ -261,6 +261,40 @@ statement: declaration{
 		Node * node = $1;
 		$$ = node;
 	}
+	| if {
+		Node * node = $1;
+		$$ = node;	
+	}
+	| while {
+		Node * node = $1;
+		$$ = node;
+	}
+
+if: IF conditional statements elses END {
+		printf("if -> IF conditional statements elses END");
+	}
+
+elses: %empty/*epsilon*/ {
+		printf("elses -> empty");
+	}
+	| ELSE statements {
+		print("elses -> ELSE statements");
+	}
+
+conditional: VARIABLE comparitor comparison {
+		printf("conditional -> VARIABLE comparitor comparison");
+	}
+
+comparitor: EQUIVALENT
+	| NOTEQUIVALENT
+	| GREATEROREQUAL
+	| LESSTHANOREQUAL
+	| LESSTHAN
+	| GREATERTHAN
+
+comparison: VARIABLE
+	| TRUE
+	| FALSE
 
 return: RETURN exp
 {	
@@ -343,7 +377,8 @@ assignment: VARIABLE EQUAL exp{
 		std::string digit = $3;
 		std::string name = $1;
 		Node * node = new Node;
-		node->code = std::string("[]= ") + name + std::string(", ") + digit + std::string(", ") + expression->name + std::string("\n");
+		node->code = std::string(". ") + expression->name + std::string("\n");
+		node->code += std::string("[]= ") + name + std::string(", ") + digit + std::string(", ") + expression->name + std::string("\n");
 		$$ = node;
 	}
 

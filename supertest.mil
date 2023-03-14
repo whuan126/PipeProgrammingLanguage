@@ -22,6 +22,7 @@ endfunc
 
 func main
 .[] z, 2
+. 10
 []= z, 0, 10
 .[]> z, 0
 . a
@@ -39,9 +40,13 @@ param a
 param b
 call mult, d
 .[] array, 5
+. a
 []= array, 0, a
+. b
 []= array, 1, b
+. c
 []= array, 2, c
+. d
 []= array, 3, d
 
 endfunc

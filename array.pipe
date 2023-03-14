@@ -1,12 +1,16 @@
-<<<<<<< HEAD
-function array()
-	int dwasd |eq {wasd,lwasd,"homo sapiens",5}
-	swd|123 |eq "sup"
-end
-=======
 function main()
-	int a[5] 
-	a[0] |eq 6
+	int a[20]
+	int b
+	int c
+	b |eq 3
+	c |eq 3
+	a[0] |eq b |add c
 	|write a[0]
+
+	a[1] |eq 100
+	|write a[1]
+
+	a[2] |eq 200
+	|write a[2]
 end
->>>>>>> 3988c3c98f720e5fc14b30a3b9005ee754dfd298
+
