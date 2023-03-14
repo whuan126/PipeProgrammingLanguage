@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 function array()
 	int dwasd |eq {wasd,lwasd,"homo sapiens",5}
 	swd|123 |eq "sup"
 end
+=======
+function main()
+	int a[5] 
+	a[0] |eq 6
+	|write a[0]
+end
+>>>>>>> 3988c3c98f720e5fc14b30a3b9005ee754dfd298

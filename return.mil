@@ -1,0 +1,20 @@
+IN RETURN
+func add
+. a
+= a, 50
+. b
+= b, 50
+. c
+. _temp0
++ _temp0, a, b
+= c, _temp0
+ret c
+endfunc
+
+func main
+. a
+= a, 10
+
+endfunc
+
+

@@ -1,0 +1,7 @@
+function main()
+int a
+int b
+a |eq 4
+b |eq 5
+c |eq 7
+end

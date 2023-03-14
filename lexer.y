@@ -1,8 +1,12 @@
 %{
-#include <stdio.h>
+#include<stdio.h>
 #include<string>
 #include<vector>
 #include<string.h>
+
+#include<map>
+#include<iostream>
+#include<algorithm>
 
 extern FILE* yyin;
 extern int currLine;
@@ -12,11 +16,35 @@ extern char* lineptr;
 extern int yylex(void);
 void yyerror(const char *msg);
 
+bool isKeyword(std::string keyString);
+bool isVariable(std::string varString);
+bool isFunction(std::string funcString);
+
 char *identToken;
 int numberToken;
 int count_names = 0;
+int argCount = 0;
 
 /////////////////////////////////////////////////////////
+
+std::string returnArgument(){
+    std::string argName("$");
+    char strCount[2];
+    sprintf(strCount,"%d",argCount);
+    argName += std::string(strCount);
+    argCount++;
+    return argName;
+}
+
+std::string returnTempVarName(){
+    static int count = 0;
+    std::string varName("_temp");
+    char strCount[2];
+    sprintf(strCount,"%d",count);
+    varName += std::string(strCount);
+    count++;
+    return varName;
+}
 
 enum Type { Integer, Array };
 struct Symbol {
@@ -26,6 +54,11 @@ struct Symbol {
 struct Function {
   std::string name;
   std::vector<Symbol> declarations;
+};
+
+struct Node {
+	std::string code;
+	std::string name;
 };
 
 std::vector <Function> symbol_table;
@@ -72,154 +105,381 @@ void print_symbol_table(void) {
   printf("--------------------\n");
 }
 
+///////////Semantic Stuff//////////
+
+std::vector<std::string> keywordVec = {"INDEX", "INT", "STRING", "THEN", "EQUAL", "NOTEQUIVALENT", 
+										"TRUE", "FALSE", "MULTIPLY", "ADD", "SUBTRACT", "DIVISION", "LESSEROREQUAL", "EQUIVALENT", 
+										"GREATEROREQUAL", "LESSTHAN", "GREATERTHAN", "WHILE", "DO", "IF", "ELSE", "FUNCTION", 
+										"LEFT_PREN", "RIGHT_PREN", "LEFT_BRACKET", "RIGHT_BRACKET", "LEFT_CURR_BRACKET", 
+										"RIGHT_CURR_BRACKET", "RETURN", "END", "COMMA", "READ", "WRITE", "INVALIDVAR", "VARIABLE", 
+										"DIGIT", "NUMBER", "STRINGLITERAL"};
+std::vector<std::string> variableVec;
+std::vector<std::string> functionVec;
+bool errorOccured = false;
+
 %}
 
 %union {
  char *op_val;
+ struct Node *node;
 }
 
 %define parse.error verbose
 %start start
-%token INT STRING INDEX THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA WRITE INVALIDVAR
-%token <op_val> VARIABLE 
-%token <op_val> DIGIT
-%token <op_val> STRINGLITERAL
-%type <op_val> var
-%type <op_val> statement
-%type <op_val> exp
+%locations
+
+%left ARRAY EQUAL
+%left LEFT_BRACKET RIGHT_BRACKET
+%left LEFT_PREN R_PREN
+%left LESSTHAN GREATERTHAN LESSEROREQUAL GREATEROREQUAL EQUIVALENT NOTEQUIVALENT
+%left ADD SUBTRACT
+%left MULTIPLY DIVISON
+
+%token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
+%type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
+%type <node> return inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement 
 %%
-start: /*epsilon*/ 
-        | function void 
+start: %empty/*epsilon*/
+	{
+		
+	} 
+	| functions {
+		Node * node = $1;
+		printf("%s\n", node->code.c_str());
+	}
 
-void: /*epsilon*/ 
-	| function void 
+functions: functions function{
+	Node *node1 = $2;
+	Node *node2 = $1;
+	Node *node = new Node;
+	node->code = std::string("");
+	node->code = node1->code + node2->code;
+	$$ = node;
+}
+	| function {
+		//printf("IN FUNCTION\n");
+		Node * node = $1;
+		Node * node1 = new Node;
+		node1 = node;
+		$$ = node1;
+	}
 
-function: FUNCTION functiondec statements END {printf("endfunc\n");}
+function: FUNCTION VARIABLE LEFT_PREN declarationargs RIGHT_PREN statements END {
+	std::string funcName = $2;
+	functionVec.push_back(funcName);
+	if (std::find(keywordVec.begin(), keywordVec.end(), funcName) != keywordVec.end()) {
+		yyerror("Invalid declaration using a reserved keyword");
+		errorOccured = true;
+	}
+	if (std::find(functionVec.begin(), functionVec.end(), "main") == functionVec.end()) {
+		yyerror("Function main not declared");
+		errorOccured = true;
+	}
+	if (!errorOccured) {
+		Node * node = new Node;
+		Node * statements = $6;
+		std::string name = $2;
+		node->code = std::string("");
+		node->code += std::string("func ") + name + std::string("\n");
+		node->code += $4->code;
+		node->code += statements->code;
+		node->code += std::string("\nendfunc\n\n");\
+		$$ = node;
+	}
+	}
 
-functiondec: VARIABLE LEFT_PREN declarationargs RIGHT_PREN 
-{
-// midrule!!!!!
-// add function to symbol table
-std::string func_name = $1;
-add_function_to_symbol_table(func_name);
-printf("func %s\n", $1);
+statements: statements statement
+	{
+		Node * statements = $1;
+		Node * statement = $2;
+		Node * node = new Node;
+		node->code = std::string("");
+		node->code += statements->code + statement->code;
+		$$ = node;
+	}
+	| statement {
+		Node * statement = $1;
+		Node *node = new Node;
+		node->code = std::string("");
+		node->code += statement->code;
+		$$ = node;
+	}
+
+functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN {
+	std::string funcName = $1;
+	if (std::find(functionVec.begin(), functionVec.end(), funcName) != functionVec.end()) {
+		std::cerr << "Function" << $1 << "not declared";
+		errorOccured = true;
+	}
+	Node * node = new Node;
+	Node * inputargs = $3;
+	node->name = $1;
+	node->code = inputargs->code;
+	$$=node;
 }
 
-functioncall: VARIABLE LEFT_PREN inputargs RIGHT_PREN 
-
-elses: /*epsilon*/ 
-	| ELSE statements 
-
-statements: /*epsilon*/ 
-	| rule s2 
-
-s2: /*epsilon*/ 
-	| rule s2 
-
-rule: IF conditional statements elses END 
-    | WHILE conditional statements END 
-	| statement 
-
-statement: INT var /* declarations + assignments */ 
-	{	// add vars to symbol table (declaration)
-		//std::string value = "0";//$1; placeholder value since empty declaration
-		//Type t = Integer;
-		//add_variable_to_symbol_table(value,t);
-		char * var  = $2;
-		printf(".%s", var);
-		
-	}  
-	| INT var EQUAL exp  
-	{
-		char * variable = $2;
-		char * num = $4;
-		printf(".%s\n", variable);
-		printf(" = %s, %s\n", variable, num);
+inputargs: %empty {
+	Node * node = new Node;
+	node->code = std::string("");
+	$$=node;
+}
+	| exp COMMA exp {
+		Node * exp1 = $1;
+		Node *exp2 = $3; 
+		Node *node = new Node;
+		node->code += exp1->code + std::string("\n");
+		node->code += exp2->code + std::string("\n");
+		node->code += std::string("param ") + exp1->name + std::string("\n");
+		node->code += std::string("param ") +exp2->name + std::string("\n");
+		$$=node;
 	}
-	| STRING var EQUAL STRINGLITERAL
-	| INT var EQUAL functioncall
-	| INT var EQUAL array
-	| STRING var EQUAL array
+	| exp
+	{
+		Node * node = new Node;
+		node->code = std::string("param ") + $1->code;
+		$$=node;
+	}
 
-	| WRITE DIGIT {} /* io */
-	| WRITE VARIABLE 
-	| WRITE STRINGLITERAL 
+statement: declaration{
+	Node * node = $1;
+	$$ = node;
+	}
+	| assignment{
+		Node * node = $1;
+		$$ = node;
+	}
+	| exp {
+		Node * node = $1;
+		$$ = node;
+	}
+	| inputoutput{
+		Node * node = $1;
+		$$ = node;
+	}
+
+	| return {
+		Node * node = $1;
+		$$ = node;
+	}
+
+return: RETURN exp
+{	
+	//printf("IN RETURN\n");
+	Node * expression = $2; 
+	Node * node = new Node;
+	node->code = std::string("ret ") + expression->name;
+	$$=node;
+}
+
+declaration: INT VARIABLE{
+	//printf("READING INT VAR\n");
+	std::string varName = $2;
+	variableVec.push_back(varName);
+	if (std::find(variableVec.begin(), variableVec.end(), varName) == variableVec.end()) {
+		std::cerr << "Variable " << varName << "has not been declared";
+		errorOccured = true;
+	}
+	Node *node = new Node;
+	node->code = std::string(". ") + $2 + std::string("\n");
+	node->name = $2;
+	$$ = node;
+} 
+	| INT VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET {
+		//printf("INT ARRAY\n");
+		if ($4 <= 0) {
+			yyerror("Declaring an array of size less than or equal to zero");
+			errorOccured = true;
+		}
+		if (!errorOccured) {
+			std::string digit = $4;
+			std::string name = $2;
+			Node * node = new Node; 
+			node->code = std::string(".[] ") + name + std::string(", ") + digit + std::string("\n");
+			$$ = node;
+		}
+	}
+	| INT VARIABLE EQUAL functioncall
+		{
+			std::string varName = $2;
+			if (std::find(keywordVec.begin(), keywordVec.end(), varName) != keywordVec.end()) {
+				yyerror("Invalid declaration using a reserved keyword");
+				errorOccured = true;
+			}
+			variableVec.push_back(varName);
+
+			Node * node = new Node;
+			std::string variable = $2;
+			Node *functioncall = $4;
+			node->code = functioncall->code + std::string("call ") + functioncall->name + std::string(", ") + variable + std::string("\n");
+			$$=node;
+		}
+
+assignment: VARIABLE EQUAL exp{
+	//printf("READING VAR = EXP\n");
+	std::string varName = $1;
+	if (std::find(variableVec.begin(), variableVec.end(), varName) == variableVec.end()) {
+		std::cerr << "Variable " << varName << " is not declared" << std::endl;
+		errorOccured = true;
+	}
+	Node *node = new Node;
+	std::string variable = $1;
+	Node * expression = $3;
+	if (expression->code[0] != '='){ // default. exp isnt array
+		node->code = $3 -> code;
+		node->code += std::string("= ") + variable + std::string(", ") + expression->name + std::string("\n");
+	}else{  //exp is an array
+		node->code = std::string("=[] ") + variable + std::string(", ") + expression->name;
+        }
+	$$ = node;
+}
+	| VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET EQUAL exp {
+		//printf("VARIABLE ARRAY\n");
+		std::string varName = $1;
+		if (std::find(variableVec.begin(), variableVec.end(), varName) != variableVec.end()) {
+		std::cerr<< "Variable " << varName <<  " is not declared" << std::endl;
+		errorOccured = true;
+	}
+		Node * expression = $6;
+		std::string digit = $3;
+		std::string name = $1;
+		Node * node = new Node;
+		node->code = std::string("[]= ") + name + std::string(", ") + digit + std::string(", ") + expression->name + std::string("\n");
+		$$ = node;
+	}
+
+
+	| declaration EQUAL exp {
+		Node * node = new Node;
+		Node * decl = $1; 
+		Node * expression = $3;
+		node->code = decl->code + std::string("\n") + $3->code;
+		node->code += std::string("= ") + decl-> name + std::string(", ") + expression -> name;
+		$$ = node;
+	}
+
+
+inputoutput: WRITE VARIABLE {
+	Node * node = new Node;
+	node->code = std::string(".> ") + std::string($2) + std::string("\n");
+	$$ = node;
+}
+	| WRITE VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET
+	{	
+		Node * node = new Node; 
+		node->code = std::string(".[]> ") + $2 + std::string(", ") + $4 + std::string("\n");
+		$$=node; 
+	}
+
+declarationargs: %empty /*epsi*/{
+	Node * node = new Node;
+	node->code = std::string("");
+	$$ = node;
+} 
+	| declarationarg {
+	argCount = 0;
+	$$ = $1;
+}
+	| declarationarg COMMA declarationarg {
+		argCount = 0;
+		Node *node = new Node;
+		Node * arg = $1;
+		Node * args = $3;
+		node->code += arg->code + args->code;
+		node->name = arg->name+std::string(",") + args->name;
+		$$ = node;
+	}
+
+declarationarg: INT VARIABLE {
+	//printf("INT VARIABLE\n");
+	Node * node = new Node;
+	node->name = $2;
+	node->code = std::string(". ") + $2 + std::string("\n");
+	node->code += std::string("= ") + $2 + std::string(", ") + returnArgument() + std::string("\n");
+	$$ = node;
+}
+
+
+exp: exp addop term {
+	// printf("EXP ADDOP TERM\n");
+	Node * node = new Node;
+	std::string tempVar = returnTempVarName();
+	node->name = tempVar;
+	node->code= $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+	node->code += std::string($2) + std::string(" ") + tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+	$$ = node;
+}
+	| term {
+		//printf("TERM\n");
+		Node *node = $1;
+		$$ = node;
+	}
+
+addop: ADD {
+	char addition[] = "+";
+	$$ = addition;
+	//printf("ADD\n");
+}
+        | SUBTRACT {
+			char subtraction[] = "-";
+			$$ = subtraction;
+			//printf("SUB\n");
+		}
+
+term: term mulop factor {
+	//printf("TERM MULOP FACTOR\n");
+	Node *node = new Node;
+	std::string tempVar = returnTempVarName();
+	node->name = tempVar;
+	node->code = $1->code + $3->code + std::string(". ") + tempVar + std::string("\n");
+	node->code += std::string($2) + std::string(" ") +tempVar + std::string(", ") + $1->name + std::string(", ") + $3->name + std::string("\n");
+    $$ = node;
+
+}
+        | factor {
+			//printf("FACTOR\n");
+			Node *node = $1;
+		}
+
+mulop: MULTIPLY {
+	//printf("MULTIPLY\n");
+	char multiply[] = "*";
+	$$ = multiply;
+}
+        | DIVISION {
+			//printf("DIVISION\n");
+			char division[] = "/";
+			$$ = division;
+		}
+
+factor: LEFT_PREN exp RIGHT_PREN {
+	//printf("(EXP)\n");
+	Node *node = new Node;
+	Node *exp = $2;
+	node->code = exp->code;
+	$$ = node;
 	
-	| RETURN retval  /* function calls */
-	| functioncall 
-	| functioncall addop functioncall 
-	| functioncall mulop functioncall 
-
-	| var EQUAL functioncall /* assignments */
-	| var EQUAL exp
-	| var EQUAL STRINGLITERAL   
-
-array: LEFT_CURR_BRACKET arrayargs1 RIGHT_CURR_BRACKET
-
-arrayargs1: arrayarg arrayargs
-
-arrayargs: /*epsilon*/ 
-	| COMMA arrayarg arrayargs
-	
-arrayarg: var
-	| STRINGLITERAL
-	| DIGIT
-
-var: VARIABLE {printf("no");}
-	| VARIABLE INDEX {printf("yes");}
-
-conditional: exp condition exp  
-	| exp condition boolean 
-        | STRINGLITERAL condition STRINGLITERAL  
-	
-boolean: TRUE 
-	| FALSE 
-
-condition: LESSEROREQUAL
-        | GREATEROREQUAL
-        | LESSTHAN      
-        | GREATERTHAN   
-        | EQUIVALENT    
-        | NOTEQUIVALENT 
-
-retval: statement 
-	| exp  
-	| conditional 
-	| boolean 
-
-type: /*epsilon*/ 
-	| INT 
-	| STRING 
-
-input: exp 
-
-inputargs: /*epsilon*/ 
-	| input inputargs2 
-
-inputargs2: /*epsilon*/ 
-	| COMMA input inputargs2 
-
-declarationargs:  /*epsilon*/ 
-	| type VARIABLE declarationargs2 
-
-declarationargs2: /*epsilon*/ 
-	| COMMA type VARIABLE declarationargs2 
-
-exp: exp addop term 
-	| term
-
-addop: ADD
-        | SUBTRACT 
-
-term: term mulop factor 
-        | factor 
-
-mulop: MULTIPLY 
-        | DIVISION 
-
-factor: LEFT_PREN exp RIGHT_PREN 
-        | DIGIT  	
-	| VARIABLE 
+}
+	| DIGIT  	{
+		//printf("DIGIT\n");
+		Node *node = new Node;
+		node -> name = $1;
+		$$ = node;
+	}
+	| VARIABLE {
+		//printf("VARIABLE\n");
+		Node * node = new Node;
+		node->name = $1;
+		$$ = node;
+	}
+	| VARIABLE LEFT_BRACKET DIGIT RIGHT_BRACKET {
+                //printf("EXP ARRAY\n");
+                std::string digit = $3;
+                std::string name = $1;
+                Node * node = new Node;
+                node->code = std::string("=[]") + name + std::string(", ") + digit + std::string("\n"); // idk do both i guess
+                node->name = name + std::string(", ") + digit + std::string("\n");
+		$$ = node;
+	}
 %%
 
 int main(int argc, char ** argv) {
@@ -233,11 +493,33 @@ int main(int argc, char ** argv) {
 		yyin = stdin;
 	}
 	yyparse();
-	print_symbol_table();
+	//print_symbol_table();
 	return 0;
 }
 void yyerror(const char *msg) {
     fprintf(stderr, "%s\n", msg);
     printf("Error: On line %d, column %d: %s \n", currLine, currPos, msg);
-	exit(1);
+	//exit(1);
 }
+/*
+bool isFunction (std::string funcString) {
+	if (std::find(functionVec.begin(), functionVec.end(), funcString) != functionVec.end()) {
+		yyerror("Function" + funcString + "not declared");
+		errorOccured = true;
+	}
+}
+
+bool isKeyword (std::string keyString) {
+	if (std::find(keywordVec.begin(), keywordVec.end(), keyString) != keywordVec.end()) {
+		yyerror("Invalid declaration using a reserved keyword");
+		errorOccured = true;
+	}
+}
+
+bool isVariable (std::string varString) {
+	if (std::find(variableVec.begin(), variableVec.end(), varString) != variableVec.end()) {
+		yyerror("Variable" + varString + "is not declared");
+		errorOccured = true;
+	}
+}
+*/

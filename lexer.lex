@@ -1,7 +1,7 @@
 %option noyywrap
 %{
 #include <string.h>
-#include "lexer.tab.h"
+#include "y.tab.h"
 int currLine = 1, currPos = 1;
 %}
 
@@ -62,7 +62,7 @@ int line = 0;
     yylval.op_val = token;
     return DIGIT;
 }
-"\n"	 	                {currPos =1; currLine++;}
+\\n                      {currPos =1; currLine++;}
 {INT}		            { currPos += yyleng; return INT; }
 {INDEX}			        { currPos += yyleng; return INDEX; }
 {STRING}		        { currPos += yyleng; return STRING; }
@@ -117,4 +117,3 @@ int line = 0;
 // 	printf("Total equal signs: %d\n", equal);
 // 	printf("Quiting...\n");
 // }
-

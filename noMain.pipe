@@ -1,0 +1,10 @@
+function INDEX()
+int a
+int b
+int k
+int j
+end
+
+function STRING()
+int c
+end

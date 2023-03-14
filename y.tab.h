@@ -45,41 +45,47 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    INT = 258,
-    STRING = 259,
-    INDEX = 260,
-    THEN = 261,
-    EQUAL = 262,
-    NOTEQUIVALENT = 263,
-    TRUE = 264,
-    FALSE = 265,
-    MULTIPLY = 266,
-    ADD = 267,
-    SUBTRACT = 268,
-    DIVISION = 269,
-    LESSEROREQUAL = 270,
-    EQUIVALENT = 271,
-    GREATEROREQUAL = 272,
-    LESSTHAN = 273,
-    GREATERTHAN = 274,
-    WHILE = 275,
-    IF = 276,
-    ELSE = 277,
-    FUNCTION = 278,
-    LEFT_PREN = 279,
-    RIGHT_PREN = 280,
-    LEFT_BRACKET = 281,
-    RIGHT_BRACKET = 282,
-    LEFT_CURR_BRACKET = 283,
-    RIGHT_CURR_BRACKET = 284,
-    RETURN = 285,
-    END = 286,
-    COMMA = 287,
-    WRITE = 288,
-    INVALIDVAR = 289,
-    VARIABLE = 290,
-    DIGIT = 291,
-    STRINGLITERAL = 292
+    ARRAY = 258,
+    EQUAL = 259,
+    LEFT_BRACKET = 260,
+    RIGHT_BRACKET = 261,
+    LEFT_PREN = 262,
+    R_PREN = 263,
+    LESSTHAN = 264,
+    GREATERTHAN = 265,
+    LESSEROREQUAL = 266,
+    GREATEROREQUAL = 267,
+    EQUIVALENT = 268,
+    NOTEQUIVALENT = 269,
+    ADD = 270,
+    SUBTRACT = 271,
+    MULTIPLY = 272,
+    DIVISON = 273,
+    INDEX = 274,
+    INT = 275,
+    STRING = 276,
+    THEN = 277,
+    TRUE = 278,
+    FALSE = 279,
+    DIVISION = 280,
+    WHILE = 281,
+    DO = 282,
+    IF = 283,
+    ELSE = 284,
+    FUNCTION = 285,
+    RIGHT_PREN = 286,
+    LEFT_CURR_BRACKET = 287,
+    RIGHT_CURR_BRACKET = 288,
+    RETURN = 289,
+    END = 290,
+    COMMA = 291,
+    READ = 292,
+    WRITE = 293,
+    INVALIDVAR = 294,
+    VARIABLE = 295,
+    DIGIT = 296,
+    NUMBER = 297,
+    STRINGLITERAL = 298
   };
 #endif
 
@@ -88,11 +94,12 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 77 "lexer.y" /* yacc.c:1909  */
+#line 122 "lexer.y" /* yacc.c:1909  */
 
  char *op_val;
+ struct Node *node;
 
-#line 96 "y.tab.h" /* yacc.c:1909  */
+#line 103 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -100,9 +107,23 @@ typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_DECLARED 1
 #endif
 
+/* Location type.  */
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE YYLTYPE;
+struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+};
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
+#endif
+
 
 extern YYSTYPE yylval;
-
+extern YYLTYPE yylloc;
 int yyparse (void);
 
 #endif /* !YY_YY_Y_TAB_H_INCLUDED  */

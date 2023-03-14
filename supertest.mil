@@ -1,0 +1,49 @@
+func power
+. a
+= a, $0
+. b
+. _temp1
+* _temp1, a, a
+= b, _temp1
+ret b
+endfunc
+
+func add
+. a
+= a, $0
+. b
+= b, $1
+. c
+. _temp0
++ _temp0, a, b
+= c, _temp0
+ret c
+endfunc
+
+func main
+.[] z, 2
+[]= z, 0, 10
+.[]> z, 0
+. a
+= a, 5
+. b
+= b, 5
+
+
+param a
+param b
+call add, c
+
+
+param a
+param b
+call mult, d
+.[] array, 5
+[]= array, 0, a
+[]= array, 1, b
+[]= array, 2, c
+[]= array, 3, d
+
+endfunc
+
+
