@@ -136,8 +136,8 @@ bool errorOccured = false;
 %left MULTIPLY DIVISON
 
 %token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
-%type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
-%type <node> return inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement  
+%type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT 
+%type <node> conditional elses GREATERTHAN comparison LESSEROREQUAL comparitor LESSTHAN NOTEQUIVALENT EQUIVALENT GREATEROREQUAL return if inputargs while functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement  
 %%
 start: %empty/*epsilon*/
 	{
@@ -264,14 +264,45 @@ statement: declaration{
 /* ///////////    THE GRAMMAR ZONE    //////////// */
 	| if {
 		printf("statement -> if\n");
+		Node* node =$1;
+		$$ = node;
 	}
 	| while {
 		printf("statement -> while\n");	
+		Node * node = $1;
+		$$ = node;
 	}
 	/* we do not have 'BREAK' in our language. use empty 'RETURN' instead? */
 
 if: IF conditional statements elses END {
 		printf("if -> IF conditional statements elses END\n");
+		// Code for conditional will go first
+		// . _temp0
+		// < _temp0, a, b
+		Node * cond = $2;
+		Node * node = new Node; 
+		node->code = cond->code;
+		
+		// The If statement part will go next!
+		// ?:= if_true0, _temp0(name of conditional)
+		// := else0 
+
+		node->code += std::string("?:= if_true0, ") + cond->name + std::string("\n");
+		node->code += std::string(":= else0") + std::string("\n");
+
+		node->code += std::string(": if_true0") + std::string("\n");
+
+		Node * stmnts = $3;
+		node->code += stmnts->code;
+
+		node->code += std::string(": else0") + std::string("\n");
+		node->code += $4 -> code;
+
+		$$ = node;
+
+
+
+
 	}
 
 elses: %empty {
@@ -279,33 +310,68 @@ elses: %empty {
 	}
 	| ELSE statements {
 		printf("elses -> ELSE statements\n");
+		Node * statements = $2;
+		$$ = statements;
 	}
 
 conditional: VARIABLE comparitor comparison {
 		printf("conditional -> VARIABLE comparitor comparison\n");
+		std::string temp = returnTempVarName();
+		std::string var1 = $1;
+		
+		Node * comparison = $3;
+		Node * comparitor = $2;
+
+		Node * node = new Node;
+		node->code = std::string(". ") + temp + std::string("\n");
+		node->name = temp;
+		node->code += comparitor->code + std::string(" ") + temp + std::string(", ") + var1 + std::string(", ") + comparison->name + std::string("\n");
+		$$ = node;
+
 	}
 
 comparitor: EQUIVALENT {
 		printf("comparitor -> EQUIVALENT\n");
+		Node * node = new Node;
+		node->code = std::string("==");
+		$$ = node;
 	}
 	| NOTEQUIVALENT {
 		printf("comparitor -> NOTEQUIVALENT\n");
+		Node * node = new Node;
+		node->code = std::string("!=");
+		$$ = node;
+		
 	}
 	| GREATEROREQUAL {
 		printf("comparitor -> GREATEROREQUAL\n");
+		Node * node = new Node;
+		node->code = std::string(">=");
+		$$ = node;
 	}
 	| LESSEROREQUAL {
 		printf("comparitor -> LESSEROREQUAL\n");
+		Node * node = new Node;
+		node->code = std::string("<=");
+		$$ = node;
 	}
 	| LESSTHAN {
 		printf("comparitor -> LESSTHAN\n");
+		Node * node = new Node;
+		node->code = std::string("<");
+		$$ = node;
 	}
 	| GREATERTHAN{
 		printf("comparitor -> GREATERTHAN\n");
+		Node * node = new Node;
+		node->code = std::string(">");
+		$$ = node;
 	}
 
 comparison: exp{
 		printf("comparison -> VARIABLE\n");
+		Node * exp = $1;
+		$$ = exp;
 	}
 	| TRUE{
 		printf("comparison -> TRUE\n");
