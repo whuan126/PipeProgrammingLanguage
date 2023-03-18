@@ -61,31 +61,32 @@ extern int yydebug;
     SUBTRACT = 271,
     MULTIPLY = 272,
     DIVISON = 273,
-    INDEX = 274,
-    INT = 275,
-    STRING = 276,
-    THEN = 277,
-    TRUE = 278,
-    FALSE = 279,
-    DIVISION = 280,
-    WHILE = 281,
-    DO = 282,
-    IF = 283,
-    ELSE = 284,
-    FUNCTION = 285,
-    RIGHT_PREN = 286,
-    LEFT_CURR_BRACKET = 287,
-    RIGHT_CURR_BRACKET = 288,
-    RETURN = 289,
-    END = 290,
-    COMMA = 291,
-    READ = 292,
-    WRITE = 293,
-    INVALIDVAR = 294,
-    VARIABLE = 295,
-    DIGIT = 296,
-    NUMBER = 297,
-    STRINGLITERAL = 298
+    BREAK = 274,
+    INDEX = 275,
+    INT = 276,
+    STRING = 277,
+    THEN = 278,
+    TRUE = 279,
+    FALSE = 280,
+    DIVISION = 281,
+    WHILE = 282,
+    DO = 283,
+    IF = 284,
+    ELSE = 285,
+    FUNCTION = 286,
+    RIGHT_PREN = 287,
+    LEFT_CURR_BRACKET = 288,
+    RIGHT_CURR_BRACKET = 289,
+    RETURN = 290,
+    END = 291,
+    COMMA = 292,
+    READ = 293,
+    WRITE = 294,
+    INVALIDVAR = 295,
+    VARIABLE = 296,
+    DIGIT = 297,
+    NUMBER = 298,
+    STRINGLITERAL = 299
   };
 #endif
 
@@ -99,7 +100,7 @@ union YYSTYPE
  char *op_val;
  struct Node *node;
 
-#line 103 "y.tab.h" /* yacc.c:1909  */
+#line 104 "y.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
