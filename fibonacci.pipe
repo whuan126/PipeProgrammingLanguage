@@ -2,7 +2,7 @@ function main ()
 int number 
 number |eq 5
 
-|write fib(number |sub 1) |add fib(number |sub 2)
+|write fib(number)
 end
 
 function fib (int number)
