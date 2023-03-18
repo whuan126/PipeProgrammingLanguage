@@ -15,6 +15,7 @@ extern char* lineptr;
 
 extern int yylex(void);
 void yyerror(const char *msg);
+int TEMPNUMBER = 0;
 
 bool isKeyword(std::string keyString);
 bool isVariable(std::string varString);
@@ -45,6 +46,26 @@ std::string returnTempVarName(){
     count++;
     return varName;
 }
+
+
+// std::string returnLoopBodyName(){
+//     static int count = 0;
+//     std::string varName("loopbody");
+//     char strCount[2];
+//     sprintf(strCount,"%d",count);
+//     varName += std::string(strCount);
+//     count++;
+//     return varName;
+// }
+// std::string returnLoopBodyName(){
+//     static int count = 0;
+//     std::string varName("loopbody");
+//     char strCount[2];
+//     sprintf(strCount,"%d",count);
+//     varName += std::string(strCount);
+//     count++;
+//     return varName;
+// }
 
 enum Type { Integer, Array };
 struct Symbol {
@@ -391,14 +412,15 @@ while: WHILE conditional statements END {
 		Node * node = new Node;
 		// missing :beginloop0
 		//. _temp0
-		node->code = std::string(": beginloop0") + std::string("\n");
+		node->code = std::string(": beginloop")+ std::to_string(TEMPNUMBER) + std::string("\n");
 		node-> code += conditional->code;
-		node->code += std::string("?:= loopbody0, ") + conditional->name + std::string("\n");
-		node-> code += std::string(":= endloop0") + std::string("\n");
-		node->code += std::string(": loopbody0") + std::string("\n");
+		node->code += std::string("?:= loopbody") + std::to_string(TEMPNUMBER) + std::string(", ") + conditional->name + std::string("\n");
+		node-> code += std::string(":= endloop")+ std::to_string(TEMPNUMBER) + std::string("\n");
+		node->code += std::string(": loopbody") + std::to_string(TEMPNUMBER) + std::string("\n");
 		node->code += statements->code;
-		node->code += std::string(":= beginloop0") + std::string("\n");
-		node->code += std::string(": endloop0") + std::string("\n");
+		node->code += std::string(":= beginloop") + std::to_string(TEMPNUMBER) + std::string("\n");
+		node->code += std::string(": endloop") +std::to_string(TEMPNUMBER) + std::string("\n");
+		TEMPNUMBER = TEMPNUMBER+1;
 		$$ = node;
 
 
