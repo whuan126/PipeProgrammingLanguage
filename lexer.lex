@@ -15,6 +15,7 @@ EQUAL \|eq
 NOTEQUAL \|neq
 MULTIPLY \|mult
 ADD \|add
+BREAK break
 NOTEQUIV \|noteq
 SUBTRACT \|sub
 DIVISION \|div
@@ -90,6 +91,7 @@ int line = 0;
 {RIGHT_CURR_BRACKET}    { currPos += yyleng; return RIGHT_CURR_BRACKET; }
 {RETURN}		        { currPos += yyleng; return RETURN; }
 {END}			        { currPos += yyleng; return END; }
+{BREAK}                 {currPos += yyleng; return BREAK;}
 {COMMA}			        { currPos += yyleng; return COMMA; }
 {READ}			        { currPos += yyleng; return READ; }
 {WRITE}			        { currPos += yyleng; return WRITE; }
@@ -102,6 +104,7 @@ int line = 0;
    strcpy(token, yytext);
    yylval.op_val = token;
    return VARIABLE; }
+
 {NOTEQUIV}		        { currPos += yyleng; return NOTEQUIVALENT; }
 [[:space:]]+
 .                       {printf("Error at line %d. column %d: unrecognized symbol \"%s\"\n", currLine, currPos, yytext); exit(0);}

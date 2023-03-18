@@ -15,6 +15,7 @@ extern char* lineptr;
 
 extern int yylex(void);
 void yyerror(const char *msg);
+int TEMPNUMBER = 0;
 
 bool isKeyword(std::string keyString);
 bool isVariable(std::string varString);
@@ -45,6 +46,26 @@ std::string returnTempVarName(){
     count++;
     return varName;
 }
+
+
+// std::string returnLoopBodyName(){
+//     static int count = 0;
+//     std::string varName("loopbody");
+//     char strCount[2];
+//     sprintf(strCount,"%d",count);
+//     varName += std::string(strCount);
+//     count++;
+//     return varName;
+// }
+// std::string returnLoopBodyName(){
+//     static int count = 0;
+//     std::string varName("loopbody");
+//     char strCount[2];
+//     sprintf(strCount,"%d",count);
+//     varName += std::string(strCount);
+//     count++;
+//     return varName;
+// }
 
 enum Type { Integer, Array };
 struct Symbol {
@@ -135,9 +156,9 @@ bool errorOccured = false;
 %left ADD SUBTRACT
 %left MULTIPLY DIVISON
 
-%token ARRAY INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
-%type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT
-%type <node> return inputargs functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement  
+%token ARRAY BREAK INDEX INT STRING THEN EQUAL NOTEQUIVALENT TRUE FALSE MULTIPLY ADD SUBTRACT DIVISION LESSEROREQUAL EQUIVALENT GREATEROREQUAL LESSTHAN GREATERTHAN WHILE DO IF ELSE FUNCTION LEFT_PREN RIGHT_PREN LEFT_BRACKET RIGHT_BRACKET LEFT_CURR_BRACKET RIGHT_CURR_BRACKET RETURN END COMMA READ WRITE INVALIDVAR VARIABLE DIGIT NUMBER STRINGLITERAL
+%type <op_val> ARRAY FUNCTION addop mulop VARIABLE INT DIGIT 
+%type <node> break conditional elses GREATERTHAN comparison LESSEROREQUAL comparitor LESSTHAN NOTEQUIVALENT EQUIVALENT GREATEROREQUAL return if inputargs while functioncall factor assignment declarationarg exp declaration inputoutput functions function term declarationargs statements statement  
 %%
 start: %empty/*epsilon*/
 	{
@@ -261,61 +282,148 @@ statement: declaration{
 		Node * node = $1;
 		$$ = node;
 	}
+	| break {
+		Node * node = $1;
+		$$ = node;
+	}
 /* ///////////    THE GRAMMAR ZONE    //////////// */
 	| if {
-		printf("statement -> if\n");
+		//printf("statement -> if\n");
+		Node* node =$1;
+		$$ = node;
 	}
 	| while {
-		printf("statement -> while\n");	
+		//printf("statement -> while\n");	
+		Node * node = $1;
+		$$ = node;
 	}
 	/* we do not have 'BREAK' in our language. use empty 'RETURN' instead? */
 
 if: IF conditional statements elses END {
-		printf("if -> IF conditional statements elses END\n");
+		//printf("if -> IF conditional statements elses END\n");
+		// Code for conditional will go first
+		// . _temp0
+		// < _temp0, a, b
+		Node * cond = $2;
+		Node * node = new Node; 
+		node->code = cond->code;
+		
+		// The If statement part will go next!
+		// ?:= if_true0, _temp0(name of conditional)
+		// := else0 
+
+		node->code += std::string("?:= if_true0, ") + cond->name + std::string("\n");
+		node->code += std::string(":= else0") + std::string("\n");
+
+		node->code += std::string(": if_true0") + std::string("\n");
+
+		Node * stmnts = $3;
+		node->code += stmnts->code;
+		node->code += std::string(":= endif0") + std::string("\n");
+
+		node->code += std::string(": else0") + std::string("\n");
+		node->code += $4 -> code;
+		node->code += std::string(": endif0") + std::string("\n");
+
+		$$ = node;
+
 	}
 
 elses: %empty {
-		printf("elses -> empty\n");
+		//printf("elses -> empty\n");
 	}
 	| ELSE statements {
-		printf("elses -> ELSE statements\n");
+		//printf("elses -> ELSE statements\n");
+		Node * statements = $2;
+		$$ = statements;
 	}
 
 conditional: VARIABLE comparitor comparison {
-		printf("conditional -> VARIABLE comparitor comparison\n");
+		//printf("conditional -> VARIABLE comparitor comparison\n");
+		std::string temp = returnTempVarName();
+		std::string var1 = $1;
+		
+		Node * comparison = $3;
+		Node * comparitor = $2;
+
+		Node * node = new Node;
+		node->code = std::string(". ") + temp + std::string("\n");
+		node->name = temp;
+		node->code += comparitor->code + std::string(" ") + temp + std::string(", ") + var1 + std::string(", ") + comparison->name + std::string("\n");
+		$$ = node;
+
 	}
 
 comparitor: EQUIVALENT {
-		printf("comparitor -> EQUIVALENT\n");
+		//printf("comparitor -> EQUIVALENT\n");
+		Node * node = new Node;
+		node->code = std::string("==");
+		$$ = node;
 	}
 	| NOTEQUIVALENT {
-		printf("comparitor -> NOTEQUIVALENT\n");
+		//printf("comparitor -> NOTEQUIVALENT\n");
+		Node * node = new Node;
+		node->code = std::string("!=");
+		$$ = node;
+		
 	}
 	| GREATEROREQUAL {
-		printf("comparitor -> GREATEROREQUAL\n");
+		//printf("comparitor -> GREATEROREQUAL\n");
+		Node * node = new Node;
+		node->code = std::string(">=");
+		$$ = node;
 	}
 	| LESSEROREQUAL {
-		printf("comparitor -> LESSEROREQUAL\n");
+		//printf("comparitor -> LESSEROREQUAL\n");
+		Node * node = new Node;
+		node->code = std::string("<=");
+		$$ = node;
 	}
 	| LESSTHAN {
-		printf("comparitor -> LESSTHAN\n");
+		//printf("comparitor -> LESSTHAN\n");
+		Node * node = new Node;
+		node->code = std::string("<");
+		$$ = node;
 	}
 	| GREATERTHAN{
-		printf("comparitor -> GREATERTHAN\n");
+		//printf("comparitor -> GREATERTHAN\n");
+		Node * node = new Node;
+		node->code = std::string(">");
+		$$ = node;
 	}
 
 comparison: exp{
-		printf("comparison -> VARIABLE\n");
+		//printf("comparison -> VARIABLE\n");
+		Node * exp = $1;
+		$$ = exp;
 	}
 	| TRUE{
-		printf("comparison -> TRUE\n");
+		//printf("comparison -> TRUE\n");
 	}
 	| FALSE{
-		printf("comparison -> FALSE\n");
+		//printf("comparison -> FALSE\n");
 	}
 
 while: WHILE conditional statements END {
-		printf("while -> WHILE conditional statements END\n");
+		//printf("while -> WHILE conditional statements END\n");
+		Node * conditional  = $2; 
+		Node * statements = $3;
+
+		Node * node = new Node;
+		// missing :beginloop0
+		//. _temp0
+		node->code = std::string(": beginloop")+ std::to_string(TEMPNUMBER) + std::string("\n");
+		node-> code += conditional->code;
+		node->code += std::string("?:= loopbody") + std::to_string(TEMPNUMBER) + std::string(", ") + conditional->name + std::string("\n");
+		node-> code += std::string(":= endloop")+ std::to_string(TEMPNUMBER) + std::string("\n");
+		node->code += std::string(": loopbody") + std::to_string(TEMPNUMBER) + std::string("\n");
+		node->code += statements->code;
+		node->code += std::string(":= beginloop") + std::to_string(TEMPNUMBER) + std::string("\n");
+		node->code += std::string(": endloop") +std::to_string(TEMPNUMBER) + std::string("\n");
+		TEMPNUMBER = TEMPNUMBER+1;
+		$$ = node;
+
+
 	}
 /* ///////////// END OF GRAMMAR ZONE //////////////// */
 return: RETURN exp
@@ -327,6 +435,12 @@ return: RETURN exp
 	$$=node;
 }
 
+break: BREAK
+{
+	Node * node = new Node;
+	node->code = std::string(":= endloop0") + std::string("\n");
+	$$ = node;
+}
 declaration: INT VARIABLE{
 	//printf("READING INT VAR\n");
 	std::string varName = $2;

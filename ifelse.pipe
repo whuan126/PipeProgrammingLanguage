@@ -4,7 +4,7 @@ function main()
     int b 
     b |eq 50
     int c
-    if (a < b)
+    if a |lt b
         c |eq b
     else
         c |eq a

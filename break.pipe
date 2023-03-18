@@ -1,0 +1,13 @@
+function main()
+    int i
+    i |eq 0
+    while i |lt 10
+        |write i
+        if i |gt 2
+            break
+        else
+            3
+        end
+        i |eq i |add 1
+    end
+end 
