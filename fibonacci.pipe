@@ -2,17 +2,14 @@ function main ()
 int number 
 number |eq 5
 
-if number|lteq 1
-    return 1
-end
-return main(number |sub 1) |add main(number |sub 2)
+|write fib(number |sub 1) |add fib(number |sub 2)
 end
 
 function fib (int number)
 if number|lteq 1
     return 1
 end
-return main(number |sub 1) |add main(number |sub 2)
+return fib(number |sub 1) |add fib(number |sub 2)
 end
 
 
