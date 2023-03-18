@@ -300,9 +300,6 @@ if: IF conditional statements elses END {
 
 		$$ = node;
 
-
-
-
 	}
 
 elses: %empty {
@@ -382,6 +379,22 @@ comparison: exp{
 
 while: WHILE conditional statements END {
 		printf("while -> WHILE conditional statements END\n");
+		Node * conditional  = $2; 
+		Node * statements = $3;
+
+		Node * node = new Node;
+		// missing :beginloop0
+		//. _temp0
+		node-> code = conditional->code + std::string("\n");
+		node->code += std::string("?:= loopbody0, ") + conditional->name + std::string("\n");
+		node-> code += std::string(":= endloop0") + std::string("\n");
+		node->code += std::string(": loopbody0") + std::string("\n");
+		node->code += statements->code;
+		node->code += std::string(":= beginloop0") + std::string("\n");
+		node->code += std::string(": endloop0") + std::string("\n");
+		$$ = node;
+
+
 	}
 /* ///////////// END OF GRAMMAR ZONE //////////////// */
 return: RETURN exp
